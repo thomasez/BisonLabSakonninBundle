@@ -1,0 +1,22 @@
+{
+    "name": "bisonlab/sakonnin-bundle",
+    "type": "symfony-bundle",
+    "description": "A message/log/feedback handling bundle with callback/replies capabilities",
+    "keywords": ["logging messages feedback symfony"],
+    "homepage": "https://github.com/thomasez/SakonninBundle",
+    "license": "LGPLv2.1",
+    "authors": [
+        {
+            "name": "Thomas Lundquist",
+            "email": "github@bisonlab.no"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": ">=2.6, <3.0",
+    },
+    "autoload": {
+        "psr-0": { "BisonLab\\SakonninBundle": "" }
+    },
+    "target-dir": "BisonLab/SakonninBundle"
+}
+
