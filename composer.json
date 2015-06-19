@@ -12,7 +12,9 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": ">=2.6, <3.0"
+        "bisonlab/common-bundle": "dev-master",
+        "symfony/framework-bundle": ">=2.6, <3.0",
+        "stof/doctrine-extensions-bundle": "1.2.*@dev"
     },
     "autoload": {
         "psr-0": { "BisonLab\\SakonninBundle": "" }

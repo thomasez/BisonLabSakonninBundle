@@ -35,3 +35,9 @@
 
 # Composer PHAR
 /composer.phar
+
+# Backups.
+*~
+# sed has given me these on some FreeBSD systems:
+*-e
+
