@@ -263,7 +263,7 @@ class MessageType
     public function addChild(\BisonLab\SakonninBundle\Entity\MessageType $child)
     {
         $this->children[] = $child;
-        $child->setParent($child);
+        $child->setParent($this);
 
         return $this;
     }
