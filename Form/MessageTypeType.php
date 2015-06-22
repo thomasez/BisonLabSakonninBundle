@@ -5,6 +5,7 @@ namespace BisonLab\SakonninBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 class MessageTypeType extends AbstractType
 {
@@ -21,7 +22,19 @@ class MessageTypeType extends AbstractType
             ->add('callbackType')
             ->add('forwardFunction')
             ->add('forwardType')
-            ->add('parent')
+            ->add('parent', 'entity',
+                array(
+                    'label' => 'Group',
+                    'placeholder' => 'Choose a Group (Or create one if not)',
+                    'required' => true,
+                    'class' => 'BisonLabSakonninBundle:MessageType',
+                    'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('mt')
+                     ->where('mt.parent is null')
+                     ->orderBy('mt.name', 'ASC');
+                    },
+                ))
+
         ;
     }
     
