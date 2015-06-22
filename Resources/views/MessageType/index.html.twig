@@ -20,7 +20,7 @@
         {% for entity in entities %}
             <tr>
                 {% if entity.parent  is empty %}
-                <td><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                <td><strong><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.name }}:</a></strong></td>
                 <td>&nbsp;</td>
                 {% else %}
                 <td>&nbsp;</td>
