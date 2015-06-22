@@ -1,0 +1,7 @@
+Email,,Emails,,,,,
+Manual,Email,"Emails sent by people",,,,,
+Automated,Email,"Emails created by a system",,,,,
+Feedback,,Feedback,,,,,
+System,Feedback,"Feedback about the system",,,,,
+Routines,Feedback,"Feedback about routines",,,,,
+Fixes,Feedback,"Messages regarding fixes done",,,,,
