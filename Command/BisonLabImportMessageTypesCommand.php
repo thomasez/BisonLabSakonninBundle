@@ -86,7 +86,6 @@ EOT
             if (count($data) < 2) {
               continue;
             }
-print_r($data);
 
             // Handling a parent.
             $parent = null;
@@ -108,7 +107,7 @@ print_r($data);
             $mt->setForwardType($data[6]);
             $this->entityManager->persist($mt);
             if ($parent) {
-                $output->writeln("Set parent " . $parent->getName());
+                $output->writeln("Seting parent " . $parent->getName() . " on " . $mt->getName());
                 $parent->addChild($mt);
                 $this->entityManager->persist($parent);
             }
