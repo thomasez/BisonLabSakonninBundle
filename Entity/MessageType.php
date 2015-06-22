@@ -71,6 +71,10 @@ class MessageType
      */
     private $forwardType;
 
+    /* This is a tree structure whild in teh UI it's just to show a group.
+     * I've chosen to do this in case of more advanced functionality is needed
+     * one day.
+     */
     /**
      * @ORM\OneToMany(targetEntity="MessageType", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
@@ -90,11 +94,18 @@ class MessageType
 
     public function __construct($options = array())
     {
-        $this->getMsgid(uniqid());
         $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
+    
+    /*
+     * Automatically generated getters and setters below this
+     */
     /**
      * Get id
      *
@@ -241,5 +252,94 @@ class MessageType
     public function getForwardType()
     {
         return $this->forwardType;
+    }
+
+    /**
+     * Add children
+     *
+     * @param \BisonLab\SakonninBundle\Entity\MessageType $children
+     * @return MessageType
+     */
+    public function addChild(\BisonLab\SakonninBundle\Entity\MessageType $children)
+    {
+        $this->children[] = $children;
+
+        return $this;
+    }
+
+    /**
+     * Remove children
+     *
+     * @param \BisonLab\SakonninBundle\Entity\MessageType $children
+     */
+    public function removeChild(\BisonLab\SakonninBundle\Entity\MessageType $children)
+    {
+        $this->children->removeElement($children);
+    }
+
+    /**
+     * Get children
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Set parent
+     *
+     * @param \BisonLab\SakonninBundle\Entity\MessageType $parent
+     * @return MessageType
+     */
+    public function setParent(\BisonLab\SakonninBundle\Entity\MessageType $parent = null)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \BisonLab\SakonninBundle\Entity\MessageType 
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Add messages
+     *
+     * @param \BisonLab\SakonninBundle\Entity\Message $messages
+     * @return MessageType
+     */
+    public function addMessage(\BisonLab\SakonninBundle\Entity\Message $messages)
+    {
+        $this->messages[] = $messages;
+
+        return $this;
+    }
+
+    /**
+     * Remove messages
+     *
+     * @param \BisonLab\SakonninBundle\Entity\Message $messages
+     */
+    public function removeMessage(\BisonLab\SakonninBundle\Entity\Message $messages)
+    {
+        $this->messages->removeElement($messages);
+    }
+
+    /**
+     * Get messages
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMessages()
+    {
+        return $this->messages;
     }
 }
