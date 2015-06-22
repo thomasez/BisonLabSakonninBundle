@@ -6,7 +6,7 @@
     <table class="records_list">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Group</th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Callbackfunction</th>
@@ -19,8 +19,13 @@
         <tbody>
         {% for entity in entities %}
             <tr>
-                <td><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.name }}</td>
+                {% if entity.parent  is empty %}
+                <td><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                <td>&nbsp;</td>
+                {% else %}
+                <td>&nbsp;</td>
+                <td><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                {% endif %}
                 <td>{{ entity.description }}</td>
                 <td>{{ entity.callbackFunction }}</td>
                 <td>{{ entity.callbackType }}</td>

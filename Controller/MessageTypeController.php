@@ -30,6 +30,20 @@ class MessageTypeController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
+        $parents = $em->createQueryBuilder()
+                  ->select('mt')
+                  ->from('BisonLab\SakonninBundle\Entity\MessageType', 'mt')
+                  ->where('mt.parent is null')
+                  ->orderBy('mt.name', 'ASC')
+                  ->getQuery()
+                  ->getResult();
+
+        $entities = array();
+        foreach ($parents as $p) {
+            $entities[] = $p;
+            if ($p->getChildren()->count() > 0)
+                $entities = array_merge($entities, (array)$p->getChildren()->toArray());
+        }
 
         return array(
             'entities' => $entities,
