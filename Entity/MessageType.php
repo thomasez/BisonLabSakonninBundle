@@ -255,14 +255,15 @@ class MessageType
     }
 
     /**
-     * Add children
+     * Add child
      *
-     * @param \BisonLab\SakonninBundle\Entity\MessageType $children
+     * @param \BisonLab\SakonninBundle\Entity\MessageType $child
      * @return MessageType
      */
-    public function addChild(\BisonLab\SakonninBundle\Entity\MessageType $children)
+    public function addChild(\BisonLab\SakonninBundle\Entity\MessageType $child)
     {
-        $this->children[] = $children;
+        $this->children[] = $child;
+        $child->setParent($child);
 
         return $this;
     }
@@ -270,11 +271,11 @@ class MessageType
     /**
      * Remove children
      *
-     * @param \BisonLab\SakonninBundle\Entity\MessageType $children
+     * @param \BisonLab\SakonninBundle\Entity\MessageType $child
      */
-    public function removeChild(\BisonLab\SakonninBundle\Entity\MessageType $children)
+    public function removeChild(\BisonLab\SakonninBundle\Entity\MessageType $child)
     {
-        $this->children->removeElement($children);
+        $this->children->removeElement($child);
     }
 
     /**
