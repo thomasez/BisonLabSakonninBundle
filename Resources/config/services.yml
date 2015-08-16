@@ -1,0 +1,5 @@
+services:
+    sakonnin.messages:
+        class: BisonLab\SakonninBundle\Service\Messages
+        arguments: ['@service_container' ]
+
