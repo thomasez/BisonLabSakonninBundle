@@ -1,0 +1,51 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Message list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Message_id</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Contenttype</th>
+                <th>Header</th>
+                <th>Body</th>
+                <th>Createdat</th>
+                <th>Updatedat</th>
+                <th>Createdby</th>
+                <th>Updatedby</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.messageid }}</td>
+                <td>{{ entity.from }}</td>
+                <td>{{ entity.to }}</td>
+                <td>{{ entity.subject }}</td>
+                <td>{{ entity.contentType }}</td>
+                <td>{{ entity.header }}</td>
+                <td>{{ entity.body }}</td>
+                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.createdBy }}</td>
+                <td>{{ entity.updatedBy }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('message_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}
