@@ -74,7 +74,7 @@ class Message
      *
      * @ORM\Column(name="content_type", type="text", nullable=true)
      */
-    private $contentType;
+    private $content_type;
 
     /**
      * @var string
@@ -104,6 +104,28 @@ class Message
     public function __construct($options = array())
     {
         $this->setMessageId(uniqid());
+        if (isset($options['in_reply_to']) ) {
+            $this->setXX($options['in_reply_to']);
+        }
+        if (isset($options['from']) ) {
+            $this->setFrom($options['from']);
+        }
+        if (isset($options['to']) ) {
+            $this->setTo($options['to']);
+        }
+        if (isset($options['subject']) ) {
+            $this->setSubject($options['subject']);
+        }
+        if (isset($options['content_type']) ) {
+            $this->setContentType($options['content_type']);
+        }
+        if (isset($options['header']) ) {
+            $this->setHeader($options['header']);
+        }
+        if (isset($options['body']) ) {
+            $this->setBody($options['body']);
+        }
+
         $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
         $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
 
