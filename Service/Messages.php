@@ -41,8 +41,9 @@ class Messages
             $message_context->setExternalId($context['external_id']);
             $em->persist($message_context);
         }
+dump($message);
         $em->persist($message);
-        $this->flush();
+        $em->flush();
 
         return ($message);
     }

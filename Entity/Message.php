@@ -51,14 +51,14 @@ class Message
     /**
      * @var string
      *
-     * @ORM\Column(name="from", type="string", length=255, nullable=true)
+     * @ORM\Column(name="`from`", type="string", length=255, nullable=true)
      */
     private $from;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="to", type="string", length=255, nullable=true)
+     * @ORM\Column(name="`to`", type="string", length=255, nullable=true)
      */
     private $to;
 
@@ -251,7 +251,7 @@ class Message
      */
     public function setContentType($contentType)
     {
-        $this->contentType = $contentType;
+        $this->content_type = $contentType;
 
         return $this;
     }
@@ -263,7 +263,7 @@ class Message
      */
     public function getContentType()
     {
-        return $this->contentType;
+        return $this->content_type;
     }
 
     /**
