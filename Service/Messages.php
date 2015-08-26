@@ -29,6 +29,14 @@ class Messages
         $em = $this->_getManager();
         $message = new Message($data);
 
+        $em = $this->_getManager();
+        if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+dump($message_type);
+                $message->setMessageType($message_type);            
+        } else {
+            throw new \InvalidArgumentException("No message type found or set.");
+        }
+
         if (isset($context)
             && isset($context['system'])
             && isset($context['object_name'])
@@ -41,7 +49,9 @@ class Messages
             $message_context->setExternalId($context['external_id']);
             $em->persist($message_context);
         }
-dump($message);
+
+        // Gotta find and a message type.
+
         $em->persist($message);
         $em->flush();
 

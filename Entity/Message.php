@@ -92,7 +92,7 @@ class Message
 
     /**
      * @ORM\ManyToOne(targetEntity="MessageType", inversedBy="messages")
-     * @ORM\JoinColumn(name="message_type_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="message_type_id", referencedColumnName="id", nullable=false)
      **/
     private $message_type;
 
@@ -124,6 +124,9 @@ class Message
         }
         if (isset($options['body']) ) {
             $this->setBody($options['body']);
+        }
+        if (isset($options['message_type']) && $options['message_type'] instanceof \BisonLab\SakonninBundle\Entity\MessageType ) {
+            $this->setMessageType($options['message_type']);
         }
 
         $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
