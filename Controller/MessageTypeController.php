@@ -61,6 +61,10 @@ class MessageTypeController extends Controller
         $entity = new MessageType();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
+        $data = $form->getData();
+        if (!$data->getParent() && !isset($request->request->get($form->getName())['create_group'])) {
+            throw new \InvalidArgumentException('You must either check "This is a new group" to verify that you want a new group or choose a group in the drop down.');
+        }
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -90,6 +94,7 @@ class MessageTypeController extends Controller
             'method' => 'POST',
         ));
 
+        $form->add('create_group', 'checkbox', array('label' => "This is a new group.", 'mapped' => false, 'required' => false));
         $form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;

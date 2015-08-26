@@ -25,8 +25,8 @@ class MessageTypeType extends AbstractType
             ->add('parent', 'entity',
                 array(
                     'label' => 'Group',
-                    'placeholder' => 'Choose a Group (Or create one if not)',
-                    'required' => true,
+                    'placeholder' => 'Choose a Group',
+                    'required' => false,
                     'class' => 'BisonLabSakonninBundle:MessageType',
                     'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('mt')
