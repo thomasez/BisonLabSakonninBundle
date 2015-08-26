@@ -404,23 +404,24 @@ class Message
     /**
      * Add contexts
      *
-     * @param NTE\IpamBundle\Entity\NumberContext $contexts
-     * @return Number
+     * @param BisonLab\SakonninBundle\Entity\MessageContext $context;
+     * @return Message
      */
-    public function addContext(\NTE\IpamBundle\Entity\NumberContext $contexts)
+    public function addContext(\BisonLab\SakonninBundle\Entity\MessageContext $context)
     {
-        $this->contexts[] = $contexts;
+        $this->contexts[] = $context;
+        $context->setOwner($this);
         return $this;
     }
 
     /**
-     * Remove contexts
+     * Remove context
      *
-     * @param NTE\IpamBundle\Entity\NumberContext $contexts
+     * @param BisonLab\SakonninBundle\Entity\MessageContext $context;
      */
-    public function removeContext(\NTE\IpamBundle\Entity\NumberContext $contexts)
+    public function removeContext(\BisonLab\SakonninBundle\Entity\MessageContext $context)
     {
-        $this->contexts->removeElement($contexts);
+        $this->contexts->removeElement($context);
     }
 
 }
