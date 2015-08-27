@@ -3,39 +3,27 @@
 {% block body -%}
     <h1>Message list</h1>
 
-    <table class="records_list">
+    <table class="records_list" id="sortable_table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Message_id</th>
+                <th>Subject</th>
                 <th>From</th>
                 <th>To</th>
-                <th>Subject</th>
-                <th>Contenttype</th>
-                <th>Header</th>
-                <th>Body</th>
+                <th>Message Id</th>
+                <th>Message Type</th>
                 <th>Createdat</th>
-                <th>Updatedat</th>
-                <th>Createdby</th>
-                <th>Updatedby</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
             <tr>
-                <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.messageid }}</td>
+                <td>{{ entity.subject }}</td>
                 <td>{{ entity.from }}</td>
                 <td>{{ entity.to }}</td>
-                <td>{{ entity.subject }}</td>
-                <td>{{ entity.contenttype }}</td>
-                <td>{{ entity.header }}</td>
-                <td>{{ entity.body }}</td>
+                <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.messageid }}</a></td>
+                <td>{{ entity.messagetype }}</td>
                 <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ entity.createdBy }}</td>
-                <td>{{ entity.updatedBy }}</td>
                 <td>
                 <ul>
                     <li>
