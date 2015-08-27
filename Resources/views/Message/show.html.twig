@@ -53,6 +53,15 @@
                 <th>Updatedby</th>
                 <td>{{ entity.updatedBy }}</td>
             </tr>
+            <tr>
+                <th>Sources</th>
+                <td>
+        {% for context in entity.contexts %}
+        <li><a href="{{ context.url }}">{{ context.label }}</a></li>
+        {% endfor %}
+                </td>
+            </tr>
+
         </tbody>
     </table>
 
