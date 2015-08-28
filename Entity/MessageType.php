@@ -71,6 +71,14 @@ class MessageType
      */
     private $forwardType;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="expunge_days", type="integer")
+     * @Gedmo\Versioned
+     */
+    private $expunge_days = 0;
+
     /* This is a tree structure whild in teh UI it's just to show a group.
      * I've chosen to do this in case of more advanced functionality is needed
      * one day.
@@ -342,5 +350,28 @@ class MessageType
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    /**
+     * Set expunge_days
+     *
+     * @param integer $expungeDays
+     * @return MessageType
+     */
+    public function setExpungeDays($expungeDays)
+    {
+        $this->expunge_days = $expungeDays;
+
+        return $this;
+    }
+
+    /**
+     * Get expunge_days
+     *
+     * @return integer 
+     */
+    public function getExpungeDays()
+    {
+        return $this->expunge_days;
     }
 }

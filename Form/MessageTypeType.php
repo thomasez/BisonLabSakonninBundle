@@ -22,6 +22,7 @@ class MessageTypeType extends AbstractType
             ->add('callbackType')
             ->add('forwardFunction')
             ->add('forwardType')
+            ->add('expunge_days', 'number', array('label' => "Expunge, in days. 0 means never delete messages."))
             ->add('parent', 'entity',
                 array(
                     'label' => 'Group',
