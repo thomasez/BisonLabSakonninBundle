@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BisonLab\SakonninBundle\Entity\MessageContext
  *
- * @ORM\Table(name="MessageContext", uniqueConstraints={@ORM\UniqueConstraint(name="message_syst_obj_ext_idx", columns={"system", "object_name", "external_id"})})
+ * @ORM\Table(name="MessageContext")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageContextRepository")
  * @Gedmo\Loggable
  */
