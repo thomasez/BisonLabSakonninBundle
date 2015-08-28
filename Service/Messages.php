@@ -31,7 +31,6 @@ class Messages
 
         $em = $this->_getManager();
         if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
-dump($message_type);
                 $message->setMessageType($message_type);            
         } else {
             throw new \InvalidArgumentException("No message type found or set.");
