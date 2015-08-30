@@ -56,9 +56,13 @@
             <tr>
                 <th>Sources</th>
                 <td>
-        {% for context in entity.contexts %}
-        <li><a href="{{ context.url }}">{{ context.label }}</a></li>
-        {% endfor %}
+                {% for context in entity.contexts %}
+                    {% if context.url matches '{^http}' %}
+                    <a href="{{ context.url }}">{{ context.system }} - {{ context.objectname }}</a><br />
+                    {% else %}
+                    <a href="{{app.request.baseurl}}{{ context.url }}">{{ context.system }} - {{ context.objectname }}</a><br />
+                    {% endif %}
+                {% endfor %}
                 </td>
             </tr>
 

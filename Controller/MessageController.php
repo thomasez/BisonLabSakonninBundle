@@ -7,14 +7,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
+use BisonLab\SakonninBundle\Entity\MessageType;
+
 
 /**
  * Message controller.
  *
- * @Route("/message")
+ * @Route("/{access}/message", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class MessageController extends Controller
+class MessageController extends CommonController
 {
 
     /**
@@ -24,7 +31,7 @@ class MessageController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request, $access)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -42,7 +49,7 @@ class MessageController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction(Request $request, $access, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -56,4 +63,27 @@ class MessageController extends Controller
             'entity'      => $entity,
         );
     }
+
+    /**
+     * Lists all Messages with that context.
+     *
+     * @Route("/search_context/system/{system}/object_name/{object_name}/external_id/{external_id}", name="message_context_search")
+     * @Method("GET")
+     * @Template()
+     */
+    public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
+    {
+        // Not yet.
+        $context_conf = $this->container->getParameter('app.contexts');
+        $conf = $context_conf['BisonLabSakonninBundle']['Message'];
+        $conf['entity'] = "BisonLabSakonninBundle:Message";
+        $conf['show_template'] = "BisonLabSakonninBundle:Message:show.html.twig";
+        $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
+dump($conf);
+error_log("$access, $system, $object_name, $external_id");
+        return $this->contextGetAction(
+                    $request, $conf, $access, $system, $object_name, $external_id);
+
+    }
+
 }
