@@ -55,7 +55,6 @@ class MessageRepository extends EntityRepository
         foreach($qb2->getQuery()->getResult() as $mc) {
             $messages[] = $mc->getMessage();
         }
-dump($messages);
         return $messages;
 
     }

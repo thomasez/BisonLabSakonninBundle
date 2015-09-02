@@ -80,8 +80,6 @@ class MessageController extends CommonController
         $conf['entity'] = "BisonLabSakonninBundle:Message";
         $conf['show_template'] = "BisonLabSakonninBundle:Message:show.html.twig";
         $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
-dump($conf);
-error_log("$access, $system, $object_name, $external_id");
         return $this->contextGetAction(
                     $request, $conf, $access, $system, $object_name, $external_id);
 
