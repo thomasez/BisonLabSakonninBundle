@@ -3,12 +3,15 @@
 namespace BisonLab\SakonninBundle\Service;
 
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Doctrine\ORM\EntityRepository;
+
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageContext;
+use BisonLab\SakonninBundle\Controller\MessageController;
+use BisonLab\SakonninBundle\Form\MessageType as MessageForm;
 
 /**
  * Messages service.
@@ -41,14 +44,13 @@ class Messages
             && isset($context_data['object_name'])
             && isset($context_data['external_id'])) {
 
-            $message_context = new MessageContext();
+            $message_context = new MessageContext($context_data);
             $message->addContext($message_context);
-            $message_context->setSystem($context_data['system']);
-            $message_context->setObjectName($context_data['object_name']);
-            $message_context->setExternalId($context_data['external_id']);
             $em->persist($message_context);
         }
 
+        if (!$message->getFrom())
+            $message->setFrom($this->_getFromFromUser());
         // Gotta find and a message type.
 
         $em->persist($message);
@@ -56,6 +58,58 @@ class Messages
 
         return ($message);
     }
+
+    public function getCreateForm($options = array())
+    {
+        $em = $this->_getManager();
+        $message = null;
+        $message_context = null;
+        if (isset($options['message']) && $options['message'] instanceof Message) {
+             $message =  $options['message'];
+        } elseif (isset($options['message_data']) && $data = $options['message_data']) {
+            if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+                $data['message_type'] = $message_type;
+            }
+            $message = new Message($data);
+        } else {
+            $message = new Message();
+        }
+
+        if (isset($options['message_context'])) {
+            $message_context = new MessageContext($options['message_context']);
+            $message->addContext($message_context);
+        }
+
+        if (!$message->getFrom())
+            $message->setFrom($this->_getFromFromUser());
+
+        $c = new MessageController();
+        $c->setContainer($this->container);
+
+        // $form = $c->createForm(new \BisonLab\SakonninBundle\Form\MessageType(), $entity, array(
+        $form = $c->createForm(new MessageForm(), $message);
+
+        $form->add('submit', 'submit', array('label' => 'Send'));
+
+        if (isset($options['create_view'])) 
+            return $form->createView();
+        else
+            return $form;
+    }
+
+    /* Jadajada, I just had to use that function name..*/
+    private function _getFromFromUser() {
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        if ($user && method_exists($user, 'getEmail') && !empty($user->getEmail()))
+            return $user->getEmail();
+        elseif ($user && method_exists($user, 'getName'))
+            return $user->getName();
+        elseif ($user && method_exists($user, 'getUserName'))
+            return $user->getUserName();
+        else
+            return '';
+    }
+
 
     private function _getManager()
     {

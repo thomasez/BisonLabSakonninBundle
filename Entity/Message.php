@@ -44,7 +44,7 @@ class Message
     protected $in_reply_to;
 
     /**
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="in_reply_to", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $replies;
 

@@ -49,6 +49,7 @@ class MessageTypeController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new MessageType entity.
      *

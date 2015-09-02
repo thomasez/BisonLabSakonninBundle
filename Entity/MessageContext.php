@@ -28,6 +28,12 @@ class MessageContext extends ContextBase
 
         if (isset($options['message'])) 
             $this->setMessage($options['message']);
+        if (isset($options['system'])) 
+            $this->setSystem($options['system']);
+        if (isset($options['object_name'])) 
+            $this->setObjectName($options['object_name']);
+        if (isset($options['external_id'])) 
+            $this->setExternalId($options['external_id']);
 
         parent::__construct($options);
 
