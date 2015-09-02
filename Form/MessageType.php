@@ -35,10 +35,10 @@ class MessageType extends AbstractType
         */
         
         $builder
-            ->add('subject')
-            ->add('from')
-            ->add('to')
-            ->add('body')
+            ->add('subject', 'text', array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('from', 'text', array('label' => "From:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('to', 'text', array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
+            ->add('body', 'textarea', array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
         $type_choices = array();
         if (!$options['data']->getMessageType()) {

@@ -86,9 +86,7 @@ class Messages
         $c = new MessageController();
         $c->setContainer($this->container);
 
-        // $form = $c->createForm(new \BisonLab\SakonninBundle\Form\MessageType(), $entity, array(
         $form = $c->createForm(new MessageForm(), $message);
-
         $form->add('submit', 'submit', array('label' => 'Send'));
 
         if (isset($options['create_view'])) 

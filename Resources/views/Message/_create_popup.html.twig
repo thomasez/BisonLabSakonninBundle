@@ -1,23 +1,47 @@
 <script type="text/javascript">
 
-function createMessage() {
-    $( "#createmessage" ).dialog("open");
-    return false;
-}
 
 jQuery(document).ready(function() {
     $( "#createmessage" ).dialog({
       autoOpen: false,
       height: 300,
-      width: 350,
+      width: 400,
       modal: true
     });
 });
 
+function createMessage() {
+    $( "#createmessage" ).dialog("open");
+    return false;
+}
+
+function submitMessageForm() {
+
+    formdata = $( "#createmessageform" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
+        data: $( "#createmessageform" ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            alert("Message sent, thank you.");
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 </script>
 
 <div id="createmessage" title="Create and send a Message">
-<form method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}">
+{% set mform = sakonnin.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true}) %}
+<form id="createmessageform" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm();">
 {% if mconfig.message_type is defined %}
 <input id="message_type" type="hidden" name="message_type" value="{{mconfig.message_type}}">
 {% endif %}
@@ -26,7 +50,7 @@ jQuery(document).ready(function() {
 <input id="object_name" type="hidden" name="message_context[object_name]" value="{{mconfig.context.object_name}}">
 <input id="external_id" type="hidden" name="message_context[external_id]" value="{{mconfig.context.external_id}}">
 {% endif %}
-{{ form_widget(sakonnin.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true})) }}
+{{ form_widget(mform)}} 
 </div>
 </form>
 
