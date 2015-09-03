@@ -79,7 +79,7 @@ class MessageType
      */
     private $expunge_days = 0;
 
-    /* This is a tree structure whild in teh UI it's just to show a group.
+    /* This is a tree structure while in the UI it's just to show a group.
      * I've chosen to do this in case of more advanced functionality is needed
      * one day.
      */
