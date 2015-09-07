@@ -50,10 +50,10 @@ class MessageType
     /**
      * @var string
      *
-     * @ORM\Column(name="callback_type", type="string", length=255, nullable=true)
+     * @ORM\Column(name="callback_attributes", type="json_array", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $callbackType;
+    private $callbackAttributes;
 
     /**
      * @var string
@@ -66,10 +66,10 @@ class MessageType
     /**
      * @var string
      *
-     * @ORM\Column(name="forward_type", type="string", length=255, nullable=true)
+     * @ORM\Column(name="forward_attributes", type="json_array", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $forwardType;
+    private $forwardAttributes;
 
     /**
      * @var int
@@ -194,26 +194,26 @@ class MessageType
     }
 
     /**
-     * Set callbackType
+     * Set callbackAttributes
      *
-     * @param string $callbackType
+     * @param string $callbackAttributes
      * @return MessageType
      */
-    public function setCallbackType($callbackType)
+    public function setCallbackAttributes($callbackAttributes)
     {
-        $this->callbackType = $callbackType;
+        $this->callbackAttributes = $callbackAttributes;
 
         return $this;
     }
 
     /**
-     * Get callbackType
+     * Get callbackAttributes
      *
      * @return string 
      */
-    public function getCallbackType()
+    public function getCallbackAttributes()
     {
-        return $this->callbackType;
+        return $this->callbackAttributes;
     }
 
     /**
@@ -240,26 +240,26 @@ class MessageType
     }
 
     /**
-     * Set forwardType
+     * Set forwardAttributes
      *
-     * @param string $forwardType
+     * @param string $forwardAttributes
      * @return MessageType
      */
-    public function setForwardType($forwardType)
+    public function setForwardAttributes($forwardAttributes)
     {
-        $this->forwardType = $forwardType;
+        $this->forwardAttributes = $forwardAttributes;
 
         return $this;
     }
 
     /**
-     * Get forwardType
+     * Get forwardAttributes
      *
      * @return string 
      */
-    public function getForwardType()
+    public function getForwardAttributes()
     {
-        return $this->forwardType;
+        return $this->forwardAttributes;
     }
 
     /**
