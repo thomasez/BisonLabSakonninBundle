@@ -19,19 +19,19 @@
             </tr>
             <tr>
                 <th>Callbackfunction</th>
-                <td>{{ entity.callbackFunction }}</td>
+                <td>{{ entity.callbackFunction | prettyprint }}</td>
             </tr>
             <tr>
-                <th>Callbacktype</th>
-                <td>{{ entity.callbackType }}</td>
+                <th>Callback attributes</th>
+                <td>{{ entity.callbackAttributes | prettyprint }}</td>
             </tr>
             <tr>
                 <th>Forwardfunction</th>
                 <td>{{ entity.forwardFunction }}</td>
             </tr>
             <tr>
-                <th>Forwardtype</th>
-                <td>{{ entity.forwardType }}</td>
+                <th>Forward attributes</th>
+                <td>{{ entity.forwardAttributes }}</td>
             </tr>
             <tr>
                 <th>Expungde, in days.<br>0 means never delete.</th>

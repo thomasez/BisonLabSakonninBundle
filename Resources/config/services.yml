@@ -3,6 +3,12 @@ services:
         class: BisonLab\SakonninBundle\Service\Messages
         arguments: ['@service_container' ]
 
+    sakonnin.functions:
+        class: BisonLab\SakonninBundle\Service\Functions
+        arguments: 
+            container: '@service_container'
+            function_classes: %sakonnin.function_factories%
+
     sakonnin.listener:
         class: BisonLab\SakonninBundle\EventListener\ChangeTracker
         calls: 

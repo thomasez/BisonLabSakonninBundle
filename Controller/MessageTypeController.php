@@ -94,6 +94,7 @@ class MessageTypeController extends Controller
             'action' => $this->generateUrl('messagetype_create'),
             'method' => 'POST',
         ));
+        $this->_addFunctionsToForm($form);
 
         $form->add('create_group', 'checkbox', array('label' => "This is a new group.", 'mapped' => false, 'required' => false));
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -184,11 +185,13 @@ class MessageTypeController extends Controller
             'action' => $this->generateUrl('messagetype_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
+        $this->_addFunctionsToForm($form);
 
         $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
+
     /**
      * Edits an existing MessageType entity.
      *
@@ -264,4 +267,16 @@ class MessageTypeController extends Controller
             ->getForm()
         ;
     }
+
+    private function _addFunctionsToForm(&$form)
+    {
+        $sakonnin = $this->get('sakonnin.functions');
+
+        $form->add('callback_function', 'choice', array('choices' => $sakonnin->getCallbacksAsChoices()));
+        $form->add('forward_function', 'choice', array('choices' => $sakonnin->getForwardsAsChoices()));
+
+        return $form;
+
+    }
+
 }
