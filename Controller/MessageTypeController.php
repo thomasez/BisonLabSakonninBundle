@@ -273,7 +273,27 @@ class MessageTypeController extends Controller
         $sakonnin = $this->get('sakonnin.functions');
 
         $form->add('callback_function', 'choice', array('choices' => $sakonnin->getCallbacksAsChoices()));
+        $form->add('callbackAttributes', 'collection',
+                array(
+                    'type'=>'text',
+                    'prototype'=>true,
+                    'prototype_name'=>'forwardAttributes',
+                    'allow_add'=>true,
+                    'allow_delete'=>true,
+                    'options'=>array(
+                    )
+                ));
         $form->add('forward_function', 'choice', array('choices' => $sakonnin->getForwardsAsChoices()));
+        $form->add('forwardAttributes', 'collection',
+                array(
+                    'type'=>'text',
+                    'prototype'=>true,
+                    'prototype_name'=>'forwardAttributes',
+                    'allow_add'=>true,
+                    'allow_delete'=>true,
+                    'options'=>array(
+                    )
+                ));
 
         return $form;
 

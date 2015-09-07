@@ -18,28 +18,6 @@ class MessageTypeType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('callbackFunction')
-            ->add('callbackAttributes', 'collection',
-                array(
-                    'type'=>'text',
-                    'prototype'=>true,
-                    'prototype_name'=>'forwardAttributes',
-                    'allow_add'=>true,
-                    'allow_delete'=>true,
-                    'options'=>array(
-                    )
-                ))
-            ->add('forwardFunction')
-            ->add('forwardAttributes', 'collection',
-                array(
-                    'type'=>'text',
-                    'prototype'=>true,
-                    'prototype_name'=>'forwardAttributes',
-                    'allow_add'=>true,
-                    'allow_delete'=>true,
-                    'options'=>array(
-                    )
-                ))
             ->add('expunge_days', 'number', array('label' => "Expunge, in days. 0 means never delete messages."))
             ->add('parent', 'entity',
                 array(
