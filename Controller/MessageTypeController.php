@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Form\MessageTypeType;
+use BisonLab\SakonninBundle\Form\FunctionAttributeType;
 
 /**
  * MessageType controller.
@@ -275,9 +276,9 @@ class MessageTypeController extends Controller
         $form->add('callback_function', 'choice', array('choices' => $sakonnin->getCallbacksAsChoices()));
         $form->add('callbackAttributes', 'collection',
                 array(
-                    'type'=>'text',
+                    'type'=>'function_attribute',
                     'prototype'=>true,
-                    'prototype_name'=>'forwardAttributes',
+                    'prototype_name'=>'callbackAttributes',
                     'allow_add'=>true,
                     'allow_delete'=>true,
                     'options'=>array(
@@ -286,7 +287,7 @@ class MessageTypeController extends Controller
         $form->add('forward_function', 'choice', array('choices' => $sakonnin->getForwardsAsChoices()));
         $form->add('forwardAttributes', 'collection',
                 array(
-                    'type'=>'text',
+                    'type'=> new FunctionAttributeType(),
                     'prototype'=>true,
                     'prototype_name'=>'forwardAttributes',
                     'allow_add'=>true,

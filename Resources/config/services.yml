@@ -16,3 +16,10 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postFlush  }
             - { name: doctrine.event_listener, event: onFlush  }
+
+    sakonnin.form.type.function_attribute:
+        class: BisonLab\SakonninBundle\Form\FunctionAttributeType
+        tags:
+            - { name: form.type, alias: function_attribute }
+        
+    

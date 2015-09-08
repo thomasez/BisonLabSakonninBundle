@@ -53,7 +53,7 @@ class MessageType
      * @ORM\Column(name="callback_attributes", type="json_array", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $callbackAttributes;
+    private $callbackAttributes = array();
 
     /**
      * @var string
@@ -69,7 +69,7 @@ class MessageType
      * @ORM\Column(name="forward_attributes", type="json_array", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $forwardAttributes;
+    private $forwardAttributes = array();
 
     /**
      * @var int
