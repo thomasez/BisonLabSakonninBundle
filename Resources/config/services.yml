@@ -8,11 +8,3 @@ services:
         arguments: 
             container: '@service_container'
             function_classes: %sakonnin.function_factories%
-
-    sakonnin.listener:
-        class: BisonLab\SakonninBundle\EventListener\ChangeTracker
-        calls: 
-            - [ setContainer, ['@service_container'] ]
-        tags:
-            - { name: doctrine.event_listener, event: postFlush  }
-            - { name: doctrine.event_listener, event: onFlush  }
