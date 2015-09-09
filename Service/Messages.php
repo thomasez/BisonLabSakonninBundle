@@ -27,36 +27,46 @@ class Messages
         $this->container         = $container;
     }
 
-    public function postMessage($data, $context_data)
+    public function postMessage($data, $context_data = array())
     {
         $em = $this->_getManager();
-        $message = new Message($data);
-
-        $em = $this->_getManager();
-        if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
-                $message->setMessageType($message_type);            
+        $message = null;
+        if ($data instanceof Message) {
+            $message = $data;
         } else {
-            throw new \InvalidArgumentException("No message type found or set.");
-        }
+            $message = new Message($data);
 
-        if (isset($context_data)
-            && isset($context_data['system'])
-            && isset($context_data['object_name'])
-            && isset($context_data['external_id'])) {
+            $em = $this->_getManager();
+            if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+                    $message->setMessageType($message_type);            
+            } else {
+                throw new \InvalidArgumentException("No message type found or set.");
+            }
 
-            $message_context = new MessageContext($context_data);
-            $message->addContext($message_context);
-            $em->persist($message_context);
+            if (isset($context_data)
+                && isset($context_data['system'])
+                && isset($context_data['object_name'])
+                && isset($context_data['external_id'])) {
+
+                $message_context = new MessageContext($context_data);
+                $message->addContext($message_context);
+                $em->persist($message_context);
+            }
         }
 
         if (!$message->getFrom())
             $message->setFrom($this->_getFromFromUser());
-        // Gotta find and a message type.
 
         $em->persist($message);
         $em->flush();
 
-        return ($message);
+        // I planned to use an event listener to dispatch callback/forward
+        // functions, but why? This postMessage functions shall be the only
+        // entry point for creating messages, so why should I bother?
+        $dispatcher = $this->container->get('sakonnin.functions');
+        $dispatcher->dispatchMessageFunctions($message);
+
+        return $message;
     }
 
     public function getCreateForm($options = array())

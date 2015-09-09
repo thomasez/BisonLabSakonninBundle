@@ -99,10 +99,9 @@ class MessageController extends CommonController
         $this->handleForm($form, $request, $access);
 
         if ($form->isValid()) {
+            // Ok, it's valid. We'll send this to postMessage then.
             $entity = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+            $sm->postMessage($entity);
 
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, $entity);

@@ -1,6 +1,7 @@
 <?php
 
 namespace BisonLab\SakonninBundle\Service;
+use BisonLab\SakonninBundle\Entity\Message;
 
 /**
  * Functions service. This handles the callback and forward functions, both
@@ -49,6 +50,51 @@ class Functions
             $choices[$p] = $c['description'];
         }
         return $choices;
+    }
+    
+    /*  The issue not really decided yet is "When to fire forward functions and
+      * when to fire callbacks?". One thing we do know, is that a new message
+      * is forwarded and a reply triggers a callback.  
+      * But what about a reply on a reply?
+     */
+    public function dispatchMessageFunctions(Message $message) {
+        $messagetype = $message->getMessageType();
+        $function = null;
+        $attributes = null;
+        $config = null;
+        if ($message->getInReplyTo()) {
+            $function = $messagetype->getCallbackFunction();
+            if (!$function || !isset($this->callback_functions[$function])) {
+                // Nutti'n to do. (Should I throw exception if they tried to
+                // call a non-existant function? It's probably good to do,
+                // security wise. But what to do with the info?
+                return true;
+            }
+            $config = $this->callback_functions[$function];
+            $attributes = $messagetype->getCallbackAttributes();
+        } else {
+            $function = $messagetype->getForwardFunction();
+            if (!$function || !isset($this->forward_functions[$function])) {
+                // Nutti'n to do. (Should I throw exception if they tried to
+                // call a non-existant function? It's probably good to do,
+                // security wise. But what to do with the info?
+                return true;
+            }
+            $config = $this->forward_functions[$function];
+            $attributes = $messagetype->getForwardAttributes();
+        }
+
+        $class = new $config['class']($this->container);
+        // Add more if you need to.
+        $options = array(
+            'message'    => $message,
+            'attributes' => $attributes,
+            'function'   => $function,
+            'config'     => $config,
+        );
+
+        return $class->execute($options);
+        
     }
     
     private function _getManager()

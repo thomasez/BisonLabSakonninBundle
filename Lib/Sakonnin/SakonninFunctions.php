@@ -13,15 +13,17 @@ class SakonninFunctions implements SakonninFunctionsInterface
     protected $container;
 
     public $callback_functions = array(
+        // Gawd I'm annoyed by this, MailForward or ForwardMail? What's the
+        // most correct?
         'mailforward' => array(
-            'class' => 'Local\InventoryBundle\Lib\Reports\AllServices',
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailForward',
             'description' => "Forward to mail adress(es)"
         )
     );
 
     public $forward_functions = array(
         'mailforward' => array(
-            'class' => 'Local\InventoryBundle\Lib\Reports\AllServices',
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailForward',
             'description' => "Forward to mail adress(es)"
         )
     );
