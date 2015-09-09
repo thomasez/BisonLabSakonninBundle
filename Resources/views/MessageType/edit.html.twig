@@ -121,8 +121,8 @@ function addTagFormDeleteLink($tagFormLi) {
     </ul>
 </div>
 
-    {{ form_rest(edit_form) }}
-    {{ form_end(edit_form) }}
+    {{ form_row(edit_form._token) }}
+    {{ form_row(edit_form.submit) }}
 
         <ul class="record_actions">
     <li>
