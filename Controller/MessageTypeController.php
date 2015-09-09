@@ -217,7 +217,7 @@ class MessageTypeController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('messagetype_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('messagetype_show', array('id' => $id)));
         }
 
         return array(
@@ -226,6 +226,7 @@ class MessageTypeController extends Controller
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a MessageType entity.
      *
@@ -273,23 +274,33 @@ class MessageTypeController extends Controller
     {
         $sakonnin = $this->get('sakonnin.functions');
 
-        $form->add('callback_function', 'choice', array('choices' => $sakonnin->getCallbacksAsChoices()));
+        $form->add('callback_function', 'choice', array(
+                'required' => false, 
+                'placeholder' => "None",
+                'choices' => $sakonnin->getCallbacksAsChoices()));
         $form->add('callbackAttributes', 'collection',
                 array(
-                    'type'=>'function_attribute',
+                    'required' => false, 
+                    'type'=>'text',
                     'prototype'=>true,
-                    'prototype_name'=>'callbackAttributes',
+                    // 'prototype_name'=>'callbackAttributes',
                     'allow_add'=>true,
                     'allow_delete'=>true,
                     'options'=>array(
                     )
                 ));
-        $form->add('forward_function', 'choice', array('choices' => $sakonnin->getForwardsAsChoices()));
+        $form->add('forward_function', 'choice', array(
+                'required' => false, 
+                'placeholder' => "None",
+                'choices' => $sakonnin->getForwardsAsChoices()));
         $form->add('forwardAttributes', 'collection',
                 array(
-                    'type'=> new FunctionAttributeType(),
+                    'required' => false, 
+                    'type'=>'text',
+                    // NO need for key/value yet at least.
+                    // 'type'=> new FunctionAttributeType(),
                     'prototype'=>true,
-                    'prototype_name'=>'forwardAttributes',
+                    // 'prototype_name'=>'forwardAttributes',
                     'allow_add'=>true,
                     'allow_delete'=>true,
                     'options'=>array(

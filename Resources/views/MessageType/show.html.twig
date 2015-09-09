@@ -19,11 +19,11 @@
             </tr>
             <tr>
                 <th>Callbackfunction</th>
-                <td>{{ entity.callbackFunction | prettyprint }}</td>
+                <td>{{ entity.callbackFunction  }}</td>
             </tr>
             <tr>
                 <th>Callback attributes</th>
-                <td>{{ entity.callbackAttributes | prettyprint }}</td>
+                <td>{% for attr in entity.callbackAttributes %}{{ attr }}<br />{%endfor%}</td>
             </tr>
             <tr>
                 <th>Forwardfunction</th>
@@ -31,7 +31,7 @@
             </tr>
             <tr>
                 <th>Forward attributes</th>
-                <td>{{ entity.forwardAttributes }}</td>
+                <td>{% for attr in entity.forwardAttributes %}{{ attr }}<br />{%endfor %}</td>
             </tr>
             <tr>
                 <th>Expungde, in days.<br>0 means never delete.</th>
