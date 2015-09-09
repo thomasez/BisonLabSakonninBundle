@@ -56,7 +56,7 @@ class MessageTypeController extends Controller
      *
      * @Route("/", name="messagetype_create")
      * @Method("POST")
-     * @Template("BisonLabSakonninBundle:MessageType:new.html.twig")
+     * @Template("BisonLabSakonninBundle:MessageType:edit.html.twig")
      */
     public function createAction(Request $request)
     {
@@ -108,7 +108,7 @@ class MessageTypeController extends Controller
      *
      * @Route("/new", name="messagetype_new")
      * @Method("GET")
-     * @Template()
+     * @Template("BisonLabSakonninBundle:MessageType:edit.html.twig")
      */
     public function newAction()
     {
@@ -117,7 +117,7 @@ class MessageTypeController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'edit_form'   => $form->createView(),
         );
     }
 
