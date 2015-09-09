@@ -40,4 +40,5 @@
 *~
 # sed has given me these on some FreeBSD systems:
 *-e
+*.swp
 
