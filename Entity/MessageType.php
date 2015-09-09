@@ -178,6 +178,10 @@ class MessageType
      */
     public function setCallbackFunction($callbackFunction)
     {
+        // If it's the same as any thing in the chain, drop it.
+        if ($callbackFunction == $this->getCallbackFunction()) {
+            return $this;
+        }
         $this->callbackFunction = $callbackFunction;
 
         return $this;
@@ -190,7 +194,11 @@ class MessageType
      */
     public function getCallbackFunction()
     {
-        return $this->callbackFunction;
+        if ($this->callbackFunction)
+            return $this->callbackFunction;
+        if ($this->getParent())
+            return $this->getParent()->getCallbackFunction();
+        return null;
     }
 
     /**
@@ -201,6 +209,10 @@ class MessageType
      */
     public function setCallbackAttributes($callbackAttributes)
     {
+        // If it's the same as any thing in the chain, drop it.
+        if ($callbackAttributes == $this->getCallbackAttributes()) {
+            return $this;
+        }
         $this->callbackAttributes = $callbackAttributes;
 
         return $this;
@@ -210,10 +222,16 @@ class MessageType
      * Get callbackAttributes
      *
      * @return string 
+     * I am not gonna merge the attributes with the parents attributes  here.
+     * That will just be too messy.
      */
     public function getCallbackAttributes()
     {
-        return $this->callbackAttributes;
+        if ($this->callbackAttributes)
+            return $this->callbackAttributes;
+        if ($this->getParent())
+            return $this->getParent()->getCallbackAttributes();
+        return null;
     }
 
     /**
@@ -224,6 +242,10 @@ class MessageType
      */
     public function setForwardFunction($forwardFunction)
     {
+        // If it's the same as any thing in the chain, drop it.
+        if ($forwardFunction == $this->getForwardFunction()) {
+            return $this;
+        }
         $this->forwardFunction = $forwardFunction;
 
         return $this;
@@ -236,7 +258,11 @@ class MessageType
      */
     public function getForwardFunction()
     {
-        return $this->forwardFunction;
+        if ($this->forwardFunction)
+            return $this->forwardFunction;
+        if ($this->getParent())
+            return $this->getParent()->getForwardFunction();
+        return null;
     }
 
     /**
@@ -247,6 +273,10 @@ class MessageType
      */
     public function setForwardAttributes($forwardAttributes)
     {
+        // If it's the same as any thing in the chain, drop it.
+        if ($forwardAttributes == $this->getForwardAttributes()) {
+            return $this;
+        }
         $this->forwardAttributes = $forwardAttributes;
 
         return $this;
@@ -256,10 +286,16 @@ class MessageType
      * Get forwardAttributes
      *
      * @return string 
+     * I am not gonna merge the attributes with the parents attributes  here.
+     * That will just be too messy.
      */
     public function getForwardAttributes()
     {
-        return $this->forwardAttributes;
+        if ($this->forwardAttributes)
+            return $this->forwardAttributes;
+        if ($this->getParent())
+            return $this->getParent()->getForwardAttributes();
+        return null;
     }
 
     /**
