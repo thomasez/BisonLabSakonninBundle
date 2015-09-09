@@ -9,31 +9,12 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class MessageType extends AbstractType
 {
-/*
-    private $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
-    }
-        */
-
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-/* In case of us wanting From being forcefully set, from:
- http://symfony.com/doc/current/cookbook/form/dynamic_form_modification.html
-        $user = $this->tokenStorage->getToken()->getUser();
-        if (!$user) {
-            throw new \LogicException(
-                'The FriendMessageFormType cannot be used without an authenticated user!'
-            );
-        }
-        */
-        
         $builder
             ->add('subject', 'text', array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
             ->add('from', 'text', array('label' => "From:", 'required' => true, "attr" => array("size" => "40")))
