@@ -88,6 +88,9 @@ function addTagFormDeleteLink($tagFormLi) {
 {{ form_row(edit_form.name) }}
 {{ form_row(edit_form.description) }}
 {{ form_row(edit_form.parent) }}
+{% if edit_form.create_group is defined %}
+{{ form_row(edit_form.create_group) }}
+{% endif %}
 {{ form_row(edit_form.expunge_days) }}
 
 {{ form_row(edit_form.callback_function) }}
