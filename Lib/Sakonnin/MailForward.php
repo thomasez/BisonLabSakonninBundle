@@ -20,7 +20,6 @@ class MailForward
      * more future proof. */
     public function execute($options = array())
     {
-        error_log("Kom meg til funksjonen." . print_r($options['attributes'], true));
         $message = $options['message'];
 
         $router = $this->getRouter();
