@@ -12,4 +12,30 @@ use Doctrine\ORM\EntityRepository;
  */
 class MessageTypeRepository extends EntityRepository
 {
+    public function getTypesAsChoiceArray($preferred = array())
+    {
+
+        $dql = '
+SELECT mt
+FROM BisonLab\SakonninBundle\Entity\MessageType mt
+WHERE mt.parent is null
+';
+
+        $query = $this->_em->createQuery($dql);
+        $groups = array();
+        $res = $query->getResult();
+        foreach ($res as $r) {
+            $types = array(); 
+            foreach ($r->getChildren() as $c) {
+                if (in_array($c, $preferred))
+                    $types[$c->getName()] = true;
+                else 
+                    $types[$c->getName()] = false;
+            }
+            $groups[$r->getName()] = $types;
+        }
+        ksort($groups);
+        return $groups;
+
+    }
 }

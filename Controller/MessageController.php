@@ -86,16 +86,26 @@ class MessageController extends CommonController
     }
 
     /**
-     * Creates a new MessageType entity.
+     * Creates a new Message
      *
-     * @Route("/create", name="message_create")
+     * @Route("/", name="message_create")
      * @Method("POST")
      * @Template("BisonLabSakonninBundle:Message:new.html.twig")
      */
     public function createAction(Request $request, $access)
     {
         $sm = $this->container->get('sakonnin.messages');
-        $form = $sm->getCreateForm($request->request->all());
+        if ($data = json_decode($request->getContent(), true)) {
+            $message = $sm->postMessage($data['message_data'], $data['messace_context']);
+error_log("FIkk no");
+            if ($message) {
+                return $this->returnRestData($request, $message);
+            }
+            return $this->returnErrorResponse("Validation Error", 400);
+        }
+
+        $data = $request->request->all();
+        $form = $sm->getCreateForm($data);
         $this->handleForm($form, $request, $access);
 
         if ($form->isValid()) {

@@ -104,9 +104,6 @@ class Message
     public function __construct($options = array())
     {
         $this->setMessageId(uniqid());
-        if (isset($options['in_reply_to']) ) {
-            $this->setXX($options['in_reply_to']);
-        }
         if (isset($options['from']) ) {
             $this->setFrom($options['from']);
         }
@@ -127,6 +124,9 @@ class Message
         }
         if (isset($options['message_type']) && $options['message_type'] instanceof \BisonLab\SakonninBundle\Entity\MessageType ) {
             $this->setMessageType($options['message_type']);
+        }
+        if (isset($options['in_reply_to']) && $options['in_reply_to'] instanceof \BisonLab\SakonninBundle\Entity\Message ) {
+            $this->setInReply($options['in_reply_to']);
         }
 
         $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();

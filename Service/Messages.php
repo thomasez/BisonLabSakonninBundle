@@ -71,6 +71,7 @@ class Messages
 
     public function getCreateForm($options = array())
     {
+
         $em = $this->_getManager();
         $message = null;
         $message_context = null;
@@ -90,6 +91,16 @@ class Messages
             $message->addContext($message_context);
         }
 
+        // What does the form say?
+        if (isset($options['message_data']['in_reply_to'])) {
+            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOne(array('message_id' => $options['message_data']['in_reply_to']))) {
+                return false;
+            } else {
+error_log("Setter inreply");
+                $message->setInReplyTo($reply_to);
+            }
+        }
+
         if (!$message->getFrom())
             $message->setFrom($this->_getFromFromUser());
 
@@ -97,6 +108,7 @@ class Messages
         $c->setContainer($this->container);
 
         $form = $c->createForm(new MessageForm(), $message);
+        $type_choices = $em->getRepository('BisonLabSakonninBundle:MessageType')->getTypesAsChoiceArray();
         $form->add('submit', 'submit', array('label' => 'Send'));
 
         if (isset($options['create_view'])) 

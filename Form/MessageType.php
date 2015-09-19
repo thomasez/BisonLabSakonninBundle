@@ -19,15 +19,18 @@ class MessageType extends AbstractType
             ->add('subject', 'text', array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
             ->add('from', 'text', array('label' => "From:", 'required' => true, "attr" => array("size" => "40")))
             ->add('to', 'text', array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
+            ->add('in_reply_to', 'hidden', array('required' => false))
             ->add('body', 'textarea', array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
         $type_choices = array();
+        // Bytte til en streit Choices, med navn.
         if (!$options['data']->getMessageType()) {
             $builder->add('message_type', 'entity',
                 array(
                     'label' => 'Group',
                     'placeholder' => 'Choose a Message Type',
                     'required' => true,
+                    'choices_as_values' => true,
                     'class' => 'BisonLabSakonninBundle:MessageType',
                 ));
         } else {
