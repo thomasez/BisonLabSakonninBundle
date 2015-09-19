@@ -96,8 +96,7 @@ class MessageController extends CommonController
     {
         $sm = $this->container->get('sakonnin.messages');
         if ($data = json_decode($request->getContent(), true)) {
-            $message = $sm->postMessage($data['message_data'], $data['messace_context']);
-error_log("FIkk no");
+            $message = $sm->postMessage($data['message_data'], $data['message_context']);
             if ($message) {
                 return $this->returnRestData($request, $message);
             }

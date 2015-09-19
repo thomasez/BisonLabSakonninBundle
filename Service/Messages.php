@@ -54,6 +54,14 @@ class Messages
             }
         }
 
+        if (isset($data['in_reply_to'])) {
+            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $data['in_reply_to']))) {
+                return false;
+            } else {
+                $message->setInReplyTo($reply_to);
+            }
+        }
+
         if (!$message->getFrom())
             $message->setFrom($this->_getFromFromUser());
 
@@ -93,10 +101,9 @@ class Messages
 
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOne(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
-error_log("Setter inreply");
                 $message->setInReplyTo($reply_to);
             }
         }
