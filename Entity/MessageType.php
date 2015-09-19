@@ -26,7 +26,7 @@ class MessageType
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false, unique=true)
      * @Gedmo\Versioned
      */
     private $name;
