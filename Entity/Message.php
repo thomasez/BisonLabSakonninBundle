@@ -427,4 +427,20 @@ class Message
         $this->contexts->removeElement($context);
     }
 
+    /* 
+     * Instead of adding serializer and so on.
+     */
+    public function __toArray()
+    {
+        return array(
+            'subject' => $this->getSubject(),
+            'from' => $this->getFrom(),
+            'to' => $this->getTo(),
+            'createdat' => $this->getCreatedAt(),
+            'in_reply_to' => $this->getInReplyTo()->getMessageId(),
+            'message_type' => (string)$this->getMessageType(),
+            'body' => $this->getBody(),
+        );
+    }
+
 }
