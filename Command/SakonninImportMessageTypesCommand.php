@@ -14,7 +14,7 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
-class BisonLabImportMessageTypesCommand extends ContainerAwareCommand
+class SakonninImportMessageTypesCommand extends ContainerAwareCommand
 {
 
     private $verbose = true;
