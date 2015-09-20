@@ -18,7 +18,7 @@ class MessageTypeType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('expunge_days', 'number', array('label' => "Expunge, in days. 0 means never delete messages."))
+            ->add('expunge_days', 'number', array('label' => "Expunge, in days. 0 means never delete messages. Only applicable on types, not groups."))
             ->add('parent', 'entity',
                 array(
                     'label' => 'Group',

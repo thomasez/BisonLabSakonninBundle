@@ -141,7 +141,7 @@ class Message
 
     public function getOrigDate()
     {
-        return $this->created_at;
+        return $this->createdat;
     }
 
     /**
