@@ -34,10 +34,6 @@
                 <td>{{ entity.header }}</td>
             </tr>
             <tr>
-                <th>Body</th>
-                <td>{{ entity.body }}</td>
-            </tr>
-            <tr>
                 <th>Createdat</th>
                 <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
             </tr>
@@ -64,6 +60,10 @@
                     {% endif %}
                 {% endfor %}
                 </td>
+            <tr>
+                <th>Body</th>
+                <td><pre>{{ entity.body }}</pre></td>
+            </tr>
             </tr>
 
         </tbody>
