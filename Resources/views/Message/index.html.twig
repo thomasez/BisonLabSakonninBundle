@@ -21,7 +21,7 @@
                 <td>{{ entity.subject }}
                 {% if entity.replies %}
                 {% for reply in entity.replies %}
-                  <br />Reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a>
+                  <br />reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a>
                 {% endfor %}
                 {% endif %}
                 </td>

@@ -75,6 +75,7 @@ EOT
             $m_query = $this->m_repo->createQueryBuilder('m')
                 ->where('m.message_type = :mt')
                 ->andWhere('date_diff(CURRENT_TIMESTAMP(), m.createdAt ) > :edays')
+                ->andWhere('m.in_reply_to is null')
                 ->setParameter('mt', $mt)
                 ->setParameter('edays', $edays)
                 ->getQuery();
@@ -83,7 +84,13 @@ EOT
 
             while (($mess = $m_iterable->next()) !== false) {
                 $message = $mess[0];
+                $newest = $message->getNewestInThread();
+                $i = $newest->getNewestInThread()->getCreatedAt()->diff(new \DateTime());
+                // drop if newer than the expunge.
+                if ($edays >= (int)$i->format('%a') ) continue;
                 
+                // I am kinda hoping cascade remove and orphanremoval will do
+                // the delete whole thread deed.
                 $output->writeln("Will Expunge " . $message->getSubject());
                 if ($this->doit == "yes") {
                     $this->entityManager->remove($message);

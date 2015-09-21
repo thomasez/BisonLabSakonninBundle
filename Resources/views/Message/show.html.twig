@@ -60,10 +60,20 @@
                     {% endif %}
                 {% endfor %}
                 </td>
+            </tr>
+                {% if entity.replies %}
+            <tr>
+                <th>Replies</th>
+                <td>
+                {% for reply in entity.replies %}
+                  <a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a><br />
+                {% endfor %}
+                </td>
+            </tr>
+                {% endif %}
             <tr>
                 <th>Body</th>
                 <td><pre>{{ entity.body }}</pre></td>
-            </tr>
             </tr>
 
         </tbody>

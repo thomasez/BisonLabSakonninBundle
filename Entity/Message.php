@@ -427,6 +427,28 @@ class Message
         $this->contexts->removeElement($context);
     }
 
+    /* Wonder why I only ask for the newest message and not the oldest? 
+     * You should not..
+     */
+    public function getNewestInThread()
+    {
+        $newest = $this;
+        $next_reply = function ($message) use (&$next_reply, &$newest)
+        {
+            if ($message->getReplies()) {
+                foreach ($message->getReplies() as $r) {
+                    $next_reply($r);
+                }
+            }
+            if ($message->getCreatedAt() > $newest->getCreatedAt()) {
+                $newest = $message;
+            }
+        };
+
+        $next_reply($this);
+        return $newest;
+    }
+
     /* 
      * Instead of adding serializer and so on.
      */
