@@ -17,14 +17,21 @@ class SakonninFunctions implements SakonninFunctionsInterface
         // most correct?
         'mailforward' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailForward',
-            'description' => "Forward to mail adress(es)"
+            'description' => "Forward to mail adress(es)",
+            'needs_attributes' => true,
+        ),
+        'ForwardOnErrorSubject' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\ForwardOnErrorSubject',
+            'description' => "Forward to user when the subject has the word error in it.",
+            'needs_attributes' => false,
         )
     );
 
     public $forward_functions = array(
         'mailforward' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailForward',
-            'description' => "Forward to mail adress(es)"
+            'description' => "Forward to mail adress(es)",
+            'needs_attributes' => true,
         )
     );
 

@@ -449,6 +449,20 @@ class Message
         return $newest;
     }
 
+    /**
+     * Get First message in Thread.
+     * (And no, I could not resist the function name.)
+     *
+     * @return \BisonLab\SakonninBundle\Entity\Message 
+     */
+    public function getFirstPost()
+    {
+        if (!$this->getInReplyTo())
+            return $this;
+        else
+            return $this->getFirstPost();
+    }
+
     /* 
      * Instead of adding serializer and so on.
      */
