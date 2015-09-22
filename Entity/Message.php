@@ -460,7 +460,7 @@ class Message
         if (!$this->getInReplyTo())
             return $this;
         else
-            return $this->getFirstPost();
+            return $this->getInReplyTo();
     }
 
     /* 
