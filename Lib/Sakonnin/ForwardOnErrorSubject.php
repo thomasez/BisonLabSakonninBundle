@@ -30,7 +30,7 @@ class ForwardOnErrorSubject
 
         $forwards = isset($options['attributes']) ? $options['attributes'] : array();
         // I'm not ready for validating a mail address. this is just a simple.
-        if ($first->getFrom() && preg_match("/\w+@\w+)/", $first->getFrom()))
+        if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
             $forwards[] = $first->getFrom();
 
         $router = $this->getRouter();

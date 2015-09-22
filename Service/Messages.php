@@ -52,6 +52,7 @@ class Messages
                 $message->addContext($message_context);
                 $em->persist($message_context);
             }
+
             if (isset($data['in_reply_to'])) {
                 if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $data['in_reply_to']))) {
                     return false;
