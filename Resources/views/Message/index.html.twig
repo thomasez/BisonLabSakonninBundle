@@ -17,6 +17,7 @@
         </thead>
         <tbody>
         {% for entity in entities %}
+            {% if not entity.inreplyto %}
             <tr>
                 <td>{{ entity.subject }}
                 {% if entity.replies %}
@@ -38,6 +39,7 @@
                 </ul>
                 </td>
             </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
