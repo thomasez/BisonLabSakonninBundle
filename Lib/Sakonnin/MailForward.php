@@ -32,7 +32,7 @@ class MailForward
         $mail = \Swift_Message::newInstance()
         ->setSubject($message->getSubject())
         ->setFrom($message->getFrom())
-        ->setTo(implode(",", $options['attributes']))
+        ->setTo($options['attributes'])
         ->setBody($body,
             'text/plain'
         ) ;
