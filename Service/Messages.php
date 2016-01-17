@@ -22,9 +22,24 @@ class Messages
     private $container;
     private $entityManager;
 
+    /*
+     * It is either this stupidity or splitting the entity managers (when this
+     * Bundle is used as an internal vendor component and not it's own
+     * application.)
+     * If you flush here you may interfere in a huge CRUD operation in the
+     * calling application/Bundle. Which happened to me rigght now, as is the
+     * reason I made this.
+     */
+    private $do_flush = true;
+
     public function __construct($container)
     {
         $this->container         = $container;
+    }
+
+    public function setNoFlush($no_flush = true)
+    {
+        $this->do_flush = !$no_flush;
     }
 
     public function postMessage($data, $context_data = array())
@@ -67,7 +82,8 @@ class Messages
             $message->setFrom($this->_getFromFromUser());
 
         $em->persist($message);
-        $em->flush();
+        if ($this->do_flush)
+            $em->flush();
 
         // I planned to use an event listener to dispatch callback/forward
         // functions, but why? This postMessage functions shall be the only
