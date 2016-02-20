@@ -9,6 +9,7 @@ use BisonLab\SakonninBundle\Entity\Message;
  */
 class Functions
 {
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $container;
 
@@ -97,12 +98,4 @@ class Functions
         
     }
     
-    private function _getManager()
-    {
-        if (!$this->entityManager) {
-            $this->entityManager 
-                = $this->container->get('doctrine')->getManager();
-        }
-        return $this->entityManager;
-    } 
 }

@@ -16,6 +16,7 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  */
 class SakonninExpungeCommand extends ContainerAwareCommand
 {
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $verbose = true;
     private $mt_cache = array();
@@ -46,9 +47,7 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-
-        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+        $this->entityManager = $this->getDoctrineManager();
         // This is to make sure we don't end up with massige memory useage. 
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
 

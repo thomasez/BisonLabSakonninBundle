@@ -16,6 +16,7 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  */
 class SakonninImportMessageTypesCommand extends ContainerAwareCommand
 {
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $verbose = true;
     private $mt_cache = array();
@@ -74,7 +75,7 @@ EOT
          if ($bom != b"\xEF\xBB\xBF") 
          rewind($handle);
 
-        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+        $this->entityManager = $this->getDoctrineManager();
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
 
         $this->mt_repo    = $this->entityManager

@@ -18,40 +18,23 @@ use BisonLab\SakonninBundle\Form\MessageType as MessageForm;
  */
 class Messages
 {
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $container;
-    private $entityManager;
-
-    /*
-     * It is either this stupidity or splitting the entity managers (when this
-     * Bundle is used as an internal vendor component and not it's own
-     * application.)
-     * If you flush here you may interfere in a huge CRUD operation in the
-     * calling application/Bundle. Which happened to me rigght now, as is the
-     * reason I made this.
-     */
-    private $do_flush = true;
 
     public function __construct($container)
     {
         $this->container         = $container;
     }
 
-    public function setNoFlush($no_flush = true)
-    {
-        $this->do_flush = !$no_flush;
-    }
-
     public function postMessage($data, $context_data = array())
     {
-        $em = $this->_getManager();
+        $em = $this->getDoctrineManager();
         $message = null;
         if ($data instanceof Message) {
             $message = $data;
         } else {
             $message = new Message($data);
-
-            $em = $this->_getManager();
             if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
                     $message->setMessageType($message_type);            
             } else {
@@ -82,8 +65,7 @@ class Messages
             $message->setFrom($this->_getFromFromUser());
 
         $em->persist($message);
-        if ($this->do_flush)
-            $em->flush();
+        $em->flush();
 
         // I planned to use an event listener to dispatch callback/forward
         // functions, but why? This postMessage functions shall be the only
@@ -96,8 +78,7 @@ class Messages
 
     public function getCreateForm($options = array())
     {
-
-        $em = $this->_getManager();
+        $em = $this->getDoctrineManager();
         $message = null;
         $message_context = null;
         if (isset($options['message']) && $options['message'] instanceof Message) {
@@ -153,14 +134,4 @@ class Messages
         else
             return '';
     }
-
-
-    private function _getManager()
-    {
-        if (!$this->entityManager) {
-            $this->entityManager 
-                = $this->container->get('doctrine')->getManager();
-        }
-        return $this->entityManager;
-    } 
 }

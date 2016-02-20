@@ -19,6 +19,8 @@ use BisonLab\SakonninBundle\Form\FunctionAttributeType;
 class MessageTypeController extends Controller
 {
 
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
     /**
      * Lists all MessageType entities.
      *
@@ -28,7 +30,7 @@ class MessageTypeController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrineManager();
 
         $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
         $parents = $em->createQueryBuilder()
@@ -69,7 +71,7 @@ class MessageTypeController extends Controller
         }
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->getDoctrineManager();
             $em->persist($entity);
             $em->flush();
 
@@ -130,7 +132,7 @@ class MessageTypeController extends Controller
      */
     public function showAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrineManager();
 
         $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
 
@@ -155,7 +157,7 @@ class MessageTypeController extends Controller
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrineManager();
 
         $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
 
@@ -202,7 +204,7 @@ class MessageTypeController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrineManager();
 
         $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
 
@@ -239,7 +241,7 @@ class MessageTypeController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->getDoctrineManager();
             $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
 
             if (!$entity) {

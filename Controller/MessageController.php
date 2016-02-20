@@ -25,6 +25,8 @@ use BisonLab\SakonninBundle\Form\MessageType as MessageForm;
 class MessageController extends CommonController
 {
 
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
     /**
      * Lists all Message entities.
      *
@@ -34,7 +36,7 @@ class MessageController extends CommonController
      */
     public function indexAction(Request $request, $access)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrineManager();
 
         $entities = $em->getRepository('BisonLabSakonninBundle:Message')->findAll();
 
@@ -52,7 +54,7 @@ class MessageController extends CommonController
      */
     public function showAction(Request $request, $access, $id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrineManager();
 
         $entity = $em->getRepository('BisonLabSakonninBundle:Message')->find($id);
 
