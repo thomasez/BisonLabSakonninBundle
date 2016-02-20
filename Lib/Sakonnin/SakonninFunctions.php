@@ -2,8 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
-use BisonLab\SakonninBundle\Lib\Sakonnin\SakonninFunctionsInterfac;
-
 /*
  */
 
