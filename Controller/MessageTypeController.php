@@ -18,7 +18,6 @@ use BisonLab\SakonninBundle\Form\FunctionAttributeType;
  */
 class MessageTypeController extends Controller
 {
-
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     /**

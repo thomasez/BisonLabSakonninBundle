@@ -24,7 +24,6 @@ use BisonLab\SakonninBundle\Form\MessageType as MessageForm;
  */
 class MessageController extends CommonController
 {
-
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     /**
