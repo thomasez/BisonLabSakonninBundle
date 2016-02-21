@@ -11,6 +11,10 @@ trait CommonStuff
 
     public function getDoctrineManager()
     {
+        // This is a fallback. It may even handle the cases it's needed.
+        // (Mainly Commands)
+        if (!isset($this->container))
+            $this->container = $this->getContainer();
         if (!$this->entityManager) {
             // Check if the manager exists.
             if (in_array('sakonnin', 
