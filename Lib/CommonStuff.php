@@ -14,13 +14,18 @@ trait CommonStuff
         if (!$this->entityManager) {
             // Check if the manager exists.
             if (in_array('sakonnin', 
-                    $this->container->get('doctrine')->getManagerNames())) {
+                    array_keys($this->container->get('doctrine')
+                    ->getManagerNames()))) {
+
                 $this->entityManager
                     = $this->container->get('doctrine')->getManager('sakonnin');
+
             } else {
+
                 // Well, use the default then.
                 $this->entityManager
                     = $this->container->get('doctrine')->getManager();
+
             }
         }
         return $this->entityManager;
