@@ -63,7 +63,7 @@ class MessageType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'message_data';
     }

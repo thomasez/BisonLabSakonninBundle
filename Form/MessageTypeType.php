@@ -44,12 +44,4 @@ class MessageTypeType extends AbstractType
             'data_class' => 'BisonLab\SakonninBundle\Entity\MessageType'
         ));
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'bisonlab_sakonninbundle_messagetype';
-    }
 }

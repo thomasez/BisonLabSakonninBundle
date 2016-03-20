@@ -23,7 +23,7 @@ class FunctionAttributeType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'function_attribute';
     }
