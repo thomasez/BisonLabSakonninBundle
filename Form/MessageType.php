@@ -16,11 +16,11 @@ class MessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', 'text', array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
-            ->add('from', 'text', array('label' => "From:", 'required' => true, "attr" => array("size" => "40")))
-            ->add('to', 'text', array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
-            ->add('in_reply_to', 'hidden', array('required' => false))
-            ->add('body', 'textarea', array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
+            ->add('subject', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('from', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => "From:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('to', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
+            ->add('in_reply_to', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', array('required' => false))
+            ->add('body', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
         $type_choices = array();
         // Bytte til en streit Choices, med navn.
