@@ -7,6 +7,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+
 class MessageTypeType extends AbstractType
 {
     /**
@@ -18,7 +20,7 @@ class MessageTypeType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('expunge_days', 'Symfony\Component\Form\Extension\Core\Type\NumberType', array('label' => "Expunge, in days. 0 means never delete messages. Only applicable on types, not groups."))
+            ->add('expunge_days', NumberType::class, array('label' => "Expunge, in days. 0 means never delete messages. Only applicable on types, not groups."))
             ->add('parent', 'Symfony\Bridge\Doctrine\Form\Type\EntityType',
                 array(
                     'label' => 'Group',

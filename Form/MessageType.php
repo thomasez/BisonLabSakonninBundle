@@ -7,6 +7,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextAreaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 class MessageType extends AbstractType
 {
     /**
@@ -16,16 +21,16 @@ class MessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
-            ->add('from', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => "From:", 'required' => true, "attr" => array("size" => "40")))
-            ->add('to', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
-            ->add('in_reply_to', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', array('required' => false))
-            ->add('body', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
+            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('from', TextType::class, array('label' => "From:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('to', TextType::class, array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
+            ->add('in_reply_to', HiddenType::class, array('required' => false))
+            ->add('body', TextareaType::class, array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
         $type_choices = array();
         // Bytte til en streit Choices, med navn.
         if (!$options['data']->getMessageType()) {
-            $builder->add('message_type', 'entity',
+            $builder->add('message_type', EntityType::class,
                 array(
                     'label' => 'Group',
                     'placeholder' => 'Choose a Message Type',
@@ -39,7 +44,7 @@ class MessageType extends AbstractType
             } else { 
                 $type_choices = array($options['data']->getMessageType());
             }
-            $builder->add('message_type', 'entity',
+            $builder->add('message_type', EntityType::class,
                 array(
                     'label' => 'Group',
                     'placeholder' => 'Choose a Message Type',
