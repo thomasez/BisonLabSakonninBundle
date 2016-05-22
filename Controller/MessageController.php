@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
-use BisonLab\SakonninBundle\Form\MessageType as MessageForm;
 
 
 /**
@@ -140,7 +139,7 @@ class MessageController extends CommonController
      */
     public function createCreateForm(Message $entity)
     {
-        $form = $this->createForm(new MessageForm(), $entity, array(
+        $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $entity, array(
             'action' => $this->generateUrl('message_create'),
             'method' => 'POST',
         ));

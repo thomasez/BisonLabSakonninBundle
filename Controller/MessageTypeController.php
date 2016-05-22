@@ -97,7 +97,7 @@ class MessageTypeController extends Controller
      */
     private function createCreateForm(MessageType $entity)
     {
-        $form = $this->createForm(new MessageTypeType(), $entity, array(
+        $form = $this->createForm(MessageTypeType::class, $entity, array(
             'action' => $this->generateUrl('messagetype_create'),
             'method' => 'POST',
         ));
@@ -188,7 +188,7 @@ class MessageTypeController extends Controller
     */
     private function createEditForm(MessageType $entity)
     {
-        $form = $this->createForm(new MessageTypeType(), $entity, array(
+        $form = $this->createForm(MessageTypeType::class, $entity, array(
             'action' => $this->generateUrl('messagetype_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));

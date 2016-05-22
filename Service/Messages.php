@@ -12,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageContext;
 use BisonLab\SakonninBundle\Controller\MessageController;
-use BisonLab\SakonninBundle\Form\MessageType as MessageForm;
 
 /**
  * Messages service.
@@ -113,8 +112,7 @@ class Messages
         $c = new MessageController();
         $c->setContainer($this->container);
 
-        $form = $c->createForm(new MessageForm(), $message);
-        $type_choices = $em->getRepository('BisonLabSakonninBundle:MessageType')->getTypesAsChoiceArray();
+        $form = $c->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $message);
         $form->add('submit', SubmitType::class, array('label' => 'Send'));
 
         if (isset($options['create_view'])) 

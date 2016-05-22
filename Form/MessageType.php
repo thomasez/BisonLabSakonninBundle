@@ -28,6 +28,8 @@ class MessageType extends AbstractType
             ->add('body', TextareaType::class, array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
         $type_choices = array();
+        // Or this one?
+        // $type_choices = $em->getRepository('BisonLabSakonninBundle:MessageType')->getTypesAsChoiceArray();
         // Bytte til en streit Choices, med navn.
         if (!$options['data']->getMessageType()) {
             $builder->add('message_type', EntityType::class,
@@ -50,6 +52,7 @@ class MessageType extends AbstractType
                     'placeholder' => 'Choose a Message Type',
                     'required' => true,
                     'class' => 'BisonLabSakonninBundle:MessageType',
+                    'choices_as_values' => true,
                     'choices' => $type_choices,
                 ));
         }
