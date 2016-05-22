@@ -7,6 +7,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Form\MessageTypeType;
 use BisonLab\SakonninBundle\Form\FunctionAttributeType;
@@ -98,8 +103,8 @@ class MessageTypeController extends Controller
         ));
         $this->_addFunctionsToForm($form);
 
-        $form->add('create_group', 'checkbox', array('label' => "This is a new group.", 'mapped' => false, 'required' => false));
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('create_group', CheckboxType::class, array('label' => "This is a new group.", 'mapped' => false, 'required' => false));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -189,7 +194,7 @@ class MessageTypeController extends Controller
         ));
         $this->_addFunctionsToForm($form);
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }
@@ -266,7 +271,7 @@ class MessageTypeController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('messagetype_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }
@@ -275,11 +280,11 @@ class MessageTypeController extends Controller
     {
         $sakonnin = $this->get('sakonnin.functions');
 
-        $form->add('callback_function', 'choice', array(
+        $form->add('callback_function', ChoiceType::class, array(
                 'required' => false, 
                 'placeholder' => "None",
                 'choices' => $sakonnin->getCallbacksAsChoices()));
-        $form->add('callbackAttributes', 'collection',
+        $form->add('callbackAttributes', CollectionType::class,
                 array(
                     'required' => false, 
                     'type'=>'text',
@@ -290,11 +295,11 @@ class MessageTypeController extends Controller
                     'options'=>array(
                     )
                 ));
-        $form->add('forward_function', 'choice', array(
+        $form->add('forward_function', ChoiceType::class, array(
                 'required' => false, 
                 'placeholder' => "None",
                 'choices' => $sakonnin->getForwardsAsChoices()));
-        $form->add('forwardAttributes', 'collection',
+        $form->add('forwardAttributes', CollectionType::class,
                 array(
                     'required' => false, 
                     'type'=>'text',

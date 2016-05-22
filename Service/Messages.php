@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageContext;
@@ -114,7 +115,7 @@ class Messages
 
         $form = $c->createForm(new MessageForm(), $message);
         $type_choices = $em->getRepository('BisonLabSakonninBundle:MessageType')->getTypesAsChoiceArray();
-        $form->add('submit', 'submit', array('label' => 'Send'));
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
 
         if (isset($options['create_view'])) 
             return $form->createView();
