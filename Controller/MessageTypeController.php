@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Form\MessageTypeType;
@@ -287,13 +288,11 @@ class MessageTypeController extends Controller
         $form->add('callbackAttributes', CollectionType::class,
                 array(
                     'required' => false, 
-                    'type'=>'text',
-                    'prototype'=>true,
-                    // 'prototype_name'=>'callbackAttributes',
-                    'allow_add'=>true,
-                    'allow_delete'=>true,
-                    'options'=>array(
-                    )
+                    'entry_type' => TextType::class,
+                    'prototype' => true,
+                    // 'prototype_name' => 'callbackAttributes',
+                    'allow_add' => true,
+                    'allow_delete' => true,
                 ));
         $form->add('forward_function', ChoiceType::class, array(
                 'required' => false, 
@@ -302,15 +301,13 @@ class MessageTypeController extends Controller
         $form->add('forwardAttributes', CollectionType::class,
                 array(
                     'required' => false, 
-                    'type'=>'text',
+                    'entry_type' => TextType::class,
                     // NO need for key/value yet at least.
                     // 'type'=> new FunctionAttributeType(),
                     'prototype'=>true,
                     // 'prototype_name'=>'forwardAttributes',
                     'allow_add'=>true,
                     'allow_delete'=>true,
-                    'options'=>array(
-                    )
                 ));
 
         return $form;

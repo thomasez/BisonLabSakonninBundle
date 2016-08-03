@@ -15,6 +15,7 @@ use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * Message controller.
@@ -144,7 +145,7 @@ class MessageController extends CommonController
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Send'));
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
 
         return $form;
     }

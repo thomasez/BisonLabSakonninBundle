@@ -13,8 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageContextRepository")
  * @Gedmo\Loggable
  */
-class MessageContext extends ContextBase
+class MessageContext
 {
+    use \BisonLab\CommonBundle\Entity\ContextBaseTrait;
 
     /**
      * @var mixed
@@ -24,19 +25,11 @@ class MessageContext extends ContextBase
      */
     private $message;
 
-    public function __construct($options = array()) {
-
+    public function __construct($options = array())
+    {
         if (isset($options['message'])) 
             $this->setMessage($options['message']);
-        if (isset($options['system'])) 
-            $this->setSystem($options['system']);
-        if (isset($options['object_name'])) 
-            $this->setObjectName($options['object_name']);
-        if (isset($options['external_id'])) 
-            $this->setExternalId($options['external_id']);
-
-        parent::__construct($options);
-
+        return $this->traitConstruct($options);
     }
 
     /** 
