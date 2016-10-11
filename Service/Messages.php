@@ -58,11 +58,20 @@ class Messages
                     $message->setInReplyTo($reply_to);
                 }
             }
+            if (isset($data['from_type'])) {
+                $message->setFromType($data['from_type']);
+            } else {
+                throw new \InvalidArgumentException("No from address type found or set.");
+            }
+
+            if (isset($data['to_type']))
+                $message->setToType($data['to_type']);
         }
 
-
-        if (!$message->getFrom())
+        if (!$message->getFrom()) {
             $message->setFrom($this->_getFromFromUser());
+            $message->setFromType("INTERNAL");
+        }
 
         $em->persist($message);
         $em->flush();

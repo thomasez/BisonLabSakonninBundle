@@ -8,6 +8,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
+
 /**
  * Message
  *
@@ -56,6 +58,13 @@ class Message
     private $from;
 
     /**
+     * @var string $from_type
+     *
+     * @ORM\Column(name="from_type", type="string", length=40, nullable=false)
+     */
+    private $from_type;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="`to`", type="string", length=255, nullable=true)
@@ -63,9 +72,16 @@ class Message
     private $to;
 
     /**
+     * @var string $to_type
+     *
+     * @ORM\Column(name="to_type", type="string", length=40, nullable=true)
+     */
+    private $to_type;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="subject", type="string", length=255, nullable=true)
+     * @ORM\Column(name="subject", type="string", length=255, nullable=false)
      */
     private $subject;
 
@@ -147,7 +163,7 @@ class Message
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -170,7 +186,7 @@ class Message
     /**
      * Get message_id
      *
-     * @return string 
+     * @return string
      */
     public function getMessageId()
     {
@@ -193,11 +209,39 @@ class Message
     /**
      * Get from
      *
-     * @return string 
+     * @return string
      */
     public function getFrom()
     {
         return $this->from;
+    }
+
+    /**
+     * Set from_type
+     *
+     * @param string $from_type
+     * @return Message
+     */
+    public function setFromType($from_type)
+    {
+        if ($from_type == $this->from_type) return $this;
+        if (is_int($from_type)) { $from_type = self::getAddressTypes()[$from_type]; }
+        $from_type = strtoupper($from_type);
+        if (!in_array($from_type, self::getAddressTypes())) {
+            throw new \InvalidArgumentException(sprintf('The "%s" from_type is not a valid address type.', $from_type));
+        }
+
+        $this->from_type = $from_type;
+        return $this;
+    }
+
+    /**
+     * Get from_type
+     * @return string
+     */
+    public function getFromType()
+    {
+        return $this->from_type;
     }
 
     /**
@@ -216,11 +260,39 @@ class Message
     /**
      * Get to
      *
-     * @return string 
+     * @return string
      */
     public function getTo()
     {
         return $this->to;
+    }
+
+    /**
+     * Set to_type
+     *
+     * @param string $to_type
+     * @return Message
+     */
+    public function setToType($to_type)
+    {
+        if ($to_type == $this->to_type) return $this;
+        if (is_int($to_type)) { $to_type = self::getAddressTypes()[$to_type]; }
+        $to_type = strtoupper($to_type);
+        if (!in_array($to_type, self::getAddressTypes())) {
+            throw new \InvalidArgumentException(sprintf('The "%s" to_type is not a valid address type.', $to_type));
+        }
+
+        $this->to_type = $to_type;
+        return $this;
+    }
+
+    /**
+     * Get to_type
+     * @return string
+     */
+    public function getToType()
+    {
+        return $this->to_type;
     }
 
     /**
@@ -239,7 +311,7 @@ class Message
     /**
      * Get subject
      *
-     * @return string 
+     * @return string
      */
     public function getSubject()
     {
@@ -262,7 +334,7 @@ class Message
     /**
      * Get contentType
      *
-     * @return string 
+     * @return string
      */
     public function getContentType()
     {
@@ -285,7 +357,7 @@ class Message
     /**
      * Get header
      *
-     * @return string 
+     * @return string
      */
     public function getHeader()
     {
@@ -308,7 +380,7 @@ class Message
     /**
      * Get body
      *
-     * @return string 
+     * @return string
      */
     public function getBody()
     {
@@ -331,7 +403,7 @@ class Message
     /**
      * Get in_reply_to
      *
-     * @return \BisonLab\SakonninBundle\Entity\Message 
+     * @return \BisonLab\SakonninBundle\Entity\Message
      */
     public function getInReplyTo()
     {
@@ -364,7 +436,7 @@ class Message
     /**
      * Get replies
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getReplies()
     {
@@ -387,7 +459,7 @@ class Message
     /**
      * Get message_type
      *
-     * @return \BisonLab\SakonninBundle\Entity\MessageType 
+     * @return \BisonLab\SakonninBundle\Entity\MessageType
      */
     public function getMessageType()
     {
@@ -397,7 +469,7 @@ class Message
     /**
      * Get contexts
      *
-     * @return objects 
+     * @return objects
      */
     public function getContexts()
     {
@@ -427,6 +499,16 @@ class Message
         $this->contexts->removeElement($context);
     }
 
+    /**
+     * Get Address Types (For use by FromType and ToType)
+     *
+     * @return array
+     */
+    public static function getAddressTypes()
+    {
+        return ExternalEntityConfig::getAddressTypesFor('Message');
+    }
+
     /* Wonder why I only ask for the newest message and not the oldest? 
      * You should not..
      */
@@ -453,7 +535,7 @@ class Message
      * Get First message in Thread.
      * (And no, I could not resist the function name.)
      *
-     * @return \BisonLab\SakonninBundle\Entity\Message 
+     * @return \BisonLab\SakonninBundle\Entity\Message
      */
     public function getFirstPost()
     {
