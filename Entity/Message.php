@@ -225,9 +225,8 @@ class Message
     public function setFromType($from_type)
     {
         if ($from_type == $this->from_type) return $this;
-        if (is_int($from_type)) { $from_type = self::getAddressTypes()[$from_type]; }
         $from_type = strtoupper($from_type);
-        if (!in_array($from_type, self::getAddressTypes())) {
+        if (!isset(self::getAddressTypes()[$from_type])) {
             throw new \InvalidArgumentException(sprintf('The "%s" from_type is not a valid address type.', $from_type));
         }
 
@@ -276,12 +275,10 @@ class Message
     public function setToType($to_type)
     {
         if ($to_type == $this->to_type) return $this;
-        if (is_int($to_type)) { $to_type = self::getAddressTypes()[$to_type]; }
         $to_type = strtoupper($to_type);
-        if (!in_array($to_type, self::getAddressTypes())) {
+        if (!isset(self::getAddressTypes()[$to_type])) {
             throw new \InvalidArgumentException(sprintf('The "%s" to_type is not a valid address type.', $to_type));
         }
-
         $this->to_type = $to_type;
         return $this;
     }
@@ -506,7 +503,7 @@ class Message
      */
     public static function getAddressTypes()
     {
-        return ExternalEntityConfig::getAddressTypesFor('Message');
+        return ExternalEntityConfig::getAddressTypes();
     }
 
     /* Wonder why I only ask for the newest message and not the oldest? 

@@ -1,0 +1,9 @@
+parameters:
+    sakonnin.address_types:
+            EMAIL:
+                chooseable: true
+            INTERNAL:
+                chooseable: true
+            SMS:
+                chooseable: true
+

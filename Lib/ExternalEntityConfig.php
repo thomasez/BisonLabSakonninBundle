@@ -18,18 +18,15 @@ class ExternalEntityConfig
         self::$address_types = $address_types;
     }
 
-    public static function getAddressTypesFor($entity, $type)
+    public static function getAddressTypes()
     {
-        if (!isset(self::$address_types[$entity])) return array();
-
-        return isset(self::$address_types[$entity][$type]) ? self::$address_types[$entity][$type] : array();
+        return self::$address_types;
     }
 
-    public static function getAddressTypesAsChoicesFor($entity, $type)
+    public static function getAddressTypesAsChoices()
     {
-        $address_types = self::getAddressTypesFor($entity, $type);
         $choices = array();
-        foreach ($address_types as $type => $params) {
+        foreach ($self::address_types as $type => $params) {
             if (!$params['chooseable']) continue;
             $choices[$type] = $type;
         }
