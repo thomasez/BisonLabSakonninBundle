@@ -108,7 +108,7 @@ EOT
             $mt->setForwardType($data[6]);
             $this->entityManager->persist($mt);
             if ($parent) {
-                $output->writeln("Seting parent " . $parent->getName() . " on " . $mt->getName());
+                $output->writeln("Setting parent " . $parent->getName() . " on " . $mt->getName());
                 $parent->addChild($mt);
                 $this->entityManager->persist($parent);
             }
