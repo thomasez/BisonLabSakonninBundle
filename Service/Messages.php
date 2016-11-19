@@ -123,6 +123,8 @@ class Messages
 
         $form = $c->createCreateForm($message);
 
+        // You may wonder why. It's beause this one is called from twig
+        // templates as well as the message controller.
         if (isset($options['create_view'])) 
             return $form->createView();
         else

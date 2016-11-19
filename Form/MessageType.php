@@ -30,7 +30,6 @@ class MessageType extends AbstractType
         $type_choices = array();
         // Or this one?
         // $type_choices = $em->getRepository('BisonLabSakonninBundle:MessageType')->getTypesAsChoiceArray();
-        // Bytte til en streit Choices, med navn.
         if (!$options['data']->getMessageType()) {
             $builder->add('message_type', EntityType::class,
                 array(
@@ -52,7 +51,6 @@ class MessageType extends AbstractType
                     'placeholder' => 'Choose a Message Type',
                     'required' => true,
                     'class' => 'BisonLabSakonninBundle:MessageType',
-                    'choices_as_values' => true,
                     'choices' => $type_choices,
                 ));
         }

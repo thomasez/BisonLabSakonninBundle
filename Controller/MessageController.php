@@ -36,12 +36,16 @@ class MessageController extends CommonController
     public function indexAction(Request $request, $access)
     {
         $em = $this->getDoctrineManager();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
+        $messages = $repo->createQueryBuilder('m')
+            ->where('m.from = :username')
+            ->orWhere('m.to = :username')
+            ->setParameter('username', $user->getUserName())
+            ->getQuery()->getResult();
 
-        $entities = $em->getRepository('BisonLabSakonninBundle:Message')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
+        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+            array('entities' => $messages));
     }
 
     /**
@@ -75,7 +79,6 @@ class MessageController extends CommonController
      */
     public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
     {
-        // Not yet.
         $context_conf = $this->container->getParameter('app.contexts');
         $conf = $context_conf['BisonLabSakonninBundle']['Message'];
         $conf['entity'] = "BisonLabSakonninBundle:Message";
