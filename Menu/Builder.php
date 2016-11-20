@@ -20,6 +20,9 @@ class Builder implements ContainerAwareInterface
     {
         $menu->addChild('Messages');
         $menu['Messages']->setAttribute('id', 'message_menu');
+        $menu['Messages']->addChild('Read new messages', 
+                array('route' => 'message_unread'));
+        $menu['Messages']['Read new messages']->setAttribute('id', 'menu_unread');
         $menu['Messages']->addChild('My message log', array( 'route' => 'message'));
         $menu['Messages']->addChild('Write PM', array('uri' => '#'));
         $menu['Messages']['Write PM']->setLinkAttribute('onclick', 'createPmMessage()');

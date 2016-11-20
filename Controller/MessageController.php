@@ -36,16 +36,39 @@ class MessageController extends CommonController
         $em = $this->getDoctrineManager();
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
-        $messages = $repo->createQueryBuilder('m')
+        $query = $repo->createQueryBuilder('m')
             ->where('m.from = :userid')
-            ->orWhere('m.to = :userid')
-            ->setParameter('userid', $user->getId())
-            ->getQuery()->getResult();
+            ->orWhere('m.to = :userid');
+        if ($request->get('unread'))
+            $query->andWhere("m.state = 'UNREAD'");
+
+        $query->setParameter('userid', $user->getId());
+        $messages = $query->getQuery()->getResult();
 
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
     }
 
+    /**
+     * Lists all Message entities.
+     *
+     * @Route("/unread", name="message_unread")
+     */
+    public function unreadAction(Request $request, $access)
+    {
+        $em = $this->getDoctrineManager();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
+        $query = $repo->createQueryBuilder('m')
+            ->where('m.to = :userid')
+            ->andWhere("m.state = 'UNREAD'");
+
+        $query->setParameter('userid', $user->getId());
+        $messages = $query->getQuery()->getResult();
+
+        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+            array('entities' => $messages));
+    }
     /**
      * Finds and displays a Message entity.
      *
@@ -61,6 +84,9 @@ class MessageController extends CommonController
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Message entity.');
         }
+        // If it's show, it's read.
+        $entity->setState("READ");
+        $em->flush();
 
         return $this->render('BisonLabSakonninBundle:Message:show.html.twig',
             array('entity' => $entity));
@@ -187,7 +213,7 @@ class MessageController extends CommonController
      */
     public function checkUnreadAction(Request $request, $access)
     {
-error_log("unread");
+//        return $this->returnRestData($request, false);
         $em = $this->getDoctrineManager();
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
@@ -197,6 +223,7 @@ error_log("unread");
             ->setParameter('userid', $user->getId())
             ->getQuery()->getResult();
         if ($messages) {
+error_log("unread");
             return $this->returnRestData($request, true);
         }
         return $this->returnRestData($request, false);
