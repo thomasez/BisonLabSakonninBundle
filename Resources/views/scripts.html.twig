@@ -1,6 +1,7 @@
 <script type="text/javascript">
 function createPmMessage() {
     $( "#createpm" ).dialog("open");
+    return false;
 }
 
 function checkUnread() {
@@ -16,8 +17,11 @@ function checkUnread() {
           if (cont === true) {
               $( "#message_menu" ).children().css("color","red");
               $( "#menu_unread" ).show();
+          } else {
+            setTimeout ( "checkUnread()", 60000 );
           }
       });
+    return false;
 }
 
 function submitPmMessageForm() {
@@ -39,6 +43,7 @@ function submitPmMessageForm() {
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
+    return false;
 }
 
 jQuery(document).ready(function() {
