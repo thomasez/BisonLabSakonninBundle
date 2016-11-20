@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 
-class MessageType extends AbstractType
+class PmType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -26,34 +26,9 @@ class MessageType extends AbstractType
         $builder
             ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
             ->add('to', TextType::class, array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
-            ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
             ->add('body', TextareaType::class, array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
-        $type_choices = array();
-        if (!$options['data']->getMessageType()) {
-            $builder->add('message_type', EntityType::class,
-                array(
-                    'label' => 'Group',
-                    'placeholder' => 'Choose a Message Type',
-                    'required' => true,
-                    'class' => 'BisonLabSakonninBundle:MessageType',
-                ));
-        } else {
-            if (count($options['data']->getMessageType()->getChildren()) > 0) {
-                $type_choices = $options['data']->getMessageType()->getChildren();
-            } else { 
-                $type_choices = array($options['data']->getMessageType());
-            }
-            $builder->add('message_type', EntityType::class,
-                array(
-                    'label' => 'Group',
-                    'placeholder' => 'Choose a Message Type',
-                    'required' => true,
-                    'class' => 'BisonLabSakonninBundle:MessageType',
-                    'choices' => $type_choices,
-                ));
-        }
     }
     
     /**

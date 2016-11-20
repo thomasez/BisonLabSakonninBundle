@@ -39,10 +39,11 @@ class MessageController extends CommonController
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
         $messages = $repo->createQueryBuilder('m')
-            ->where('m.from = :username')
-            ->orWhere('m.to = :username')
-            ->setParameter('username', $user->getUserName())
+            ->where('m.from = :userid')
+            ->orWhere('m.to = :userid')
+            ->setParameter('userid', $user->getId())
             ->getQuery()->getResult();
+dump($messages);
 
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
@@ -90,6 +91,52 @@ class MessageController extends CommonController
     }
 
     /**
+     * Creates a new PM
+     *
+     * @Route("/pm", name="pm_create")
+     * @Method("POST")
+     * @Template("BisonLabSakonninBundle:Message:new.html.twig")
+     */
+    public function createPmAction(Request $request, $access)
+    {
+        $sm = $this->container->get('sakonnin.messages');
+
+        $data = $request->request->all();
+        $form = $sm->getCreatePmForm($data);
+        $this->handleForm($form, $request, $access);
+
+        if ($form->isValid()) {
+            $message = $form->getData();
+            $em = $this->getDoctrineManager();
+            $message->setMessageType(
+                $em->getRepository('BisonLabSakonninBundle:MessageType')
+                    ->findOneByName('PM')
+            );
+
+            $message->setToType('INTERNAL');
+            $message->setTo($data['to_userid']);
+
+            $sm->postMessage($message);
+
+            if ($this->isRest($access)) {
+                return $this->returnRestData($request, $message);
+            }
+            return $this->redirect($this->generateUrl('message_show', array('id' => $message->getId())));
+        }
+
+        if ($this->isRest($access)) {
+            # We have a problem, and need to tell our user what it is.
+            # Better make this a Json some day.
+            return $this->returnErrorResponse("Validation Error", 400, $this->handleFormErrors($form));
+        }
+
+        return array(
+            'entity' => $message,
+            'form'   => $form->createView(),
+        );
+    }
+
+    /**
      * Creates a new Message
      *
      * @Route("/", name="message_create")
@@ -113,13 +160,21 @@ class MessageController extends CommonController
 
         if ($form->isValid()) {
             // Ok, it's valid. We'll send this to postMessage then.
-            $entity = $form->getData();
-            $sm->postMessage($entity);
+            $message = $form->getData();
+            if (!$message->getMessageType() && isset($data['message_type'])) {
+                $em = $this->getDoctrineManager();
+                $message->setMessageType(
+                    $em->getRepository('BisonLabSakonninBundle:MessageType')
+                        ->findOneByName($data['message_type'])
+                );
+            }
+
+            $sm->postMessage($message);
 
             if ($this->isRest($access)) {
-                return $this->returnRestData($request, $entity);
+                return $this->returnRestData($request, $message);
             }
-            return $this->redirect($this->generateUrl('message_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('message_show', array('id' => $message->getId())));
         }
 
         if ($this->isRest($access)) {
@@ -129,7 +184,7 @@ class MessageController extends CommonController
         }
 
         return array(
-            'entity' => $entity,
+            'entity' => $message,
             'form'   => $form->createView(),
         );
     }
@@ -153,4 +208,15 @@ class MessageController extends CommonController
         return $form;
     }
 
+    public function createCreatePmForm(Message $entity)
+    {
+        $form = $this->createForm(\BisonLab\SakonninBundle\Form\PmType::class, $entity, array(
+            'action' => $this->generateUrl('pm_create'),
+            'method' => 'POST',
+        ));
+
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
+
+        return $form;
+    }
 }

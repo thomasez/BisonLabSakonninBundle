@@ -1,8 +1,3 @@
-{% set pmconfig = {
-    'message_type': 'Messaging'
-    }
-%}
-
 <script type="text/javascript">
 
 jQuery(document).ready(function() {
@@ -27,7 +22,7 @@ function submitPmMessageForm() {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
-        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
+        url: "{{ path('pm_create', { 'access': 'ajax' }) }}",
         data: $( "#createpmform" ).serialize(),
         dataType: "text",
         async: true,
@@ -51,18 +46,18 @@ $( "#message_data_to" ).autocomplete({
   minlength: 4,
   select: function( event, ui ) {
     $( "#message_data_to" ).val(ui.item.value);
+    $( "#to_userid" ).val(ui.item.userid);
     $( "#message_data_body" ).focus();
   }
 });
 } );
 </script>
 
-<div id="createpm" title="Create and send a PM">
-{% set pmform = sakonnin.getCreateForm({'message_data': pmconfig, 'create_view': true}) %}
-<form id="createpmform" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitPmMessageForm();">
-<input id="message_type" type="hidden" name="message_data[message_type]" value="39">
-<input id="message_type_parent" type="hidden" name="message_type" value="Messaging">
-<input id="userid" type="hidden" name="userid">
+<div id="createpm" title="Write a PM">
+{# Gotta remember to add some way to send "in_reply_to" here. #}
+{% set pmform = sakonnin.getCreatePmForm({'create_view': true}) %}
+<form id="createpmform" method="POST" action="{{ path('pm_create', { 'access': 'ajax' }) }}" onSubmit="return submitPmMessageForm();">
+<input type="hidden" name="to_userid" id="to_userid">
 {{ form_row(pmform.subject)}} 
 {{ form_row(pmform.to)}} 
 {{ form_row(pmform.body)}} 

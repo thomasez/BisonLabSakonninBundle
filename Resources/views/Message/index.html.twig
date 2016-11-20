@@ -26,8 +26,8 @@
                 {% endfor %}
                 {% endif %}
                 </td>
-                <td>{{ entity.from }}</td>
-                <td>{{ entity.to }}</td>
+                <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
+                <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
                 <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.messageid }}</a></td>
                 <td>{{ entity.messagetype.parent }} - {{ entity.messagetype }}</td>
                 <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>

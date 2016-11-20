@@ -69,7 +69,7 @@ class Messages
         }
 
         if (!$message->getFrom()) {
-            $message->setFrom($this->_getFromFromUser());
+            $message->setFrom($this->_getUserIdFromUser());
             $message->setFromType("INTERNAL");
         }
 
@@ -115,32 +115,58 @@ class Messages
             }
         }
 
-        if (!$message->getFrom())
-            $message->setFrom($this->_getFromFromUser());
-
         $c = new MessageController();
         $c->setContainer($this->container);
 
         $form = $c->createCreateForm($message);
 
         // You may wonder why. It's beause this one is called from twig
-        // templates as well as the message controller.
+        // templates as well as the message controller (Which adds stuff).
         if (isset($options['create_view'])) 
             return $form->createView();
         else
             return $form;
     }
 
-    /* Jadajada, I just had to use that function name..*/
-    private function _getFromFromUser() {
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        if ($user && method_exists($user, 'getEmail') && !empty($user->getEmail()))
-            return $user->getEmail();
-        elseif ($user && method_exists($user, 'getName'))
-            return $user->getName();
-        elseif ($user && method_exists($user, 'getUserName'))
-            return $user->getUserName();
+    public function getCreatePmForm($options = array())
+    {
+        $message = new Message();
+        // What does the form say?
+        if (isset($options['message_data']['in_reply_to'])) {
+            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+                return false;
+            } else {
+                $message->setInReplyTo($reply_to);
+            }
+        }
+
+        $c = new MessageController();
+        $c->setContainer($this->container);
+
+        $form = $c->createCreatePmForm($message);
+
+        // You may wonder why. It's beause this one is called from twig
+        // templates as well as the message controller (Which adds stuff).
+        if (isset($options['create_view'])) 
+            return $form->createView();
         else
-            return '';
+            return $form;
+    }
+
+    public function getUserNameFromUserId($userid)
+    {
+        $userManager = $this->container->get('fos_user.user_manager');
+        return $userManager->findUserBy(array('id'=>$userid));
+    }
+
+    private function _getUserIdFromUser()
+    {
+        if (!$this->container) return '';
+        if (!$this->container->get('security.token_storage')) return '';
+        if (!$this->container->get('security.token_storage')->getToken()) return '';
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        if ($user && method_exists($user, 'getId'))
+            return $user->getId();
+        return null;
     }
 }

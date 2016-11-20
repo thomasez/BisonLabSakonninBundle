@@ -26,7 +26,7 @@ class ExternalEntityConfig
     public static function getAddressTypesAsChoices()
     {
         $choices = array();
-        foreach ($self::address_types as $type => $params) {
+        foreach (self::$address_types as $type => $params) {
             if (!$params['chooseable']) continue;
             $choices[$type] = $type;
         }
