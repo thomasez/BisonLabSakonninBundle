@@ -30,8 +30,6 @@ class MessageController extends CommonController
      * Lists all Message entities.
      *
      * @Route("/", name="message")
-     * @Method("GET")
-     * @Template()
      */
     public function indexAction(Request $request, $access)
     {
@@ -43,7 +41,6 @@ class MessageController extends CommonController
             ->orWhere('m.to = :userid')
             ->setParameter('userid', $user->getId())
             ->getQuery()->getResult();
-dump($messages);
 
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
@@ -54,7 +51,6 @@ dump($messages);
      *
      * @Route("/{id}", name="message_show")
      * @Method("GET")
-     * @Template()
      */
     public function showAction(Request $request, $access, $id)
     {
@@ -66,9 +62,8 @@ dump($messages);
             throw $this->createNotFoundException('Unable to find Message entity.');
         }
 
-        return array(
-            'entity'      => $entity,
-        );
+        return $this->render('BisonLabSakonninBundle:Message:show.html.twig',
+            array('entity' => $entity));
     }
 
     /**
@@ -76,7 +71,6 @@ dump($messages);
      *
      * @Route("/search_context/system/{system}/object_name/{object_name}/external_id/{external_id}", name="message_context_search")
      * @Method("GET")
-     * @Template()
      */
     public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
     {
@@ -95,7 +89,6 @@ dump($messages);
      *
      * @Route("/pm", name="pm_create")
      * @Method("POST")
-     * @Template("BisonLabSakonninBundle:Message:new.html.twig")
      */
     public function createPmAction(Request $request, $access)
     {
@@ -130,10 +123,9 @@ dump($messages);
             return $this->returnErrorResponse("Validation Error", 400, $this->handleFormErrors($form));
         }
 
-        return array(
-            'entity' => $message,
-            'form'   => $form->createView(),
-        );
+        return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
+            array('entity' => $message, 'form'   => $form->createView()
+            ));
     }
 
     /**
@@ -141,7 +133,6 @@ dump($messages);
      *
      * @Route("/", name="message_create")
      * @Method("POST")
-     * @Template("BisonLabSakonninBundle:Message:new.html.twig")
      */
     public function createAction(Request $request, $access)
     {
@@ -183,10 +174,32 @@ dump($messages);
             return $this->returnErrorResponse("Validation Error", 400, $this->handleFormErrors($form));
         }
 
-        return array(
-            'entity' => $message,
-            'form'   => $form->createView(),
-        );
+        return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
+            array('entity' => $message,
+            'form'   => $form->createView()));
+    }
+
+    /**
+     * Check for unread messages
+     *
+     * @Route("/check_unread/", name="check_unread")
+     * @Method("GET")
+     */
+    public function checkUnreadAction(Request $request, $access)
+    {
+error_log("unread");
+        $em = $this->getDoctrineManager();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
+        $messages = $repo->createQueryBuilder('m')
+            ->where("m.state = 'UNREAD'")
+            ->andWhere('m.to = :userid')
+            ->setParameter('userid', $user->getId())
+            ->getQuery()->getResult();
+        if ($messages) {
+            return $this->returnRestData($request, true);
+        }
+        return $this->returnRestData($request, false);
     }
 
     /**

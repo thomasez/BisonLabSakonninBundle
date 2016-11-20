@@ -1,17 +1,23 @@
 <script type="text/javascript">
-
-jQuery(document).ready(function() {
-    $( "#createpm" ).dialog({
-      autoOpen: false,
-      height: 300,
-      width: 400,
-      modal: true
-    });
-});
-
 function createPmMessage() {
     $( "#createpm" ).dialog("open");
     return false;
+}
+
+function checkUnread() {
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "GET",
+        url: "{{ path('check_unread', { 'access': 'ajax' }) }}",
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (cont) {
+                $( "#message_menu" ).children().css("color","red");
+            };
+      });
 }
 
 function submitPmMessageForm() {
@@ -36,6 +42,16 @@ function submitPmMessageForm() {
     });
     return false;
 }
+
+jQuery(document).ready(function() {
+    $( "#createpm" ).dialog({
+      autoOpen: false,
+      height: 300,
+      width: 400,
+      modal: true
+    });
+    checkUnread();
+});
 
 </script>
 

@@ -72,6 +72,8 @@ class Messages
             $message->setFrom($this->_getUserIdFromUser());
             $message->setFromType("INTERNAL");
         }
+        if ($message->getToType() == "INTERNAL")
+            $message->setState("UNREAD");
 
         $em->persist($message);
         $em->flush();
