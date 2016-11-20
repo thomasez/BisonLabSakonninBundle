@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -23,6 +24,9 @@ class Message
 {
     use TimestampableEntity;
     use BlameableEntity;
+
+    private static $states = array('SENDING', 'UNREAD', 'SENT', 'READ');
+
     /**
      * @var integer
      *
@@ -105,6 +109,14 @@ class Message
      * @ORM\Column(name="body", type="text", nullable=true)
      */
     private $body;
+
+    /**
+     * @var string $state
+     *
+     * @ORM\Column(name="state", type="string", length=50, nullable=true)
+     * @Assert\Choice(callback = "getStates")
+     */
+    private $state;
 
     /**
      * @ORM\ManyToOne(targetEntity="MessageType", inversedBy="messages")
@@ -461,6 +473,45 @@ class Message
     public function getMessageType()
     {
         return $this->message_type;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     * @return Site
+     */
+    public function setState($state)
+    {
+        if (is_int($state)) { $state = self::getStates()[$state]; }
+        $state = strtoupper($state);
+        if (!in_array($state, self::getStates())) {
+            throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
+        }
+        $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string 
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Get states
+     *
+     * @return array 
+     */
+    public static function getStates()
+    {
+        // I could do the external config trick here aswell but I'd rather not
+        // have so many states.
+        return self::$states;
     }
 
     /**
