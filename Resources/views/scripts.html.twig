@@ -10,11 +10,10 @@ function checkUnread() {
         },
         type: "GET",
         url: "{{ path('check_unread', { 'access': 'ajax' }) }}",
-        dataType: "text",
+        dataType: "json",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-          /* Belt and suspenders */
-          if (cont == "true" || cont === true) {
+          if (cont === true) {
               $( "#message_menu" ).children().css("color","red");
               $( "#menu_unread" ).show();
           }
