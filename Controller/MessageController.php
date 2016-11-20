@@ -213,7 +213,6 @@ class MessageController extends CommonController
      */
     public function checkUnreadAction(Request $request, $access)
     {
-//        return $this->returnRestData($request, false);
         $em = $this->getDoctrineManager();
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
@@ -223,7 +222,6 @@ class MessageController extends CommonController
             ->setParameter('userid', $user->getId())
             ->getQuery()->getResult();
         if ($messages) {
-error_log("unread");
             return $this->returnRestData($request, true);
         }
         return $this->returnRestData($request, false);
