@@ -157,8 +157,13 @@ class Messages
 
     public function getUserNameFromUserId($userid)
     {
+        // It may just not be an ID.
+        if (!is_numeric($userid)) return $userid;
         $userManager = $this->container->get('fos_user.user_manager');
-        return $userManager->findUserBy(array('id'=>$userid));
+        $username = $userManager->findUserBy(array('id'=>$userid));
+        // Fallback.
+        if (!$username) return $userid;
+        return $username;
     }
 
     private function _getUserIdFromUser()
