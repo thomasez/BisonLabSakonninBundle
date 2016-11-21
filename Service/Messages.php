@@ -64,19 +64,24 @@ class Messages
                 throw new \InvalidArgumentException("No from address type found or set.");
             }
 
+            if (isset($data['from'])) {
+                $message->setFrom($data['from']);
+            } else {
+                // To be considered.
+                // throw new \InvalidArgumentException("No from found or set.");
+            }
+
             if (isset($data['to_type']))
                 $message->setToType($data['to_type']);
         }
 
-        if (!$message->getFrom()) {
-            $message->setFrom($this->_getUserIdFromUser());
-            $message->setFromType("INTERNAL");
-        }
         if ($message->getToType() == "INTERNAL")
             $message->setState("UNREAD");
+        else
+            // Gotta have something.
+            $message->setState("SENT");
 
         $em->persist($message);
-        $em->flush();
 
         // I planned to use an event listener to dispatch callback/forward
         // functions, but why? This postMessage functions shall be the only
@@ -84,6 +89,7 @@ class Messages
         $dispatcher = $this->container->get('sakonnin.functions');
         $dispatcher->dispatchMessageFunctions($message);
 
+        $em->flush();
         return $message;
     }
 
@@ -160,20 +166,46 @@ class Messages
         // It may just not be an ID.
         if (!is_numeric($userid)) return $userid;
         $userManager = $this->container->get('fos_user.user_manager');
-        $username = $userManager->findUserBy(array('id'=>$userid));
-        // Fallback.
-        if (!$username) return $userid;
-        return $username;
+        $user = $userManager->findUserBy(array('id'=>$userid));
+        if (!$user) return $userid;
+        return $user->getUserName();;
     }
 
-    private function _getUserIdFromUser()
+    public function getEmailFromUser($user = null)
     {
-        if (!$this->container) return '';
-        if (!$this->container->get('security.token_storage')) return '';
-        if (!$this->container->get('security.token_storage')->getToken()) return '';
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        if ($user && method_exists($user, 'getId'))
-            return $user->getId();
+        if (!$user)
+            $user = $this->getLoggedInUser();
+        // It may just not be an ID.
+        if (is_numeric($user)) {
+            $userManager = $this->container->get('fos_user.user_manager');
+            $user = $userManager->findUserBy(array('id'=>$userid));
+        }
+
+        if (is_object($user) && method_exists($user, 'getEmail'))
+            return $user->getEmail();
         return null;
+    }
+
+    public function getPhoneNumberFromUser($user = null)
+    {
+        if (!$user)
+            $user = $this->getLoggedInUser();
+        // It may just not be an ID.
+        if (is_numeric($user)) {
+            $userManager = $this->container->get('fos_user.user_manager');
+            $user = $userManager->findUserBy(array('id'=>$userid));
+        }
+
+        if (is_object($user) && method_exists($user, 'getPhoneNumber'))
+            return $user->getPhoneNumber();
+        return null;
+    }
+
+    public function getLoggedInUser()
+    {
+        if (!$this->container) return null;
+        if (!$this->container->get('security.token_storage')) return null;
+        if (!$this->container->get('security.token_storage')->getToken()) return null;
+        return $this->container->get('security.token_storage')->getToken()->getUser();
     }
 }

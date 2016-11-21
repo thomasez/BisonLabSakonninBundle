@@ -89,6 +89,9 @@ class Functions
             $attributes = $messagetype->getForwardAttributes();
         }
 
+        $sm = $this->container->get('sakonnin.messages');
+        $user = $sm->getLoggedInUser();
+
         $class = new $config['class']($this->container);
         // Add more if you need to.
         $options = array(
@@ -98,7 +101,6 @@ class Functions
             'function'   => $function,
             'config'     => $config,
         );
-
         return $class->execute($options);
     }
 }

@@ -7,46 +7,18 @@ namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
 class MailForward
 {
-
-    protected $container;
-    protected $router;
-
-    public function __construct($container, $options = array())
-    {
-        $this->container = $container;
-    }
+    use CommonFunctions;
 
     /* You may call this lazyness, jkust having an options array, but it's also
      * more future proof. */
     public function execute($options = array())
     {
         $message = $options['message'];
+        $receivers = isset($options['attributes']) ? $options['attributes'] : array();
 
-        $router = $this->getRouter();
-        $url = $router->generate('message_show', array('id' => $message->getId()), true);
-        // Not gonna do html, yet at least..
-        // $body = '<a href="' . $url . '">Link to this message</a>' . "\n\n";
-        $body = "Link to this message: " . $url  . "\n\n";
-        $body .= $message->getBody();
-
-        $mail = \Swift_Message::newInstance()
-        ->setSubject($message->getSubject())
-        ->setFrom($message->getFrom())
-        ->setTo($options['attributes'])
-        ->setBody($body,
-            'text/plain'
-        ) ;
-        $this->container->get('mailer')->send($mail);
-
-        return true;
-    }
-
-    public function getRouter()
-    {
-        if (!$this->router) {
-            $this->router = $this->container->get('router');
+        $options['provide_link'] = true;
+        foreach ($receivers as $receiver) {
+            $this->sendMail($message, $receiver, $options);
         }
-        return $this->router;
     }
-
 }

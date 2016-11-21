@@ -38,7 +38,10 @@ class MessageController extends CommonController
     public function indexAction(Request $request, $access)
     {
         $em = $this->getDoctrineManager();
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $sm = $this->container->get('sakonnin.messages');
+
+        $user = $sm->getLoggedInUser();
+
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
         $query = $repo->createQueryBuilder('m')
             ->where('m.from = :userid')
@@ -61,7 +64,9 @@ class MessageController extends CommonController
     public function unreadAction(Request $request, $access)
     {
         $em = $this->getDoctrineManager();
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $sm = $this->container->get('sakonnin.messages');
+        $user = $sm->getLoggedInUser();
+
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
         $query = $repo->createQueryBuilder('m')
             ->where('m.to = :userid')
@@ -111,7 +116,6 @@ class MessageController extends CommonController
         $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
         return $this->contextGetAction(
                     $request, $conf, $access, $system, $object_name, $external_id);
-
     }
 
     /**
@@ -138,6 +142,11 @@ class MessageController extends CommonController
 
             $message->setToType('INTERNAL');
             $message->setTo($data['to_userid']);
+
+            $sm = $this->container->get('sakonnin.messages');
+            $user = $sm->getLoggedInUser();
+            $message->setFromType('INTERNAL');
+            $message->setFrom($user->getId());
 
             $sm->postMessage($message);
 
@@ -199,9 +208,8 @@ class MessageController extends CommonController
         }
 
         if ($this->isRest($access)) {
-            # We have a problem, and need to tell our user what it is.
-            # Better make this a Json some day.
-            return $this->returnErrorResponse("Validation Error", 400, $this->handleFormErrors($form));
+            return $this->returnErrorResponse("Validation Error", 400,
+                $this->handleFormErrors($form));
         }
 
         return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
@@ -218,7 +226,9 @@ class MessageController extends CommonController
     public function checkUnreadAction(Request $request, $access)
     {
         $em = $this->getDoctrineManager();
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $sm = $this->container->get('sakonnin.messages');
+        $user = $sm->getLoggedInUser();
+
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
         $messages = $repo->createQueryBuilder('m')
             ->where("m.state = 'UNREAD'")

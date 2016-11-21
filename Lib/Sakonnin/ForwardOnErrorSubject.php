@@ -7,6 +7,7 @@ namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
 class ForwardOnErrorSubject
 {
+    use CommonFunctions;
 
     protected $container;
     protected $router;
@@ -28,28 +29,15 @@ class ForwardOnErrorSubject
         // Find who to send this to.
         $first = $message->getFirstPost();
 
-        $forwards = isset($options['attributes']) ? $options['attributes'] : array();
+        $receivers = isset($options['attributes']) ? $options['attributes'] : array();
         // I'm not ready for validating a mail address. this is just a simple.
         if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
-            $forwards[] = $first->getFrom();
+            $receivers[] = $first->getFrom();
 
-        $router = $this->getRouter();
-        $url = $router->generate('message_show', array('id' => $message->getId()), true);
-        // Not gonna do html, yet at least..
-        // $body = '<a href="' . $url . '">Link to this message</a>' . "\n\n";
-        $body = "Link to this message: " . $url  . "\n\n";
-        $body .= $message->getBody();
-
-        $mail = \Swift_Message::newInstance()
-        ->setSubject($message->getSubject())
-        ->setFrom($message->getFrom())
-        ->setTo(implode(",", $forwards))
-        ->setBody($body,
-            'text/plain'
-        ) ;
-        $this->container->get('mailer')->send($mail);
-
-        return true;
+        $options['provide_link'] = true;
+        foreach ($receivers as $receiver) {
+            $this->sendMail($message, $receiver, $options);
+        }
     }
 
     public function getRouter()
