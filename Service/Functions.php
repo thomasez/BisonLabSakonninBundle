@@ -37,18 +37,21 @@ class Functions
         }
     }
 
-    public function getForwardsAsChoices() {
+    public function getForwardsAsChoices()
+    {
         $choices = array();
         foreach ($this->forward_functions as $p => $c) {
-            $choices[$p] = $c['description'];
+            // $choices[$p] = $c['description'];
+            $choices[$c['description']] = $p;
         }
         return $choices;
     }
 
-    public function getCallbacksAsChoices() {
+    public function getCallbacksAsChoices()
+    {
         $choices = array();
         foreach ($this->callback_functions as $p => $c) {
-            $choices[$p] = $c['description'];
+            $choices[$c['description']] = $p;
         }
         return $choices;
     }
@@ -58,7 +61,8 @@ class Functions
       * is forwarded and a reply triggers a callback.  
       * But what about a reply on a reply?
      */
-    public function dispatchMessageFunctions(Message $message) {
+    public function dispatchMessageFunctions(Message $message)
+    {
         $messagetype = $message->getMessageType();
         $function = null;
         $attributes = null;
@@ -88,6 +92,7 @@ class Functions
         $class = new $config['class']($this->container);
         // Add more if you need to.
         $options = array(
+            'user'       => $user,
             'message'    => $message,
             'attributes' => $attributes,
             'function'   => $function,
@@ -95,7 +100,5 @@ class Functions
         );
 
         return $class->execute($options);
-        
     }
-    
 }
