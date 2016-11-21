@@ -50,6 +50,14 @@ trait CommonFunctions
         $message->setTo($receiver);
         $message->setToType('INTERNAL');
         $message->setBody($body);
+
+        if (!$from = $message->getFrom()) {
+            $sm = $this->container->get('sakonnin.messages');
+            $user = $sm->getLoggeInUser();
+            $message->setFrom($user->getId());
+            $message->setFromType('INTERNAL');
+        }
+
         $this->container->get('sakonnin')->postMessage($message);
 
         return true;
