@@ -29,7 +29,11 @@ class MessageController extends CommonController
     /**
      * Lists all Message entities.
      *
-     * @Route("/", name="message")
+     * don't like this. Using just "/" which would be logical makes the
+     * routecomponent match every GET below this one.
+     * Another option is to put this one as the last one.
+     * @Route("/me", * name="message")
+     * @Method("GET")
      */
     public function indexAction(Request $request, $access)
     {
