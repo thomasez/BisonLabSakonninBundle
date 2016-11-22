@@ -145,9 +145,10 @@ class MessageController extends CommonController
             );
 
             $message->setToType('INTERNAL');
-            $message->setTo($data['to_userid']);
+            if ($data['to_userid']) {
+                $message->setTo($data['to_userid']);
+            }
 
-            $sm = $this->container->get('sakonnin.messages');
             $user = $sm->getLoggedInUser();
             $message->setFromType('INTERNAL');
             $message->setFrom($user->getId());

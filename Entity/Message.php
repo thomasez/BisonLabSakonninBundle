@@ -85,7 +85,7 @@ class Message
     /**
      * @var string
      *
-     * @ORM\Column(name="subject", type="string", length=255, nullable=false)
+     * @ORM\Column(name="subject", type="string", length=255, nullable=true)
      */
     private $subject;
 

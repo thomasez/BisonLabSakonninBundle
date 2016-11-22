@@ -75,11 +75,20 @@ class Messages
                 $message->setToType($data['to_type']);
         }
 
-        if ($message->getToType() == "INTERNAL")
+        // All this is a hack, but it's gotta be somewhere and this works 
+        // for now.
+        if ($message->getToType() == "INTERNAL") {
             $message->setState("UNREAD");
-        else
+            // In case of username, store ID.
+            if (!is_numeric($message->getTo())) {
+                $userManager = $this->container->get('fos_user.user_manager');
+                $user = $userManager->findUserBy(array('username'=>$message->getTo()));
+                $message->setTo($user->getId());
+            }
+        } else {
             // Gotta have something.
             $message->setState("SENT");
+        }
 
         $em->persist($message);
 
