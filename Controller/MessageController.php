@@ -93,9 +93,13 @@ class MessageController extends CommonController
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Message entity.');
         }
-        // If it's show, it's read.
-        $entity->setState("READ");
-        $em->flush();
+        // If it's shown to receiver, it's read.
+        $sm = $this->container->get('sakonnin.messages');
+        $user = $sm->getLoggedInUser();
+        if ($entity->getTo() == $user->getId()) {
+            $entity->setState("READ");
+            $em->flush();
+        }
 
         return $this->render('BisonLabSakonninBundle:Message:show.html.twig',
             array('entity' => $entity));
