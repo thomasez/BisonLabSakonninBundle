@@ -186,7 +186,8 @@ class Messages
         return null;
     }
 
-    public function getPhoneNumberFromUser($user = null)
+    /* For finding a number to send SMSes to. It's still mobiles. */
+    public function getMobilePhoneNumberFromUser($user = null)
     {
         if (!$user)
             $user = $this->getLoggedInUser();
@@ -196,6 +197,8 @@ class Messages
             $user = $userManager->findUserBy(array('id'=>$userid));
         }
 
+        if (is_object($user) && method_exists($user, 'getMobilePhoneNumber'))
+            return $user->getMobilePhoneNumber();
         if (is_object($user) && method_exists($user, 'getPhoneNumber'))
             return $user->getPhoneNumber();
         return null;
