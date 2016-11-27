@@ -58,7 +58,7 @@ EOT
 
             // Handling a parent.
             $parent = null;
-            if ($type['parent'] && !$parent = $this->_findMt($type['parent'])) {
+            if (isset($type['parent']) && !$parent = $this->_findMt($type['parent'])) {
                 error_log("Could not find the group " . $type['parent']);
                 return false;
             }
