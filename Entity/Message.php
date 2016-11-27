@@ -17,7 +17,7 @@ use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
  * Mainly coherent with RFC 5322. When extending functionality we SHOULD comply
  * with the RFC where it adresses the functionality.
  *
- * @ORM\Table()
+ * @ORM\Table(name="sakonnin_message")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageRepository")
  */
 class Message

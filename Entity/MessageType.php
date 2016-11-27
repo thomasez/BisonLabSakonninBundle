@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MessageType
  *
- * @ORM\Table()
+ * @ORM\Table(name="sakonnin_messagetype")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageTypeRepository")
  * @Gedmo\Loggable
  */

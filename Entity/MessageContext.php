@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BisonLab\SakonninBundle\Entity\MessageContext
  *
- * @ORM\Table(name="MessageContext")
+ * @ORM\Table(name="sakonnin_message_context")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageContextRepository")
  * @Gedmo\Loggable
  */
