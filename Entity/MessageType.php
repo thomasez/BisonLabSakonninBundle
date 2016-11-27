@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="sakonnin_messagetype")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageTypeRepository")
- * @Gedmo\Loggable
  */
 class MessageType
 {
@@ -27,7 +25,6 @@ class MessageType
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false, unique=true)
-     * @Gedmo\Versioned
      */
     private $name;
 
@@ -35,7 +32,6 @@ class MessageType
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
-     * @Gedmo\Versioned
      */
     private $description;
 
@@ -43,7 +39,6 @@ class MessageType
      * @var string
      *
      * @ORM\Column(name="callback_function", type="string", length=255, nullable=true)
-     * @Gedmo\Versioned
      */
     private $callbackFunction;
 
@@ -51,7 +46,6 @@ class MessageType
      * @var string
      *
      * @ORM\Column(name="callback_attributes", type="json_array", length=255, nullable=true)
-     * @Gedmo\Versioned
      */
     private $callbackAttributes = array();
 
@@ -59,7 +53,6 @@ class MessageType
      * @var string
      *
      * @ORM\Column(name="forward_function", type="string", length=255, nullable=true)
-     * @Gedmo\Versioned
      */
     private $forwardFunction;
 
@@ -67,7 +60,6 @@ class MessageType
      * @var string
      *
      * @ORM\Column(name="forward_attributes", type="json_array", length=255, nullable=true)
-     * @Gedmo\Versioned
      */
     private $forwardAttributes = array();
 
@@ -75,7 +67,6 @@ class MessageType
      * @var int
      *
      * @ORM\Column(name="expunge_days", type="integer")
-     * @Gedmo\Versioned
      */
     private $expunge_days = 0;
 
@@ -91,7 +82,6 @@ class MessageType
     /**
      * @ORM\ManyToOne(targetEntity="MessageType", inversedBy="children")
      * @ORM\JoinColumn(name="parent_message_type_id", referencedColumnName="id")
-     * @Gedmo\Versioned
      */
     protected $parent;
 

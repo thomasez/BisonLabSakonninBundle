@@ -3,7 +3,6 @@
 namespace BisonLab\SakonninBundle\Entity;
 
 use BisonLab\CommonBundle\Entity\ContextBase;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="sakonnin_message_context")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageContextRepository")
- * @Gedmo\Loggable
  */
 class MessageContext
 {
