@@ -241,9 +241,10 @@ class MessageController extends CommonController
             ->setParameter('userid', $user->getId())
             ->getQuery()->getResult();
         if ($messages) {
-            return $this->returnRestData($request, true);
+            return $this->returnRestData($request, array('amount' => count($messages)));
         }
-        return $this->returnRestData($request, false);
+        // return $this->returnRestData($request, false);
+        return $this->returnRestData($request, array('amount' => 0));
     }
 
     /**

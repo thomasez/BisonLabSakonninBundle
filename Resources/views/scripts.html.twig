@@ -14,8 +14,9 @@ function checkUnread() {
         dataType: "json",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-          if (cont === true) {
+          if (cont['amount'] > 0) {
               $( "#message_menu" ).children().css("color","red");
+              $( "#message_menu .dropdown-toggle" ).append("("+cont['amount']+")");
               $( "#menu_unread" ).show();
           } else {
             setTimeout ( "checkUnread()", 60000 );
