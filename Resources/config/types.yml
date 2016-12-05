@@ -1,11 +1,15 @@
 parameters:
     sakonnin.address_types:
+        # Good old SMTP. (Or POP or IMAP if we pull them ourselves.)
         EMAIL:
             chooseable: true
+        # PMs
         INTERNAL:
             chooseable: true
+        # Yup, text message.
         SMS:
             chooseable: true
-        REST:
+        # Posted via the MessageController.
+        EXTERNAL:
             chooseable: false
 
