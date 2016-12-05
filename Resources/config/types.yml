@@ -6,4 +6,6 @@ parameters:
             chooseable: true
         SMS:
             chooseable: true
+        REST:
+            chooseable: false
 
