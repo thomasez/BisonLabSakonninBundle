@@ -56,6 +56,7 @@ class Message
 
     /**
      * @var string
+     * This is the from address. I am using "From" because standard.
      *
      * @ORM\Column(name="`from`", type="string", length=255, nullable=true)
      */
@@ -63,6 +64,11 @@ class Message
 
     /**
      * @var string $from_type
+     * This is the from address type. Since the from address is named "from",
+     * using "from_address_type" would feel wrong. Although both from_type and
+     * to_type is address_types in the config.
+     *
+     * Confusing? Well, now it's at least explained here.
      *
      * @ORM\Column(name="from_type", type="string", length=40, nullable=false)
      */
