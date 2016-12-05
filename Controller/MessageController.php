@@ -183,7 +183,7 @@ class MessageController extends CommonController
         $sm = $this->container->get('sakonnin.messages');
         if ($data = json_decode($request->getContent(), true)) {
             if (!isset($data['from_address_type']))
-                $data['from_address_type'] = "EXTERNAL";
+                $data['from_type'] = "EXTERNAL";
             $message = $sm->postMessage($data['message_data'], isset($data['message_context']) ? $data['message_context'] : array());
             if ($message) {
                 return $this->returnRestData($request, $message->__toArray());
