@@ -182,8 +182,9 @@ class MessageController extends CommonController
     {
         $sm = $this->container->get('sakonnin.messages');
         if ($data = json_decode($request->getContent(), true)) {
-            if (!isset($data['from_type']))
-                $data['from_type'] = "EXTERNAL";
+            if (!isset($data['message_data']['from_type'])) {
+                $data['message_data']['from_type'] = "EXTERNAL";
+            }
             $message = $sm->postMessage($data['message_data'], isset($data['message_context']) ? $data['message_context'] : array());
             if ($message) {
                 return $this->returnRestData($request, $message->__toArray());
@@ -205,11 +206,12 @@ class MessageController extends CommonController
                         ->findOneByName($data['message_type'])
                 );
             }
-            if (!$message->getFromType())
+            if (!$message->getFromType()) {
                 if (isset($data['from_type']))
                     $message->setFromType($data['from_type']);
                 else
                     $message->setFromType("EXTERNAL");
+            }
 
             $sm->postMessage($message);
 
