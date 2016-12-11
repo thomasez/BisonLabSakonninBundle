@@ -36,7 +36,7 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'description' => "Send mail and PM to user when the subject has the word error in it.",
             'attribute_spec' => "Username",
             'needs_attributes' => true,
-        )
+        ),
     );
 
     public $forward_functions = array(
@@ -45,6 +45,12 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'description' => "Forward to mail adress(es)",
             'attribute_spec' => "Mail address",
             'needs_attributes' => true,
+        ),
+        'Broadcast' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\Broadcast',
+            'description' => "Send PM to all enabled users",
+            'attribute_spec' => null,
+            'needs_attributes' => false,
         ),
         'sendpmtouserlist' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\WritePm',
