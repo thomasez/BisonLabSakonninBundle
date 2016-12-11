@@ -25,8 +25,10 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
        'Email' => array('description' => 'Emails'),
            'Manual' => array('parent' => 'Email', 'description' => "Emails sent by people"),
            'Automated' => array('parent' => 'Email', 'description' => "Emails sent by a system"),
-       'Messages' => array('description' => 'Emails'),
+       'Messages' => array('description' => 'Messaging'),
            'PM' => array('parent' => 'Messages', 'description' => "Personal Message"),
+           'Wall' => array('parent' => 'Messages', 'description' => "Messages for the front page"),
+           'Broadcast' => array('parent' => 'Messages', 'description' => "Send PM to everyone"),
     );
 
     protected function configure()
