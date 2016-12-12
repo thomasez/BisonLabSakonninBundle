@@ -6,18 +6,24 @@ use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-/* 
- * Hopefully not required.
- * (A script in scripts.html.twig does check for unread and sets the color 
- * of "Messages" here to red.)
- */
-
 class Builder implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    public function messageMenu(FactoryInterface $factory, array $options, $menu = null)
+    public function messageMenu(FactoryInterface $factory, array $options)
     {
+        $menu = $container = null;
+        if (isset($options['menu'])) {
+            $menu = $options['menu'];
+        } else {
+            $menu = $factory->createItem('root');
+        }
+        if (isset($options['container'])) {
+            $container = $options['container'];
+        } else {
+            $container = $this->container;
+        }
+
         $menu->addChild('Messages');
         $menu['Messages']->setAttribute('id', 'message_menu');
         $menu['Messages']->addChild('Read new messages', 
