@@ -170,6 +170,34 @@ class Messages
             return $form;
     }
 
+    /*
+     * Get and list messsag(es) functions.
+     */
+    public function getMessagesFroLoggedIn()
+    {
+        $user = $sm->getLoggedInUser();
+        return $this->getMessagesForUser();
+    }
+
+    public function getMessagesForUser($user)
+    {
+        $user = $sm->getLoggedInUser();
+
+        $em = $this->getDoctrineManager();
+        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
+        $query = $repo->createQueryBuilder('m')
+            ->where('m.from = :userid')
+            ->orWhere('m.to = :userid');
+        if ($request->get('unread'))
+            $query->andWhere("m.state = 'UNREAD'");
+
+        $query->setParameter('userid', $user->getId());
+        return $query->getQuery()->getResult();
+    }
+
+    /*
+     * Helper functions.
+     */
     public function getUserNameFromUserId($userid)
     {
         // It may just not be an ID.
@@ -215,6 +243,8 @@ class Messages
 
     public function getLoggedInUser()
     {
+        // Note to whoever: Controllers have "$this->getUser()", but this is
+        // not one.
         if (!$this->container) return null;
         if (!$this->container->get('security.token_storage')) return null;
         if (!$this->container->get('security.token_storage')->getToken()) return null;

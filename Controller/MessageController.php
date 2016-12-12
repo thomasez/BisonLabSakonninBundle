@@ -37,21 +37,8 @@ class MessageController extends CommonController
      */
     public function indexAction(Request $request, $access)
     {
-        $em = $this->getDoctrineManager();
         $sm = $this->container->get('sakonnin.messages');
-
-        $user = $sm->getLoggedInUser();
-
-        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
-        $query = $repo->createQueryBuilder('m')
-            ->where('m.from = :userid')
-            ->orWhere('m.to = :userid');
-        if ($request->get('unread'))
-            $query->andWhere("m.state = 'UNREAD'");
-
-        $query->setParameter('userid', $user->getId());
-        $messages = $query->getQuery()->getResult();
-
+        $messages = $this->getMessagesFromLoggedIn();
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
     }
