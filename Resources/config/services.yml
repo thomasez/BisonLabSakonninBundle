@@ -7,4 +7,4 @@ services:
         class: BisonLab\SakonninBundle\Service\Functions
         arguments: 
             container: '@service_container'
-            function_classes: %sakonnin.function_factories%
+            function_classes: "%sakonnin.function_factories%"
