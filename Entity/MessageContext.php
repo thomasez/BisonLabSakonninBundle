@@ -70,12 +70,7 @@ class MessageContext
         return $this->getMessage();
     }
 
-    public function getOwnerClass()
-    {
-        return get_class($this->getMessage());
-    }
-
-    public function getOwnerEntity()
+    public function getOwnerEntityAlias()
     {
         return "BisonLabSakonninBundle:Message";
     }
