@@ -61,9 +61,10 @@ trait CommonFunctions
         return true;
     }
 
-    public function sendPm($message, $receiver)
+    public function sendPm($message, $receiver, $options = array())
     {
         $sm = $this->container->get('sakonnin.messages');
+        // Receiver should/could be userid, username or user object.
         if (!is_numeric($receiver)) {
             // Gotta find username.
             $userManager = $this->container->get('fos_user.user_manager');
@@ -84,6 +85,37 @@ trait CommonFunctions
         $this->container->get('sakonnin')->postMessage($message);
 
         return true;
+    }
+
+    public function sendSms($message, $receiver, $options = array())
+    {
+        $sms_handler = $this->container->get('sakonnin.sms_handler');
+        if ($number = $this->extractMobilePhoneNumberFromReceiver($receiver))
+            $sms_handler->send($message->getBody(), $number, $options);
+
+        return true;
+    }
+
+    // This should be put in a trait later.
+    public function extractMobilePhoneNumberFromReceiver($receiver)
+    {
+        if (is_object($receiver) && method_exists($receiver, "getMobilePhoneNumber"))
+            return $receiver->getMobilePhoneNumber();
+        if (is_string($receiver) || is_numeric($receiver))
+            return $receiver;
+        // But what to do now? :=)
+        return null;
+    }
+
+    // This should be put in a trait later.
+    public function extractEmailFromReceiver($receiver)
+    {
+        if (is_object($receiver) && method_exists($receiver, "getEmail"))
+            return $receiver->getEmail();
+        if (is_string($receiver))
+            return $receiver;
+        // But what to do now? :=)
+        return null;
     }
 
     public function getRouter()

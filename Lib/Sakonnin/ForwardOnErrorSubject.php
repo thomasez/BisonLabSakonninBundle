@@ -29,7 +29,9 @@ class ForwardOnErrorSubject
         // Find who to send this to.
         $first = $message->getFirstPost();
 
-        $receivers = isset($options['attributes']) ? $options['attributes'] : array();
+        $receivers = isset($options['attributes']) 
+            ? $options['attributes'] : array();
+
         // I'm not ready for validating a mail address. this is just a simple.
         if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
             $receivers[] = $first->getFrom();

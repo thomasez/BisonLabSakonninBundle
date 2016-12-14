@@ -8,3 +8,10 @@ services:
         arguments: 
             container: '@service_container'
             function_classes: "%sakonnin.function_factories%"
+
+    # Should this be here at all? It's kinda optional.
+    sakonnin.sms_handler:
+        class: BisonLab\SakonninBundle\Service\SmsHandler
+        arguments: 
+            container: '@service_container'
+            options: '%sakonnin.sms%'

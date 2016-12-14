@@ -36,6 +36,11 @@ class MessageType
     private $description;
 
     /**
+     * Yes, there is only one. I am not sure this is enough and to be honest,
+     * why I chose to make it only one. Keep it simple I guess.
+     *
+     * And BTW; How do you know which function the attributes are for?
+     * Definately adding complexity by adding more than one function.
      * @var string
      *
      * @ORM\Column(name="callback_function", type="string", length=255, nullable=true)
@@ -50,6 +55,7 @@ class MessageType
     private $callbackAttributes = array();
 
     /**
+     * Same here, this could have been an array, but it's complicated.
      * @var string
      *
      * @ORM\Column(name="forward_function", type="string", length=255, nullable=true)

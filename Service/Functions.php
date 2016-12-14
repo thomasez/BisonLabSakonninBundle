@@ -22,7 +22,6 @@ class Functions
         foreach ($Sakonnin_classes as $class) {
             $sakonnin_object = new $class($container, array());
 
-            $this->Sakonnin_classes[] = $sakonnin_object;
             $forward_functions = $sakonnin_object->getForwardFunctions();
             foreach ($forward_functions as $p => $config) {
                 if (!isset($config['class']))  $config['class'] = $class;
@@ -56,10 +55,10 @@ class Functions
         return $choices;
     }
     
-    /*  The issue not really decided yet is "When to fire forward functions and
-      * when to fire callbacks?". One thing we do know, is that a new message
-      * is forwarded and a reply triggers a callback.  
-      * But what about a reply on a reply?
+    /* The issue not really decided yet is "When to fire forward functions and
+     * when to fire callbacks?". One thing we do know, is that a new message
+     * is forwarded and a reply triggers a callback.  
+     * But what about a reply on a reply?
      */
     public function dispatchMessageFunctions(Message $message)
     {

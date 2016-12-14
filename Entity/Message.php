@@ -135,6 +135,21 @@ class Message
      */
     private $contexts;
 
+    /*
+     * These two are not meant to be stored. They are just for convenience.
+     * It's meant for user objects.
+     * I could make this require the FOS UserInterface but will try without.
+     * For being useful at all, they should have the function "getEmail".
+     * "getUsername" and "getMobilePhoneNumber" is useful aswell.  But do a
+     * method_exists on the object to make sure the functions are there
+     * when you're gonna use it.
+     *
+     * Beware that sender may not be the same as "From", but is the user object
+     * creating the message.
+     */
+    private $sender;
+    private $receivers;
+
     public function __construct($options = array())
     {
         $this->setMessageId(uniqid());
@@ -165,7 +180,7 @@ class Message
 
         $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
         $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
-
+        $this->receivers = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
@@ -615,4 +630,57 @@ class Message
         );
     }
 
+    /**
+     * Get sender
+     *
+     * @return objects
+     */
+    public function getSender()
+    {
+        return $this->sender;
+    }
+
+    /**
+     * Add senders
+     *
+     * @param $sender;
+     * @return Message
+     */
+    public function setSender($sender)
+    {
+        $this->sender = $sender;
+        return $this;
+    }
+
+    /**
+     * Get receivers
+     *
+     * @return objects
+     */
+    public function getReceivers()
+    {
+        return $this->receivers;
+    }
+
+    /**
+     * Add receivers
+     *
+     * @param object $receiver;
+     * @return Message
+     */
+    public function addReceiver($receiver)
+    {
+        $this->receivers[] = $receiver;
+        return $this;
+    }
+
+    /**
+     * Remove receiver
+     *
+     * @param object $receiver;
+     */
+    public function removeReceiver($receiver)
+    {
+        $this->receivers->removeElement($receiver);
+    }
 }

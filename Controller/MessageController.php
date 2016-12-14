@@ -16,6 +16,7 @@ use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 /**
  * Message controller.
@@ -38,7 +39,7 @@ class MessageController extends CommonController
     public function indexAction(Request $request, $access)
     {
         $sm = $this->container->get('sakonnin.messages');
-        $messages = $this->getMessagesFromLoggedIn();
+        $messages = $sm->getMessagesForLoggedIn();
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
     }
@@ -52,19 +53,11 @@ class MessageController extends CommonController
     {
         $em = $this->getDoctrineManager();
         $sm = $this->container->get('sakonnin.messages');
-        $user = $sm->getLoggedInUser();
-
-        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
-        $query = $repo->createQueryBuilder('m')
-            ->where('m.to = :userid')
-            ->andWhere("m.state = 'UNREAD'");
-
-        $query->setParameter('userid', $user->getId());
-        $messages = $query->getQuery()->getResult();
-
+        $messages = $sm->getMessagesForLoggedIn('UNREAD');
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
     }
+
     /**
      * Finds and displays a Message entity.
      *
@@ -76,18 +69,16 @@ class MessageController extends CommonController
         $em = $this->getDoctrineManager();
 
         $entity = $em->getRepository('BisonLabSakonninBundle:Message')->find($id);
-
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Message entity.');
         }
         // If it's shown to receiver, it's read.
         $sm = $this->container->get('sakonnin.messages');
-        $user = $sm->getLoggedInUser();
+        $user = $this->getUser();
         if ($entity->getTo() == $user->getId()) {
             $entity->setState("READ");
             $em->flush();
         }
-
         return $this->render('BisonLabSakonninBundle:Message:show.html.twig',
             array('entity' => $entity));
     }
@@ -106,11 +97,12 @@ class MessageController extends CommonController
         $conf['show_template'] = "BisonLabSakonninBundle:Message:show.html.twig";
         $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
         return $this->contextGetAction(
-                    $request, $conf, $access, $system, $object_name, $external_id);
+            $request, $conf, $access, $system, $object_name, $external_id);
     }
 
     /**
      * Creates a new PM
+     * (Which does look more and more like the usual createMessage.)
      *
      * @Route("/pm", name="pm_create")
      * @Method("POST")
@@ -126,9 +118,11 @@ class MessageController extends CommonController
         if ($form->isValid()) {
             $message = $form->getData();
             $em = $this->getDoctrineManager();
+
+            $message_type = $data['message_type'] ?: "PM";
             $message->setMessageType(
                 $em->getRepository('BisonLabSakonninBundle:MessageType')
-                    ->findOneByName('PM')
+                    ->findOneByName($message_type)
             );
 
             $message->setToType('INTERNAL');
@@ -136,22 +130,24 @@ class MessageController extends CommonController
                 $message->setTo($data['to_userid']);
             }
 
-            $user = $sm->getLoggedInUser();
+            $user = $this->getUser();
             $message->setFromType('INTERNAL');
             $message->setFrom($user->getId());
 
             $sm->postMessage($message);
 
             if ($this->isRest($access)) {
-                return $this->returnRestData($request, $message);
+                return $this->returnRestData($request, "OK Done");
             }
-            return $this->redirect($this->generateUrl('message_show', array('id' => $message->getId())));
+            return $this->redirect($this->generateUrl('message_show',
+                array('id' => $message->getId())));
         }
 
         if ($this->isRest($access)) {
             # We have a problem, and need to tell our user what it is.
             # Better make this a Json some day.
-            return $this->returnErrorResponse("Validation Error", 400, $this->handleFormErrors($form));
+            return $this->returnErrorResponse("Validation Error", 400,
+                $this->handleFormErrors($form));
         }
 
         return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
@@ -205,7 +201,8 @@ class MessageController extends CommonController
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, $message);
             }
-            return $this->redirect($this->generateUrl('message_show', array('id' => $message->getId())));
+            return $this->redirect($this->generateUrl('message_show',
+                    array('id' => $message->getId())));
         }
 
         if ($this->isRest($access)) {
@@ -214,8 +211,7 @@ class MessageController extends CommonController
         }
 
         return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
-            array('entity' => $message,
-            'form'   => $form->createView()));
+            array('entity' => $message, 'form'   => $form->createView()));
     }
 
     /**
@@ -228,7 +224,7 @@ class MessageController extends CommonController
     {
         $em = $this->getDoctrineManager();
         $sm = $this->container->get('sakonnin.messages');
-        $user = $sm->getLoggedInUser();
+        $user = $this->getUser();
 
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
         $messages = $repo->createQueryBuilder('m')
@@ -256,9 +252,7 @@ class MessageController extends CommonController
             'action' => $this->generateUrl('message_create'),
             'method' => 'POST',
         ));
-
         $form->add('submit', SubmitType::class, array('label' => 'Send'));
-
         return $form;
     }
 
@@ -268,9 +262,8 @@ class MessageController extends CommonController
             'action' => $this->generateUrl('pm_create'),
             'method' => 'POST',
         ));
-
-        $form->add('submit', SubmitType::class, array('label' => 'Send'));
-
+        $form->add('message_type', HiddenType::class);
+        $form->add('submit', SubmitType::class, array('label' => 'Send', 'attr' => array('id' => 'pmsubmit')));
         return $form;
     }
 }

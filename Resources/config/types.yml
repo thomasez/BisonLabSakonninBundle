@@ -3,13 +3,14 @@ parameters:
         # Good old SMTP. (Or POP or IMAP if we pull them ourselves.)
         EMAIL:
             chooseable: true
-        # PMs
+        # PMs - I Wish I used "USERID" as type. As it *is* an address type.
+        # TODO: Change to USERID.
         INTERNAL:
             chooseable: true
         # Yup, text message.
         SMS:
             chooseable: true
-        # Posted via the MessageController.
+        # Posted via the MessageController. Used as default if none else is
+        # posted in the create.
         EXTERNAL:
             chooseable: false
-

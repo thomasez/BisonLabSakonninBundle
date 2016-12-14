@@ -79,12 +79,16 @@ class Messages
         // for now.
         if ($message->getToType() == "INTERNAL") {
             $message->setState("UNREAD");
+            $userManager = $this->container->get('fos_user.user_manager');
             // In case of username, store ID.
             if (!is_numeric($message->getTo())) {
-                $userManager = $this->container->get('fos_user.user_manager');
                 $user = $userManager->findUserBy(array('username'=>$message->getTo()));
                 $message->setTo($user->getId());
+            } else {
+                $user = $userManager->findUserBy(array('id'=>$message->getTo()));
             }
+            // Anyway, add the user object as a receiver.
+            $message->addReceiver($user);
         } else {
             // Gotta have something.
             $message->setState("SENT");
@@ -95,6 +99,7 @@ class Messages
         // I planned to use an event listener to dispatch callback/forward
         // functions, but why? This postMessage functions shall be the only
         // entry point for creating messages, so why should I bother?
+        $message->setSender($this->getLoggedInUser());
         $dispatcher = $this->container->get('sakonnin.functions');
         $dispatcher->dispatchMessageFunctions($message);
 
@@ -173,23 +178,24 @@ class Messages
     /*
      * Get and list messsag(es) functions.
      */
-    public function getMessagesFroLoggedIn()
+    public function getMessagesForLoggedIn($state = null)
     {
-        $user = $sm->getLoggedInUser();
-        return $this->getMessagesForUser();
+        $user = $this->getLoggedInUser();
+        return $this->getMessagesForUser($user, $state);
     }
 
-    public function getMessagesForUser($user)
+    public function getMessagesForUser($user, $state = null)
     {
-        $user = $sm->getLoggedInUser();
+        $user = $this->getLoggedInUser();
 
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
         $query = $repo->createQueryBuilder('m')
             ->where('m.from = :userid')
             ->orWhere('m.to = :userid');
-        if ($request->get('unread'))
-            $query->andWhere("m.state = 'UNREAD'");
+        if ($state)
+            $query->andWhere("m.state = :state")
+                ->setParameter('state', $state);
 
         $query->setParameter('userid', $user->getId());
         return $query->getQuery()->getResult();
