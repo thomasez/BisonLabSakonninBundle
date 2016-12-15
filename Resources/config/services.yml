@@ -10,8 +10,13 @@ services:
             function_classes: "%sakonnin.function_factories%"
 
     # Should this be here at all? It's kinda optional.
-    sakonnin.sms_handler:
-        class: BisonLab\SakonninBundle\Service\SmsHandler
-        arguments: 
-            container: '@service_container'
-            options: '%sakonnin.sms%'
+    # Answer: No. Put it in your local app/config/services.yml if you are going
+    # to use it.
+    # Add the sakonnin.sms: parameters needed by your handler in parameters.yml
+    # or config.yml. Or even in service.yml itself. (But remember; no
+    # passwords, they belong in parameters.yml and not your versioning system.
+    #sakonnin.sms_handler:
+    #    class: BisonLab\SakonninBundle\Service\SmsHandler
+    #    arguments: 
+    #        container: '@service_container'
+    #        options: '%sakonnin.sms%'
