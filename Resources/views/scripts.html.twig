@@ -27,7 +27,6 @@ function checkUnread() {
 }
 
 function submitPmMessageForm() {
-    formdata = $( "#createpmform" ).serialize();
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
