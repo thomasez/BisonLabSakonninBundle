@@ -76,11 +76,12 @@ EOT
                 $mt->setCallbackType($type['callback_type']);
             if (isset($type['forward_function']))
                 $mt->setForwardFunction($type['forward_function']);
-            if (isset($type['forward_function']))
-                $mt->setForwardType($type['forward_typ']);
+            if (isset($type['forward_type']))
+                $mt->setForwardType($type['forward_type']);
             $this->entityManager->persist($mt);
             if ($parent) {
-                $output->writeln("Setting parent " . $parent->getName() . " on " . $mt->getName());
+                $output->writeln("Setting parent " 
+                    . $parent->getName() . " on " . $mt->getName());
                 $parent->addChild($mt);
                 $this->entityManager->persist($parent);
             }
