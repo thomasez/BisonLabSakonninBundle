@@ -47,12 +47,12 @@ class Message
      * @ORM\ManyToOne(targetEntity="Message", inversedBy="replies")
      * @ORM\JoinColumn(name="in_reply_to_message_id", referencedColumnName="id")
      */
-    protected $in_reply_to;
+    private $in_reply_to;
 
     /**
      * @ORM\OneToMany(targetEntity="Message", mappedBy="in_reply_to", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
-    protected $replies;
+    private $replies;
 
     /**
      * @var string
