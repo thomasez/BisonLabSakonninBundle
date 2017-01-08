@@ -100,7 +100,6 @@ class MessageController extends CommonController
         if ($this->isRest($access)) {
             $conf['show_template'] = "BisonLabSakonninBundle:Message:_show.html.twig";
             $conf['list_template'] = "BisonLabSakonninBundle:Message:_index.html.twig";
-
         } else {
             $conf['show_template'] = "BisonLabSakonninBundle:Message:show.html.twig";
             $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
