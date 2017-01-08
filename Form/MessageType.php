@@ -28,13 +28,13 @@ class MessageType extends AbstractType
             ->add('to', TextType::class, array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
             ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
-            ->add('body', TextareaType::class, array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
+            ->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
         $type_choices = array();
         if (!$options['data']->getMessageType()) {
             $builder->add('message_type', EntityType::class,
                 array(
-                    'label' => 'Group',
+                    'label' => 'Type',
                     'placeholder' => 'Choose a Message Type',
                     'required' => true,
                     'class' => 'BisonLabSakonninBundle:MessageType',
@@ -45,14 +45,25 @@ class MessageType extends AbstractType
             } else { 
                 $type_choices = array($options['data']->getMessageType());
             }
-            $builder->add('message_type', EntityType::class,
-                array(
-                    'label' => 'Group',
-                    'placeholder' => 'Choose a Message Type',
-                    'required' => true,
-                    'class' => 'BisonLabSakonninBundle:MessageType',
-                    'choices' => $type_choices,
-                ));
+            // Todo: Add default type.
+            if (count($type_choices) == 1) {
+                $builder->add('message_type', EntityType::class,
+                    array(
+                        'label' => 'Type',
+                        'required' => true,
+                        'class' => 'BisonLabSakonninBundle:MessageType',
+                        'choices' => $type_choices,
+                    ));
+            } else {
+                $builder->add('message_type', EntityType::class,
+                    array(
+                        'label' => 'Message type',
+                        'placeholder' => 'Choose a Message Type',
+                        'required' => true,
+                        'class' => 'BisonLabSakonninBundle:MessageType',
+                        'choices' => $type_choices,
+                    ));
+            }
         }
     }
     
