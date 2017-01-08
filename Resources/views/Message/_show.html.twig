@@ -1,0 +1,91 @@
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Subject</th>
+                <td>{{ entity.subject }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Message ID</th>
+                <td>{{ entity.messageid }}</td>
+            </tr>
+            <tr>
+                <th>Message type</th>
+                <td>{{ entity.messagetype }}</td>
+            </tr>
+            <tr>
+                <th>From</th>
+                <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>From address type</th>
+                <td>{{ entity.fromtype }}</td>
+            </tr>
+            <tr>
+                <th>To</th>
+                <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>To address type</th>
+                <td>{{ entity.totype }}</td>
+            </tr>
+            <tr>
+                <th>State</th>
+                <td>{{ entity.state }}</td>
+            </tr>
+            <tr>
+                <th>Contenttype</th>
+                <td>{{ entity.contenttype }}</td>
+            </tr>
+            <tr>
+                <th>Header</th>
+                <td>{{ entity.header }}</td>
+            </tr>
+            <tr>
+                <th>Createdat</th>
+                <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Updatedat</th>
+                <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Createdby</th>
+                <td>{{ entity.createdBy }}</td>
+            </tr>
+            <tr>
+                <th>Updatedby</th>
+                <td>{{ entity.updatedBy }}</td>
+            </tr>
+            <tr>
+                <th>Sources</th>
+                <td>
+                {% for context in entity.contexts %}
+                    {% if context.url matches '{^http}' %}
+                    <a href="{{ context.url }}">{{ context.system }} - {{ context.objectname }}</a><br />
+                    {% else %}
+                    <a href="{{app.request.baseurl}}{{ context.url }}">{{ context.system }} - {{ context.objectname }}</a><br />
+                    {% endif %}
+                {% endfor %}
+                </td>
+            </tr>
+                {% if entity.replies %}
+            <tr>
+                <th>Replies</th>
+                <td>
+                {% for reply in entity.replies %}
+                  <a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a><br />
+                {% endfor %}
+                </td>
+            </tr>
+                {% endif %}
+            <tr>
+                <th>Body</th>
+                <td><pre>{{ entity.body }}</pre></td>
+            </tr>
+
+        </tbody>
+    </table>

@@ -1,0 +1,34 @@
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    $( "#messagelogbox" ).dialog({
+      autoOpen: false,
+      height: 700,
+      width: 600,
+      modal: true
+    });
+});
+
+function openMessageLogBox() {
+    $( "#messagelogbox" ).dialog("open");
+{# There will be more options #}
+{% if context is defined %}
+    url = "{{ path('message_context_search', {'access': 'ajax', 'system': context.system, 'object_name': context.object_name, 'external_id': context.external_id }) }}";
+{% endif %}
+    $.get(
+        url, 
+        function( data ) {
+            $( "#messagelogcontent" ).html(data);
+        },
+        null,
+        'html'
+    );
+    return false;
+}
+
+</script>
+
+<div id="messagelogbox">
+<div id="messagelogcontent">
+</div>
+</div>
+

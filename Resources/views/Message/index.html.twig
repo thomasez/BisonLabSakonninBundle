@@ -2,57 +2,5 @@
 
 {% block body -%}
     <h1>Message list</h1>
-<script>
-$(document).ready(function() {
-    $('#message_list').DataTable( {
-        "pageLength": 200,
-        "order": [[ 6, "desc" ]],
-        "lengthMenu": [[ 50, 100, 200, 500 -1], [50, 100, 200, 500, "All"]]
-    } );
-} );
-</script>
-
-    <table class="records_list" id="message_list">
-        <thead>
-            <tr>
-                <th>Subject</th>
-                <th>From</th>
-                <th>To</th>
-                <th>State</th>
-                <th>Message Id</th>
-                <th>Message Type</th>
-                <th>Createdat</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            {% if not entity.inreplyto %}
-            <tr>
-                <td>{{ entity.subject }}
-                {% if entity.replies %}
-                {% for reply in entity.replies %}
-                  <br />reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a>
-                {% endfor %}
-                {% endif %}
-                </td>
-                <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
-                <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
-                <td>{{ entity.state }}</td>
-                <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.messageid }}</a></td>
-                <td>{{ entity.messagetype.parent }} - {{ entity.messagetype }}</td>
-                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('message_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-            {% endif %}
-        {% endfor %}
-        </tbody>
-    </table>
-
+{% include 'BisonLabSakonninBundle:Message:_index.html.twig' with { 'entities': entities }  %}
     {% endblock %}

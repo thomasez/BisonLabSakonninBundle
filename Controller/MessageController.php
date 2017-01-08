@@ -94,8 +94,17 @@ class MessageController extends CommonController
         $context_conf = $this->container->getParameter('app.contexts');
         $conf = $context_conf['BisonLabSakonninBundle']['Message'];
         $conf['entity'] = "BisonLabSakonninBundle:Message";
-        $conf['show_template'] = "BisonLabSakonninBundle:Message:show.html.twig";
-        $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
+
+        // If it's REST, but HTML, we'll be returning HTML content, but not a
+        // complete page.
+        if ($this->isRest($access)) {
+            $conf['show_template'] = "BisonLabSakonninBundle:Message:_show.html.twig";
+            $conf['list_template'] = "BisonLabSakonninBundle:Message:_index.html.twig";
+
+        } else {
+            $conf['show_template'] = "BisonLabSakonninBundle:Message:show.html.twig";
+            $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
+        }
         return $this->contextGetAction(
             $request, $conf, $access, $system, $object_name, $external_id);
     }
