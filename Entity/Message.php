@@ -624,7 +624,7 @@ class Message
             'from' => $this->getFrom(),
             'to' => $this->getTo(),
             'createdat' => $this->getCreatedAt(),
-            'in_reply_to' => $this->getInReplyTo()->getMessageId(),
+            'in_reply_to' => $this->getInReplyTo() ? $this->getInReplyTo()->getMessageId() : null,
             'message_type' => (string)$this->getMessageType(),
             'body' => $this->getBody(),
         );

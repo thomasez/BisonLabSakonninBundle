@@ -170,7 +170,7 @@ class MessageController extends CommonController
             }
             $message = $sm->postMessage($data['message_data'], isset($data['message_context']) ? $data['message_context'] : array());
             if ($message) {
-                return $this->returnRestData($request, $message->__toArray());
+                return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
             return $this->returnErrorResponse("Validation Error", 400);
         }
@@ -199,7 +199,7 @@ class MessageController extends CommonController
             $sm->postMessage($message);
 
             if ($this->isRest($access)) {
-                return $this->returnRestData($request, $message);
+                return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
             return $this->redirect($this->generateUrl('message_show',
                     array('id' => $message->getId())));

@@ -26,7 +26,6 @@ function submitMessageForm() {
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            alert("Message sent, thank you.");
             $( "#createmessage" ).dialog("close");
       }).fail(function(xhr, status, error) {
             errmsg = "Message sending failed\n";
