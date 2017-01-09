@@ -201,6 +201,13 @@ class Messages
         return $query->getQuery()->getResult();
     }
 
+    public function contextHasMessages($context)
+    {
+        $em = $this->getDoctrineManager();
+        $repo = $em->getRepository('BisonLabSakonninBundle:MessageContext');
+        return $repo->contextHasMessages($context);
+    }
+
     /*
      * Helper functions.
      */

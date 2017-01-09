@@ -12,4 +12,26 @@ use BisonLab\CommonBundle\Entity\ContextBaseRepository;
  */
 class MessageContextRepository extends ContextBaseRepository
 {
+    /*
+     * This should explain itself, but the context here is of course not a
+     * MessageContext entity, but the keys to find one. And the answer to the
+     * question is easy, if there are one or more MessageContexts, there are
+     * messages.
+     */
+    public function contextHasMessages($context_data)
+    {
+        $qb2 = $this->_em->createQueryBuilder();
+        $qb2->select('mc')
+              ->from($this->_entityName, 'mc')
+              ->where('mc.system = :system')
+              ->andWhere('mc.object_name = :object_name')
+              ->andWhere('mc.external_id = :external_id')
+              ->setParameter("system", $context_data['system'])
+              ->setParameter("object_name", $context_data['object_name'])
+              ->setParameter("external_id", $context_data['external_id'])
+              ->setMaxResults(1);
+
+        $message_context = $qb2->getQuery()->getResult();
+        return !empty($message_context);
+    }
 }
