@@ -271,7 +271,7 @@ class MessageController extends CommonController
             'method' => 'POST',
         ));
         $form->add('message_type', HiddenType::class);
-        $form->add('submit', SubmitType::class, array('label' => 'Send', 'attr' => array('id' => 'pmsubmit')));
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
         return $form;
     }
 }
