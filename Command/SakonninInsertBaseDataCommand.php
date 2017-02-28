@@ -33,15 +33,14 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
 
     protected function configure()
     {
-        $this->setDescription('Inserts the data we need for a working Sakonnin.')
+        $this->setDescription('Inserts or updates the data we need for a working Sakonnin.')
                 ->setHelp(<<<EOT
-Inserts the data we need for a working Sakonnin.
+Inserts or updates the data we need for a working Sakonnin.
 
 You could call this "Load fixtures" as well. It's for preparing the system for use.
 EOT
             );
-
-        $this->setName('sakonnin:insert:basedata');
+        $this->setName('sakonnin:insert-basedata');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -57,7 +56,6 @@ EOT
                 ->getRepository('BisonLabSakonninBundle:MessageType');
 
         foreach ($this->message_types as $name => $type) {
-
             // Handling a parent.
             $parent = null;
             if (isset($type['parent']) && !$parent = $this->_findMt($type['parent'])) {
@@ -65,7 +63,9 @@ EOT
                 return false;
             }
 
-            $mt = new MessageType();
+            // Now we can update.
+            if (!$mt = $this->_findMt($name))
+                $mt = new MessageType();
 
             $mt->setName($name);
             if (isset($type['description']))
@@ -94,7 +94,8 @@ EOT
         $this->entityManager->flush();
     }
 
-    private function _findMt($name) {
+    private function _findMt($name)
+    {
         if (isset($this->mt_cache[$name]))
             return $this->mt_cache[$name];
             
