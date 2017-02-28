@@ -55,7 +55,8 @@ class MessageType extends AbstractType
             if (count($type_choices) == 1) {
                 $builder->add('message_type', EntityType::class,
                     array(
-                        'label' => 'Type',
+                        'attr' => array('class' => 'hidden'),
+                        'label' => false,
                         'required' => true,
                         'class' => 'BisonLabSakonninBundle:MessageType',
                         'choices' => $type_choices,
