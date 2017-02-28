@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Form;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,6 +39,11 @@ class MessageType extends AbstractType
                     'placeholder' => 'Choose a Message Type',
                     'required' => true,
                     'class' => 'BisonLabSakonninBundle:MessageType',
+                    'query_builder' => function(EntityRepository $er) {
+                     return $er->createQueryBuilder('m')
+                         ->where('m.parent is not null')
+                         ->orderBy('m.parent, m.name', 'ASC');
+                        },
                 ));
         } else {
             if (count($options['data']->getMessageType()->getChildren()) > 0) {
