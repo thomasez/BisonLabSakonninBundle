@@ -93,6 +93,20 @@ class MessageController extends CommonController
     public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
     {
         // Search/Index - basically same same. For now at least.
+        /* But it has a very annoying drawback;
+         * It more or less does not work.
+         * The reason is simple: I have to be able to filter every entity on
+         * granted or not. And I can do that on two ways:
+         *
+         * Not use contextGetAction from the CommonBundle and make my own here
+         *   and filter every single entity.
+         * Rewrite contextGetAction to check every entity and filter.
+         *   Which means quite alot more calls and slower response.
+         * Add a better is_granted to twig and filter there.
+         *   is_granted in twog only supports a role check, not the symfony
+         *   security voter, which is quite odd. Someone else should have felt
+         *   this need aswell.
+         */
         $this->denyAccessUnlessGranted('index', new Message());
         $context_conf = $this->container->getParameter('app.contexts');
         $conf = $context_conf['BisonLabSakonninBundle']['Message'];
