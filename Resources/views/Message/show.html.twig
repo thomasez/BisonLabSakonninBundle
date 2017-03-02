@@ -1,7 +1,7 @@
 {% extends 'BisonLabSakonninBundle::base.html.twig' %}
 
 {% block body -%}
-    <h1>Message</h1>
+    <h1>{{ entity.messagetype }}</h1>
 {% include 'BisonLabSakonninBundle:Message:_show.html.twig' with { 'entity': entity }  %}
         <ul class="record_actions">
     <li>
