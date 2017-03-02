@@ -22,15 +22,45 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
     private $mt_cache = array();
 
     private $message_types = array(
-       'Email' => array('description' => 'Emails'),
-           'Manual' => array('parent' => 'Email', 'description' => "Emails sent by people"),
-           'Automated' => array('parent' => 'Email', 'description' => "Emails sent by a system"),
-       'Messages' => array('description' => 'Messaging'),
-           'PM' => array('parent' => 'Messages', 'description' => "Personal Message"),
-           'Announcement' => array('parent' => 'Messages', 'description' => "Announcement"),
-           'Broadcast' => array('parent' => 'Messages', 'description' => "Send PM to everyone"),
-       'Notes' => array('description' => 'Notes'),
-           'Note' => array('parent' => 'Notes', 'description' => "Note"),
+       'Email' => array(
+                'description' => 'Emails'
+                ),
+           'Manual' => array(
+                'parent' => 'Email',
+                'security_model' => 'PRIVATE',
+                'description' => "Emails sent by people"
+                ),
+           'Automated' => array(
+                'parent' => 'Email',
+                'security_model' => 'ALL_READ',
+                'description' => "Emails sent by a system"
+                ),
+       'Messages' => array(
+                'description' => 'Messaging'
+                ),
+           'PM' => array(
+                'parent' => 'Messages',
+                'security_model' => 'PRIVATE',
+                'description' => "Personal Message"
+                ),
+           'Announcement' => array(
+                'parent' => 'Messages',
+                'security_model' => 'ALL_READ',
+                'description' => "Announcement"
+                ),
+           'Broadcast' => array(
+                'parent' => 'Messages',
+                'security_model' => 'PRIVATE',
+                'description' => "Send PM to everyone"
+                ),
+       'Notes' => array(
+                'description' => 'Notes'
+                ),
+           'Note' => array(
+                'parent' => 'Notes',
+                'security_model' => 'ALL_READ',
+                'description' => "Note"
+                ),
     );
 
     protected function configure()
@@ -74,12 +104,10 @@ EOT
                 $mt->setDescription($type['description']);
             if (isset($type['callback_function']))
                 $mt->setCallbackFunction($type['callback_function']);
-            if (isset($type['callback_type']))
-                $mt->setCallbackType($type['callback_type']);
+            if (isset($type['security_model']))
+                $mt->setSecurityModel($type['security_model']);
             if (isset($type['forward_function']))
                 $mt->setForwardFunction($type['forward_function']);
-            if (isset($type['forward_type']))
-                $mt->setForwardType($type['forward_type']);
             $this->entityManager->persist($mt);
             if ($parent) {
                 $output->writeln("Setting parent " 

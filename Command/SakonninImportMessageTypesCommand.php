@@ -33,7 +33,7 @@ This command reads a CVS and import the lines as message types.
 
 Format:
 
- name;group_name(if in a group);description;callback_function;callback_type;forward_function;forward_type
+ name;group_name(if in a group);description;security_model;callback_function;forward_function;
 
 Options: --file=<filename> --delimiter=',' 
 
@@ -77,7 +77,6 @@ EOT
 
         $this->entityManager = $this->getDoctrineManager();
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-
         $this->mt_repo    = $this->entityManager
                 ->getRepository('BisonLabSakonninBundle:MessageType');
 
@@ -102,10 +101,9 @@ EOT
 
             $mt->setName($data[0]);
             $mt->setDescription($data[2]);
-            $mt->setCallbackFunction($data[3]);
-            $mt->setCallbackType($data[4]);
+            $mt->setSecurityModel($data[3]);
+            $mt->setCallbackFunction($data[4]);
             $mt->setForwardFunction($data[5]);
-            $mt->setForwardType($data[6]);
             $this->entityManager->persist($mt);
             if ($parent) {
                 $output->writeln("Setting parent " . $parent->getName() . " on " . $mt->getName());

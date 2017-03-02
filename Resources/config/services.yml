@@ -9,6 +9,13 @@ services:
             container: '@service_container'
             function_classes: "%sakonnin.function_factories%"
 
+    sakonnin.securitymodel_voter:
+        class: BisonLab\SakonninBundle\Service\SecurityModelVoter
+        arguments: ['@external_retriever' ]
+        public: false
+        tags:
+            - { name: security.voter }
+
     sakonnin_messages:
         alias: sakonnin.messages
 

@@ -92,6 +92,7 @@ function addTagFormDeleteLink($tagFormLi) {
 {{ form_row(edit_form.create_group) }}
 {% endif %}
 {{ form_row(edit_form.expunge_days) }}
+{{ form_row(edit_form.security_model) }}
 
 {{ form_row(edit_form.callback_function) }}
 <div class="form-group">
@@ -119,7 +120,6 @@ function addTagFormDeleteLink($tagFormLi) {
             {{ form_widget(attr) }}
         </li>
     {% endfor %}
-{{ form_row(edit_form.forwardAttributes) }}
     <a href="#" id="add-another-forwardattribute">Add another attribute</a>
     </ul>
 </div>

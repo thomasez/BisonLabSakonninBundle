@@ -683,4 +683,12 @@ class Message
     {
         $this->receivers->removeElement($receiver);
     }
+
+    public function getSecurityModel()
+    {
+        if ($this->getMessageType())
+            return $this->getMessageType()->getSecurityModel();
+        else
+            return null;
+    }
 }

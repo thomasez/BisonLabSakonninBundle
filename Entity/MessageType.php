@@ -12,6 +12,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MessageType
 {
+    private static $security_models = array(
+        // Maybe not the best word for it, but is User, Sender and Receiver.
+        'PRIVATE' => array('short' => 'Private', 'description' => 'User/Sender and receiver can read.'),
+        // Everyone can read.
+        'ALL_READ' => array('short' => 'All read', 'description' => 'Everyone can read, admin can write.'),
+        // Everyone can read and write
+        'ALL_READWRITE' => array('short' => 'All read write', 'description' => 'Everyone can read and write.'),
+        // Only Admins can read and write.
+        'ADMIN_ONLY' => array('short' => 'Admin only', 'description' => 'Only Admin can read and write.'),
+        );
+
     /**
      * @var integer
      *
@@ -34,6 +45,18 @@ class MessageType
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
     private $description;
+
+    /**
+     * Yes, there is only one. I am not sure this is enough and to be honest,
+     * why I chose to make it only one. Keep it simple I guess.
+     *
+     * And BTW; How do you know which function the attributes are for?
+     * Definately adding complexity by adding more than one function.
+     * @var string
+     *
+     * @ORM\Column(name="security_model", type="string", length=40, nullable=true)
+     */
+    private $security_model;
 
     /**
      * Yes, there is only one. I am not sure this is enough and to be honest,
@@ -164,6 +187,58 @@ class MessageType
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set security_model
+     *
+     * @param string $security_model
+     * @return Site
+     */
+    public function setSecurityModel($security_model)
+    {
+        $security_model = strtoupper($security_model);
+        if (!isset(self::getSecurityModels()[$security_model])) { 
+            throw new \InvalidArgumentException(sprintf('The "%s" security_model is not a valid security_model.', $security_model));
+        }
+        $this->security_model = $security_model;
+        return $this;
+    }
+
+    /**
+     * Get security_model
+     *
+     * @return string 
+     */
+    public function getSecurityModel()
+    {
+        if ($this->security_model)
+            return $this->security_model;
+        elseif ($this->getParent())
+            return $this->getParent()->getSecurityModel();
+        else
+            return null;
+    }
+
+    /**
+     * Get security_models
+     *
+     * @return array 
+     */
+    public static function getSecurityModels()
+    {
+        // I could do the external config trick here aswell but I'd rather not
+        // have so many security_models.
+        return self::$security_models;
+    }
+
+    public static function getSecurityModelsAsChoices()
+    {
+        $mods = array();
+        foreach (self::$security_models as $name => $sm) {
+            $mods[$sm['short']] = $name;
+        }
+        return $mods;
     }
 
     /**

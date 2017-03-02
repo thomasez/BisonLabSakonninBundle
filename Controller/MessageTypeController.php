@@ -196,7 +196,6 @@ class MessageTypeController extends Controller
         $this->_addFunctionsToForm($form);
 
         $form->add('submit', SubmitType::class, array('label' => 'Update'));
-
         return $form;
     }
 

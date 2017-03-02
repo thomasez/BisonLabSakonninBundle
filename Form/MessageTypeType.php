@@ -8,6 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+use BisonLab\SakonninBundle\Entity\MessageType;
 
 class MessageTypeType extends AbstractType
 {
@@ -20,6 +23,10 @@ class MessageTypeType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('security_model', ChoiceType::class, array(
+                'placeholder' => "None",
+                'choices' => MessageType::getSecurityModelsAsChoices(),
+                ))
             ->add('expunge_days', NumberType::class, array('label' => "Expunge, in days. 0 means never delete messages. Only applicable on types, not groups."))
             ->add('parent', 'Symfony\Bridge\Doctrine\Form\Type\EntityType',
                 array(
@@ -33,7 +40,6 @@ class MessageTypeType extends AbstractType
                      ->orderBy('mt.name', 'ASC');
                     },
                 ))
-
         ;
     }
     

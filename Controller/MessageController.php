@@ -72,6 +72,7 @@ class MessageController extends CommonController
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Message entity.');
         }
+        $this->denyAccessUnlessGranted('show', $entity);
         // If it's shown to receiver, it's read.
         $sm = $this->container->get('sakonnin.messages');
         $user = $this->getUser();
@@ -91,6 +92,8 @@ class MessageController extends CommonController
      */
     public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
     {
+        // Search/Index - basically same same. For now at least.
+        $this->denyAccessUnlessGranted('index', new Message());
         $context_conf = $this->container->getParameter('app.contexts');
         $conf = $context_conf['BisonLabSakonninBundle']['Message'];
         $conf['entity'] = "BisonLabSakonninBundle:Message";
