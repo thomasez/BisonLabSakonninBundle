@@ -19,7 +19,7 @@ $(document).ready(function() {
             </tr>
         </thead>
         <tbody>
-        {% for entity in entities %}
+        {% for entity in entities if is_granted('show', entity) %}
             <tr>
                 <td>{{ entity.subject }}
                 {% if entity.replies %}
