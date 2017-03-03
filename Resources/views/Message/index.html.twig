@@ -29,7 +29,7 @@ $(document).ready(function() {
 {% if entities is not defined and data is defined %}
 {% set entities = data %}
 {% endif %}
-        {% for entity in entities %}
+        {% for entity in entities if  is_granted('show', entity) %}
             {% if not entity.inreplyto %}
             <tr>
                 <td>{{ entity.subject }}
