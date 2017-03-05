@@ -43,15 +43,23 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 'security_model' => 'PRIVATE',
                 'description' => "Personal Message"
                 ),
-           'Announcement' => array(
-                'parent' => 'Messages',
-                'security_model' => 'ALL_READ',
-                'description' => "Announcement"
-                ),
            'Broadcast' => array(
                 'parent' => 'Messages',
                 'security_model' => 'PRIVATE',
                 'description' => "Send PM to everyone"
+                ),
+       'Announcements' => array(
+                'description' => 'Announcements'
+                ),
+           'Front page logged in' => array(
+                'parent' => 'Announcements',
+                'security_model' => 'ALL_READ',
+                'description' => "Front page Announcement for logged in users"
+                ),
+           'Front page not logged in' => array(
+                'parent' => 'Announcements',
+                'security_model' => 'ALL_READ',
+                'description' => "Front page Announcement for not yet0logged in users"
                 ),
        'Notes' => array(
                 'description' => 'Notes'
