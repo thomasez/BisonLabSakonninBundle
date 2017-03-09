@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
+use BisonLab\SakonninBundle\Entity\Message;
 
 class MessageType extends AbstractType
 {
@@ -29,6 +30,7 @@ class MessageType extends AbstractType
             ->add('to', TextType::class, array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
             ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
+            ->add('state', ChoiceType::class, array('choices' => array_combine(Message::getStates(), Message::getStates())))
             ->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
         $type_choices = array();

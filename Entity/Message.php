@@ -25,7 +25,18 @@ class Message
     use TimestampableEntity;
     use BlameableEntity;
 
-    private static $states = array('SENDING', 'UNREAD', 'SENT', 'READ');
+    /* 
+     * There are states for two types of messages. Those you send or receive and
+     * the others.
+     * 'SENDING', 'UNREAD', 'SENT', 'READ' are typical for the first.
+     * 'SHOW', 'HIDE' are not really the words I like, but they do express the
+     * purpose.
+     *
+     * I guess I should consider the option to decide which states the
+     * different message types should be able to have. Either as a free array
+     * or from a pick list of these.
+     */
+    private static $states = array('SENDING', 'UNREAD', 'SENT', 'READ', 'SHOW', 'HIDE');
 
     /**
      * @var integer

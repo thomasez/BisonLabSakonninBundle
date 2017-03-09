@@ -50,6 +50,11 @@ $(document).ready(function() {
                     <li>
                         <a href="{{ path('message_show', { 'id': entity.id }) }}">show</a>
                     </li>
+                    {% if is_granted('show', entity) %}
+                    <li>
+                        <a href="{{ path('message_edit', { 'id': entity.id }) }}">edit</a>
+                    {% endif %}
+                    </li>
                 </ul>
                 </td>
             </tr>
@@ -57,4 +62,7 @@ $(document).ready(function() {
         {% endfor %}
         </tbody>
     </table>
+    <li>
+        <a href="{{ path('message_new') }}">Create a new message</a>
+    </li>
     {% endblock %}

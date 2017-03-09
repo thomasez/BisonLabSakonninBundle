@@ -263,4 +263,11 @@ class Messages
         if (!$this->container->get('security.token_storage')->getToken()) return null;
         return $this->container->get('security.token_storage')->getToken()->getUser();
     }
+
+    public function getMessageType($name)
+    {
+        $em = $this->getDoctrineManager();
+        $repo = $em->getRepository('BisonLabSakonninBundle:MessageType');
+        return $repo->findOneByName($name);
+    }
 }

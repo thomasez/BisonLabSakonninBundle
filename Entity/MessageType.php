@@ -454,8 +454,15 @@ class MessageType
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getMessages()
+    public function getMessages($include_children = false)
     {
+        $messages = $this->messages->toArray();
+        if ($include_children) {
+            foreach ($this->children as $child) {
+                $messages = array_merge($messages, $child->getMessages(true));
+            }
+            return $messages;
+        }
         return $this->messages;
     }
 

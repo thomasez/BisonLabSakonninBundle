@@ -59,6 +59,20 @@ class MessageController extends CommonController
     }
 
     /**
+     * Lists all Message entities of a certain type.
+     *
+     * @Route("/messagetype/{id}", name="message_messagetype")
+     * @Method("GET")
+     */
+    public function listByTypeAction(Request $request, $access, MessageType $messageType)
+    {
+        $sm = $this->container->get('sakonnin.messages');
+        $messages = $messageType->getMessages(true);
+        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+            array('entities' => $messages));
+    }
+
+    /**
      * Finds and displays a Message entity.
      *
      * @Route("/{id}", name="message_show")
@@ -82,6 +96,33 @@ class MessageController extends CommonController
         }
         return $this->render('BisonLabSakonninBundle:Message:show.html.twig',
             array('entity' => $entity));
+    }
+
+    /**
+     * Displays a form to edit an existing person entity.
+     *
+     * @Route("/{id}/edit", name="message_edit")
+     * @Method({"GET", "POST"})
+     */
+    public function editAction(Request $request, Message $message)
+    {
+        $this->denyAccessUnlessGranted('edit', $entity);
+        $deleteForm = $this->createDeleteForm($message);
+        $editForm = $this->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrineManager()->flush();
+
+            return $this->redirectToRoute('message_show', array('id' => $message->getId()));
+        }
+
+        return $this->render('BisonLabSakonninBundle:Message:edit.html.twig',
+            array(
+                'message' => $message,
+                'edit_form' => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+        ));
     }
 
     /**
@@ -240,6 +281,27 @@ class MessageController extends CommonController
     }
 
     /**
+     * Deletes a message entity.
+     *
+     * @Route("/{id}", name="message_delete")
+     * @Method("DELETE")
+     */
+    public function deleteAction(Request $request, Person $message)
+    {
+        $this->denyAccessUnlessGranted('edit', $entity);
+        $form = $this->createDeleteForm($message);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrineManager();
+            $em->remove($message);
+            $em->flush($message);
+        }
+
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
      * Check for unread messages
      *
      * @Route("/check_unread/", name="check_unread")
@@ -262,6 +324,32 @@ class MessageController extends CommonController
         }
         // return $this->returnRestData($request, false);
         return $this->returnRestData($request, array('amount' => 0));
+    }
+
+    /**
+     * Creates a new person entity.
+     *
+     * @Route("/new/", name="message_new")
+     * @Method({"GET", "POST"})
+     */
+    public function newAction(Request $request)
+    {
+        $message = new Message();
+        $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
+        $form->handleRequest($request);
+
+        // Should or should not use the service createmessage here?
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrineManager();
+            $message->setFromType('INTERNAL');
+            $em->persist($message);
+            $em->flush($message);
+
+            return $this->redirectToRoute('message_show', array('id' => $message->getId()));
+        }
+
+        return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
+            array('entity' => $message, 'form'   => $form->createView()));
     }
 
     /**
@@ -291,4 +379,21 @@ class MessageController extends CommonController
         $form->add('submit', SubmitType::class, array('label' => 'Send'));
         return $form;
     }
+
+    /**
+     * Creates a form to delete a message entity.
+     *
+     * @param Message $message The message entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createDeleteForm(Message $message)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('message_delete', array('id' => $message->getId())))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+
 }
