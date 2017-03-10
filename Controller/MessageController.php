@@ -106,7 +106,7 @@ class MessageController extends CommonController
      */
     public function editAction(Request $request, Message $message)
     {
-        $this->denyAccessUnlessGranted('edit', $entity);
+        $this->denyAccessUnlessGranted('edit', $message);
         $deleteForm = $this->createDeleteForm($message);
         $editForm = $this->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
         $editForm->handleRequest($request);
@@ -229,6 +229,7 @@ class MessageController extends CommonController
      */
     public function createAction(Request $request, $access)
     {
+        $this->denyAccessUnlessGranted('create', $message);
         $sm = $this->container->get('sakonnin.messages');
         if ($data = json_decode($request->getContent(), true)) {
             if (!isset($data['message_data']['from_type'])) {
@@ -288,7 +289,7 @@ class MessageController extends CommonController
      */
     public function deleteAction(Request $request, Person $message)
     {
-        $this->denyAccessUnlessGranted('edit', $entity);
+        $this->denyAccessUnlessGranted('edit', $message);
         $form = $this->createDeleteForm($message);
         $form->handleRequest($request);
 

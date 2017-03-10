@@ -56,8 +56,8 @@ class SecurityModelVoter extends Voter
             case 'ALL_READ':
                 if (in_array($attribute, array('show', 'index')))
                     return true;
-                else
-                    return false;
+                elseif (in_array($attribute, array('delete', 'edit', 'create')))
+                    return $this->_isAdmin($token);
                 break;
             case 'ALL_READWRITE':
                 return true;
