@@ -207,7 +207,7 @@ class Messages
         // It may just not be an ID.
         if (!is_numeric($userid)) return $userid;
         $userManager = $this->container->get('fos_user.user_manager');
-        $user = $userManager->findUserBy(array('id'=>$userid));
+        $user = $userManager->findUserBy(array('id' => $userid));
         if (!$user) return $userid;
         return $user->getUserName();;
     }

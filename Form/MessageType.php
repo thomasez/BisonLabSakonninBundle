@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use FOS\UserBundle\Form\Type\UsernameFormType;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 use BisonLab\SakonninBundle\Entity\Message;
@@ -27,7 +28,7 @@ class MessageType extends AbstractType
     {
         $builder
             ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
-            ->add('to', TextType::class, array('label' => "To:", 'required' => false, "attr" => array("size" => "40")))
+            ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false))
             ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
             ->add('state', ChoiceType::class, array('choices' => array_combine(Message::getStates(), Message::getStates())))
