@@ -79,21 +79,12 @@ class Messages
         // for now.
         if ($message->getToType() == "INTERNAL") {
             $message->setState("UNREAD");
-            $userManager = $this->container->get('fos_user.user_manager');
-            // In case of username, store ID.
-            if (!is_numeric($message->getTo())) {
-                $user = $userManager->findUserBy(array('username'=>$message->getTo()));
-                $message->setTo($user->getId());
-            } else {
-                $user = $userManager->findUserBy(array('id'=>$message->getTo()));
-            }
-            // Anyway, add the user object as a receiver.
-            $message->addReceiver($user);
+            // Add the To-user object as a receiver.
+            $message->addReceiver($message->getTo());
         } else {
             // Gotta have something.
             $message->setState("SENT");
         }
-
         $em->persist($message);
 
         // I planned to use an event listener to dispatch callback/forward
@@ -225,10 +216,15 @@ class Messages
     {
         if (!$user)
             $user = $this->getLoggedInUser();
-        // It may just not be an ID.
+        // It may just be an ID.
         if (is_numeric($user)) {
             $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('id'=>$userid));
+            $user = $userManager->findUserBy(array('id' => $user));
+        }
+        // Or string?
+        if (is_string($user)) {
+            $userManager = $this->container->get('fos_user.user_manager');
+            $user = $userManager->findUserBy(array('username' => $user));
         }
 
         if (is_object($user) && method_exists($user, 'getEmail'))
@@ -241,10 +237,15 @@ class Messages
     {
         if (!$user)
             $user = $this->getLoggedInUser();
-        // It may just not be an ID.
+        // It may just be an ID.
         if (is_numeric($user)) {
             $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('id'=>$userid));
+            $user = $userManager->findUserBy(array('id' => $user));
+        }
+        // Or string?
+        if (is_string($user)) {
+            $userManager = $this->container->get('fos_user.user_manager');
+            $user = $userManager->findUserBy(array('username' => $user));
         }
 
         if (is_object($user) && method_exists($user, 'getMobilePhoneNumber'))

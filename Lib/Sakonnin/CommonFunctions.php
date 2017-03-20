@@ -66,9 +66,9 @@ trait CommonFunctions
         $sm = $this->container->get('sakonnin.messages');
         // Receiver should/could be userid, username or user object.
         if (!is_numeric($receiver)) {
-            // Gotta find username.
+            // Gotta find user.
             $userManager = $this->container->get('fos_user.user_manager');
-            if (!$user = $userManager->findUserBy(array('username'=>$username)))
+            if (!$user = $userManager->findUserBy(array('username' => $receiver)))
                 return false;
             $receiver = $user->getId();
         }
