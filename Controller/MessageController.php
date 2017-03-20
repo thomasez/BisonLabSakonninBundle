@@ -78,24 +78,19 @@ class MessageController extends CommonController
      * @Route("/{id}", name="message_show")
      * @Method("GET")
      */
-    public function showAction(Request $request, $access, $id)
+    public function showAction(Request $request, $access, Message $message)
     {
-        $em = $this->getDoctrineManager();
-
-        $entity = $em->getRepository('BisonLabSakonninBundle:Message')->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Message entity.');
-        }
-        $this->denyAccessUnlessGranted('show', $entity);
+        $this->denyAccessUnlessGranted('show', $message);
         // If it's shown to receiver, it's read.
         $sm = $this->container->get('sakonnin.messages');
         $user = $this->getUser();
-        if ($entity->getTo() == $user->getId()) {
-            $entity->setState("READ");
+        if ($message->getTo() == $user->getId()) {
+            $message->setState("READ");
+            $em = $this->getDoctrineManager();
             $em->flush();
         }
         return $this->render('BisonLabSakonninBundle:Message:show.html.twig',
-            array('entity' => $entity));
+            array('entity' => $message));
     }
 
     /**
@@ -183,6 +178,7 @@ class MessageController extends CommonController
 
         if ($form->isValid()) {
             $message = $form->getData();
+            $this->denyAccessUnlessGranted('create', $message);
             $em = $this->getDoctrineManager();
 
             $message_type = $data['message_type'] ?: "PM";
@@ -229,11 +225,19 @@ class MessageController extends CommonController
      */
     public function createAction(Request $request, $access)
     {
-        $this->denyAccessUnlessGranted('create', $message);
         $sm = $this->container->get('sakonnin.messages');
         if ($data = json_decode($request->getContent(), true)) {
             if (!isset($data['message_data']['from_type'])) {
                 $data['message_data']['from_type'] = "EXTERNAL";
+            }
+            // Gotta do some security check. This is a hack, but it should
+            // work..
+            if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+                $message->setMessageType($message_type);
+                $this->denyAccessUnlessGranted('create', $message);
+            } else {
+                // No messaagetype? naaah.
+                throw $this->createAccessDeniedException('No access.');
             }
             $message = $sm->postMessage($data['message_data'], isset($data['message_context']) ? $data['message_context'] : array());
             if ($message) {
@@ -249,6 +253,7 @@ class MessageController extends CommonController
         if ($form->isValid()) {
             // Ok, it's valid. We'll send this to postMessage then.
             $message = $form->getData();
+            $this->denyAccessUnlessGranted('create', $message);
             if (!$message->getMessageType() && isset($data['message_type'])) {
                 $em = $this->getDoctrineManager();
                 $message->setMessageType(
@@ -262,7 +267,6 @@ class MessageController extends CommonController
                 else
                     $message->setFromType("EXTERNAL");
             }
-
             $sm->postMessage($message);
 
             if ($this->isRest($access)) {
@@ -287,7 +291,7 @@ class MessageController extends CommonController
      * @Route("/{id}", name="message_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Person $message)
+    public function deleteAction(Request $request, Message $message)
     {
         $this->denyAccessUnlessGranted('edit', $message);
         $form = $this->createDeleteForm($message);
