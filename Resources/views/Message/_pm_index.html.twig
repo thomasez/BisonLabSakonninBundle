@@ -1,0 +1,44 @@
+<table style="border-spacing: 10px;" id="message_list">
+    <thead>
+    <tr><th>From</th><th>You</th>
+    </thead>
+    <tbody>
+{% if entities is not defined and data is defined %}
+{% set entities = data %}
+{% endif %}
+    {% for entity in entities if is_granted('show', entity)%}
+        <tr>
+     {% if not entity.inreplyto %}
+        {% if entity.from and entity.from == app.user.id %}
+        <td>&nbsp;</td>
+        {% endif %}
+
+        <td valign="top">
+        {% if entity.subject %}
+              <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
+        {% endif %}
+        <sub>
+        {% if entity.from and entity.from != app.user.id %}
+           From: <strong>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</strong>
+        {% endif %}
+        {% if entity.to and entity.to != app.user.id%}
+            To: <strong>{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %} </strong>
+        {% endif %}
+        {% if entity.createdAt %}
+           {{ entity.createdAt|date('Y-m-d H:i:s') }}<br />
+        {% endif %}
+        </sub>
+            <pre>
+            {{ entity.body }}
+            </pre>
+{% if entity.replies %}
+        <ul>
+         {% for reply in entity.replies %}
+              <li>reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</li>
+         {% endfor %}
+        </ul>
+{% endif %}
+    {% endif %}
+    {% endfor %}
+    </tbody>
+</table>

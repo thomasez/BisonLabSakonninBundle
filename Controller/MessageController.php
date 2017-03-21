@@ -39,7 +39,11 @@ class MessageController extends CommonController
     public function indexAction(Request $request, $access)
     {
         $sm = $this->container->get('sakonnin.messages');
+        // Todo: paging or just show the last 20
         $messages = $sm->getMessagesForLoggedIn();
+        if ($this->isRest($access)) {
+            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+        }
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
     }
@@ -54,6 +58,9 @@ class MessageController extends CommonController
         $em = $this->getDoctrineManager();
         $sm = $this->container->get('sakonnin.messages');
         $messages = $sm->getMessagesForLoggedIn('UNREAD');
+        if ($this->isRest($access)) {
+            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+        }
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
     }
