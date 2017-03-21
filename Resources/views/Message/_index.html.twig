@@ -1,65 +1,44 @@
-
 <table style="border-spacing: 10px;" id="message_list">
+    <thead>
+    <tr><th>From</th><th>You</th>
+    </thead>
     <tbody>
 {% if entities is not defined and data is defined %}
 {% set entities = data %}
 {% endif %}
     {% for entity in entities if is_granted('show', entity)%}
-        {% if not entity.inreplyto %}
         <tr>
-            <th valign="top">Subject:</th>
-            <td valign="top">
+     {% if not entity.inreplyto %}
+        {% if entity.from and entity.from == app.user.id %}
+        <td>&nbsp;</td>
+        {% endif %}
+
+        <td valign="top">
+        {% if entity.subject %}
               <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
-            </td>
-            <td rowspan="4">
+        {% endif %}
+        <sub>
+        {% if entity.from and entity.from != app.user.id %}
+           From: <strong>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</strong>
+        {% endif %}
+        {% if entity.to and entity.to != app.user.id%}
+            To: <strong>{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %} </strong>
+        {% endif %}
+        {% if entity.createdAt %}
+           {{ entity.createdAt|date('Y-m-d H:i:s') }}<br />
+        {% endif %}
+        </sub>
             <pre>
             {{ entity.body }}
             </pre>
-            </td>
-        </tr>
-        <tr>
-            <th valign="top">Time:</th>
-            <td valign="top">{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-        </tr>
-        <tr>
-{% if entity.from %}
-            <th valign="top">From:</th>
-            <td valign="top">{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
-            <td>
-{% else %}
-        <td>
-            &nbsp;
-        </td>
-        <td>
-            &nbsp;
-        </td>
-{% endif %}
-        </tr>
-        <tr>
-        <td>
-{% if entity.to %}
-            <th valign="top">To:</th>
-            <td valign="top">{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
-{% else %}
-        <td>
-            &nbsp;
-        </td>
-        <td>
-            &nbsp;
-        </td>
-{% endif %}
-        </td>
-        </tr>
-        <tr>
 {% if entity.replies %}
-        <td valign="top">
+        <ul>
          {% for reply in entity.replies %}
-              <br />reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a>
+              <li>reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</li>
          {% endfor %}
-        </td>
+        </ul>
 {% endif %}
-        </tr>
-        {% endif %}
+    {% endif %}
     {% endfor %}
     </tbody>
 </table>

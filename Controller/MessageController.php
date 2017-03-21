@@ -42,7 +42,7 @@ class MessageController extends CommonController
         // Todo: paging or just show the last 20
         $messages = $sm->getMessagesForLoggedIn();
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
         }
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
