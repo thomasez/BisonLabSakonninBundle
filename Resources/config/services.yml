@@ -5,7 +5,7 @@ services:
 
     sakonnin.functions:
         class: BisonLab\SakonninBundle\Service\Functions
-        arguments: 
+        arguments:
             container: '@service_container'
             function_classes: "%sakonnin.function_factories%"
 
