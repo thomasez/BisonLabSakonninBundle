@@ -1,19 +1,26 @@
 <table style="border-spacing: 10px;" id="message_list">
     <thead>
-    <tr><th>From</th><th>You</th>
+    <tr><th>From</th><th>&nbsp;</th><th>Me</th>{#<th>&nbsp;</th>#}
     </thead>
     <tbody>
 {% if entities is not defined and data is defined %}
 {% set entities = data %}
 {% endif %}
+    {% set formcount = 0 %}
     {% for entity in entities if is_granted('show', entity)%}
+        {% set formcount = formcount + 1 %}
+        {% if entity.from and entity.from == app.user.id %}
+            {% set me = true %}
+        {% else %}
+            {% set me = false %}
+        {% endif %}
         <tr>
      {% if not entity.inreplyto %}
-        {% if entity.from and entity.from == app.user.id %}
+        {% if me %}
         <td>&nbsp;</td>
         {% endif %}
 
-        <td valign="top">
+        <td valign="top" colspan="2">
         {% if entity.subject %}
               <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
         {% endif %}
@@ -31,10 +38,37 @@
             <pre>
             {{ entity.body }}
             </pre>
-{% if entity.replies %}
+{% if not me %}
+<a href="#" onClick="openReply({{ formcount }});">Reply</a>
+<div class="pm_reply" id="createreply_{{ formcount }}" title="Reply">
+ {# Gotta remember to add some way to send "in_reply_to" here. 
+ {% set pmform = sakonnin.getCreatePmForm({'create_view': true}) %}
+ #}
+ {% set rpform = sakonnin.getCreatePmForm({'create_view': true}) %}
+ <form id="createpmform_{{ formcount }}" method="POST" action="{{ path('pm_create', { 'access': 'ajax', 'in_reply_to': entity.messageid }) }}" onSubmit="return submitPmMessageForm('createpmform_{{ formcount }}', '{{ entity.messageid }}');">
+  <input type="hidden" name="to_userid" value="{{entity.from}}">
+  <input type="hidden" name="message_type" id="pmmessage_type" value="PM">
+  <input type="textarea" name="body">
+  <input type="submit" value="Send">
+  {{ form_row(rpform._token)}} 
+ </form>
+</div>
+{% endif %}
+{% if entity.replies.count > 0 %}
+        <br /><sub>Replies:</sub>
         <ul>
          {% for reply in entity.replies %}
-              <li>reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</li>
+            {% if reply.createdAt %}
+               {% set rtime = reply.createdAt|date('Y-m-d H:i:s') %}<br />
+            {% endif %}
+            {% if reply.from and reply.from == app.user.id %}
+            <sub><b>From me</b> {{ rtime }}</sub>
+            {% else %}
+            <sub><b>To me {{ rtime }}</b></sub>
+            {% endif %}
+            <pre>
+            {{ reply.body }}
+            </pre>
          {% endfor %}
         </ul>
 {% endif %}
@@ -42,3 +76,16 @@
     {% endfor %}
     </tbody>
 </table>
+
+<script>
+
+function openReply(formcount) {
+    $( "#createreply_" + formcount ).show();
+    return false;
+}
+
+jQuery(document).ready(function() {
+    $( ".pm_reply" ).hide();
+});
+
+</script>

@@ -3,9 +3,8 @@
    For now, I vote the including template.
  #}
 <script type="text/javascript">
-function createPmMessage(message_type = "PM") {
+function createPmMessage() {
     $( "#createpm" ).dialog("open");
-    $( "#pmmessage_type" ).val(message_type);
     return false;
 }
 
@@ -30,18 +29,25 @@ function checkUnread() {
     return false;
 }
 
-function submitPmMessageForm() {
+function submitPmMessageForm(pmform = "createpmform", in_reply_to = null) {
+    pmform = "#" + pmform;
+    formdata = $( pmform ).serialize();
+    url = "{{ path('pm_create', { 'access': 'ajax' }) }}";
+    if (in_reply_to) {
+        url = url + "?in_reply_to=" + in_reply_to;
+    }
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
-        url: "{{ path('pm_create', { 'access': 'ajax' }) }}",
-        data: $( "#createpmform" ).serialize(),
+        url: url,
+        data: formdata,
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             $( "#createpm" ).dialog("close");
+            $( ".pm_reply" ).hide();
       }).fail(function(xhr, status, error) {
             errmsg = "Message sending failed\n";
             errmsg = errmsg + xhr.responseText + "\n";
@@ -57,6 +63,9 @@ jQuery(document).ready(function() {
       width: 500,
       modal: true
     });
+    $( "#createpmform #to" ).val("");
+    $( "#createpmform #to_userid" ).val("");
+    $( "#createpmform #body" ).val("");
     $( "#menu_unread" ).hide();
     checkUnread();
 });
@@ -65,15 +74,15 @@ jQuery(document).ready(function() {
 
 <script>
 $( function() {
-$( "#message_data_to" ).autocomplete({
+$( "#createpmform #to" ).autocomplete({
   source: "{{ path('user_search', {'access': 'ajax'}) }}",
   minlength: 4,
   select: function( event, ui ) {
-    $( "#message_data_to" ).val(ui.item.value);
-    $( "#to_userid" ).val(ui.item.userid);
-    $( "#message_data_body" ).focus();
+    $( "#createpmform #to" ).val(ui.item.value);
+    $( "#createpmform #to_userid" ).val(ui.item.userid);
+    $( "#createpmform #body" ).focus();
   }
-});
+ });
 } );
 </script>
 

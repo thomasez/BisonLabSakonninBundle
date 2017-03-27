@@ -35,8 +35,9 @@ class Messages
             $message = $data;
         } else {
             $message = new Message($data);
-            if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
-                    $message->setMessageType($message_type);            
+            if (isset($data['message_type']) 
+                    && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+                $message->setMessageType($message_type);            
             } else {
                 throw new \InvalidArgumentException("No message type found or set.");
             }

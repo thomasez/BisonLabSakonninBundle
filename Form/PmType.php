@@ -38,7 +38,8 @@ class PmType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'BisonLab\SakonninBundle\Entity\Message'
+            'data_class' => 'BisonLab\SakonninBundle\Entity\Message',
+            'allow_extra_fields' => true,
         ));
     }
 
@@ -47,6 +48,6 @@ class PmType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'message_data';
+        return '';
     }
 }
