@@ -170,26 +170,63 @@ class Messages
     /*
      * Get and list messsag(es) functions.
      */
-    public function getMessagesForLoggedIn($state = null)
+    public function getMessagesForLoggedIn($criterias = array())
     {
         $user = $this->getLoggedInUser();
-        return $this->getMessagesForUser($user, $state);
+        return $this->getMessagesForUser($user, $criterias);
     }
 
-    public function getMessagesForUser($user, $state = null)
+    public function getMessagesForUser($user, $criterias = array())
     {
-        $user = $this->getLoggedInUser();
+        $criterias['userid'] = $user->getId();
+        return $this->getMessages($criterias);
+    }
 
+    public function getMessages($criterias = array())
+    {
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
-        $query = $repo->createQueryBuilder('m')
-            ->where('m.from = :userid')
-            ->orWhere('m.to = :userid');
-        if ($state)
-            $query->andWhere("m.state = :state")
-                ->setParameter('state', $state);
+        $query = $repo->createQueryBuilder('m');
 
-        $query->setParameter('userid', $user->getId());
+        if (isset($criterias['userid'])) {
+            $query->where('m.from = :userid')
+            ->orWhere('m.to = :userid');
+            $query->setParameter('userid', $criterias['userid']);
+        }
+
+        if (isset($criterias['state'])) {
+            $query->andWhere("m.state = :state")
+                ->setParameter('state', $criterias['state']);
+        }
+
+        if (isset($criterias['message_type'])) {
+            $mt = $this->getMessageType($criterias['message_type']);
+            $query->andWhere("m.message_type = :message_type")
+                ->setParameter('message_type', $mt);
+        }
+
+        if (isset($criterias['message_group'])) {
+            $mg = $this->getMessageType($criterias['message_group']);
+            $types = $mg->getChildren();
+            $types->add($mg);
+            $query->andWhere("m.message_type in :message_types")
+                ->setParameter('message_type', $types);
+        }
+
+        if (isset($criterias['not_message_type'])) {
+            $mt = $this->getMessageType($criterias['not_message_type']);
+            $query->andWhere("m.message_type != :message_type")
+                ->setParameter('message_type', $mt);
+        }
+
+        if (isset($criterias['not_message_group'])) {
+            $mg = $this->getMessageType($criterias['not_message_group']);
+            $types = $mg->getChildren();
+            $types->add($mg);
+            $query->andWhere("m.message_type not in :message_types")
+                ->setParameter('message_type', $types);
+        }
+
         return $query->getQuery()->getResult();
     }
 
@@ -268,6 +305,8 @@ class Messages
 
     public function getMessageType($name)
     {
+        if ($name instanceof MessageType)
+            return $name;
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:MessageType');
         return $repo->findOneByName($name);

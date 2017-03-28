@@ -39,7 +39,14 @@ class MessageController extends CommonController
     {
         $sm = $this->container->get('sakonnin.messages');
         // Todo: paging or just show the last 20
-        $messages = $sm->getMessagesForLoggedIn();
+        $messages = $sm->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
+        // Gotta set the messages as read.
+        foreach ($messages as $mess) {
+            if ($message->getState() == "UNREAD")
+                $message->setState('READ');
+        }
+        $em = $this->getDoctrineManager();
+        $em->flush();
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
         }
@@ -54,9 +61,37 @@ class MessageController extends CommonController
      */
     public function unreadAction(Request $request, $access)
     {
-        $em = $this->getDoctrineManager();
         $sm = $this->container->get('sakonnin.messages');
-        $messages = $sm->getMessagesForLoggedIn('UNREAD');
+        $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
+        // Gotta set the messages as read.
+        foreach ($messages as $message) {
+            $message->setState('READ');
+        }
+        $em = $this->getDoctrineManager();
+        $em->flush();
+        if ($this->isRest($access)) {
+            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+        }
+        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+            array('entities' => $messages));
+    }
+
+    /**
+     * Lists all Message entities.
+     *
+     * @Route("/pm", name="pm_list")
+     * @Method("GET")
+     */
+    public function pmAction(Request $request, $access)
+    {
+        $sm = $this->container->get('sakonnin.messages');
+        $messages = $sm->getMessagesForLoggedIn(array('message_type' => 'PM'));
+        foreach ($messages as $message) {
+            if ($message->getState() == "UNREAD")
+                $message->setState('READ');
+        }
+        $em = $this->getDoctrineManager();
+        $em->flush();
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
         }
@@ -66,6 +101,7 @@ class MessageController extends CommonController
 
     /**
      * Lists all Message entities of a certain type.
+     * Warning: This can be *a lot* of messages.
      *
      * @Route("/messagetype/{id}", name="message_messagetype")
      * @Method("GET")
@@ -75,7 +111,7 @@ class MessageController extends CommonController
         $sm = $this->container->get('sakonnin.messages');
         $messages = $messageType->getMessages(true);
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
         }
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages));
@@ -111,7 +147,7 @@ class MessageController extends CommonController
      * @Route("/{id}/edit", name="message_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, Message $message)
+    public function editAction(Request $request, $access, Message $message)
     {
         $this->denyAccessUnlessGranted('edit', $message);
         $deleteForm = $this->createDeleteForm($message);
@@ -314,7 +350,7 @@ class MessageController extends CommonController
      * @Route("/{id}", name="message_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Message $message)
+    public function deleteAction(Request $request, $access, Message $message)
     {
         $this->denyAccessUnlessGranted('edit', $message);
         $form = $this->createDeleteForm($message);
@@ -360,7 +396,7 @@ class MessageController extends CommonController
      * @Route("/new/", name="message_new")
      * @Method({"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, $access)
     {
         $message = new Message();
         $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
