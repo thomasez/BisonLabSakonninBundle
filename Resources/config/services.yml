@@ -5,9 +5,7 @@ services:
 
     sakonnin.functions:
         class: BisonLab\SakonninBundle\Service\Functions
-        arguments:
-            container: '@service_container'
-            function_classes: "%sakonnin.function_factories%"
+        arguments: ['@service_container', '%sakonnin.function_factories%']
 
     sakonnin.securitymodel_voter:
         class: BisonLab\SakonninBundle\Service\SecurityModelVoter
