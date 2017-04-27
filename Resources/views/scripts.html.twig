@@ -29,7 +29,7 @@ function checkUnread() {
     return false;
 }
 
-function submitPmMessageForm(pmform = "createpmform", in_reply_to = null) {
+function submitPmMessageForm(pmform, in_reply_to) {
     pmform = "#" + pmform;
     formdata = $( pmform ).serialize();
     url = "{{ path('pm_create', { 'access': 'ajax' }) }}";
@@ -88,7 +88,7 @@ $( "#createpmform #to" ).autocomplete({
 <div id="createpm" title="Write a PM">
  {# Gotta remember to add some way to send "in_reply_to" here. #}
  {% set pmform = sakonnin.getCreatePmForm({'create_view': true}) %}
- <form id="createpmform" method="POST" action="{{ path('pm_create', { 'access': 'ajax' }) }}" onSubmit="return submitPmMessageForm();">
+ <form id="createpmform" method="POST" action="{{ path('pm_create', { 'access': 'ajax' }) }}" onSubmit="return submitPmMessageForm('createpmform', null);">
   <input type="hidden" name="to_userid" id="to_userid">
   <input type="hidden" name="message_type" id="pmmessage_type" value="PM">
   {{ form_row(pmform.to)}} 
