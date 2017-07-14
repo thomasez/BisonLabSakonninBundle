@@ -4,10 +4,17 @@
     </thead>
     <tbody>
 {% if entities is not defined and data is defined %}
-{% set entities = data %}
+{% set entities = data.messages %}
+{% set unread_starts_at = data.unread_starts_at %}
 {% endif %}
     {% set formcount = 0 %}
     {% for entity in entities if is_granted('show', entity)%}
+        {% if entity.id == unread_starts_at %}
+        <div id="unread_starts">
+        <tr><td><strong>Unread messages:</td></tr>
+        </div>
+        {% endif %}
+        
         {% set formcount = formcount + 1 %}
         {% if entity.from and entity.from == app.user.id %}
             {% set me = true %}
@@ -76,6 +83,8 @@
     {% endfor %}
     </tbody>
 </table>
+<div id="ends_here">
+</div>
 
 <script>
 
@@ -86,6 +95,11 @@ function openReply(formcount) {
 
 jQuery(document).ready(function() {
     $( ".pm_reply" ).hide();
+    {% if unread_starts_at is not null %}
+        $( "#unread_starts" )[0].scrollIntoView();
+    {% else %}
+        $( "#ends_here" )[0].scrollIntoView();
+    {% endif %}
 });
 
 </script>

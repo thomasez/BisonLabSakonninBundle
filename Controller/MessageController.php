@@ -64,16 +64,24 @@ class MessageController extends CommonController
         $sm = $this->container->get('sakonnin.messages');
         $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         // Gotta set the messages as read.
+        if (count($messages) > 0)
+            $unread_starts_at = $messages[0]->getId();
+        else
+            $unread_starts_at = null;
         foreach ($messages as $message) {
             $message->setState('READ');
         }
         $em = $this->getDoctrineManager();
         $em->flush();
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+            $data = array('messages' => $messages,
+                'unread_starts_at' => $unread_starts_at);
+            return $this->returnRestData($request, $data,
+                array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
         }
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
-            array('entities' => $messages));
+            array('entities' => $messages, 
+                  'unread_starts_at' => $unread_starts_at));
     }
 
     /**
@@ -86,17 +94,24 @@ class MessageController extends CommonController
     {
         $sm = $this->container->get('sakonnin.messages');
         $messages = $sm->getMessagesForLoggedIn(array('message_type' => 'PM'));
+        $unread_starts_at = null;
         foreach ($messages as $message) {
-            if ($message->getState() == "UNREAD")
+            if ($message->getState() == "UNREAD") {
                 $message->setState('READ');
+                $unread_starts_at = $message->getId();
+            }
         }
         $em = $this->getDoctrineManager();
         $em->flush();
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+            $data = array('messages' => $messages,
+                'unread_starts_at' => $unread_starts_at);
+            return $this->returnRestData($request, $data,
+                array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
         }
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
-            array('entities' => $messages));
+            array('entities' => $messages, 
+                  'unread_starts_at' => $unread_starts_at));
     }
 
     /**
@@ -459,5 +474,4 @@ class MessageController extends CommonController
             ->getForm()
         ;
     }
-
 }

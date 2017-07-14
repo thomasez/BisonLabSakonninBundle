@@ -227,6 +227,12 @@ class Messages
                 ->setParameter('message_type', $types);
         }
 
+        if (isset($criterias['order'])) {
+            $query->orderBy("m.createdAt", $criterias['order']);
+        } else {
+            $query->orderBy("m.createdAt", "ASC");
+        }
+
         return $query->getQuery()->getResult();
     }
 
