@@ -19,7 +19,7 @@ class SmsForward
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendMail($message, $receiver, $options);
+            $this->sendSms($message, $receiver, $options);
         }
     }
 }
