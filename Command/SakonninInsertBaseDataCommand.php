@@ -46,6 +46,7 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
            'Broadcast' => array(
                 'parent' => 'Messages',
                 'security_model' => 'PRIVATE',
+                'forward_function' => 'broadcast',
                 'description' => "Send PM to everyone"
                 ),
        'Announcements' => array(
