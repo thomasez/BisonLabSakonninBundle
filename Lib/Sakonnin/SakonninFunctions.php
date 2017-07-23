@@ -64,7 +64,7 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'attribute_spec' => "Mail address",
             'needs_attributes' => true,
         ),
-        'Broadcast' => array(
+        'broadcast' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\Broadcast',
             'description' => "Send PM to all enabled users",
             'attribute_spec' => null,
