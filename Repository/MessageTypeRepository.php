@@ -1,6 +1,6 @@
 <?php
 
-namespace BisonLab\SakonninBundle\Entity\Repositories;
+namespace BisonLab\SakonninBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
