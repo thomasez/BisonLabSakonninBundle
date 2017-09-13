@@ -1,6 +1,6 @@
 <?php
 
-namespace BisonLab\SakonninBundle\Entity;
+namespace BisonLab\SakonninBundle\Entity\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;

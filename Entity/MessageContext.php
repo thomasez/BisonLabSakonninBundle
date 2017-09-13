@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * BisonLab\SakonninBundle\Entity\MessageContext
  *
  * @ORM\Table(name="sakonnin_messagecontext")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageContextRepository")
+ * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\Repositories\MessageContextRepository")
  */
 class MessageContext
 {

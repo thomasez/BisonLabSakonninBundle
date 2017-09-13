@@ -18,7 +18,7 @@ use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
  * with the RFC where it adresses the functionality.
  *
  * @ORM\Table(name="sakonnin_message")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageRepository")
+ * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\Repositories\MessageRepository")
  */
 class Message
 {

@@ -41,7 +41,7 @@ class MessageController extends CommonController
         // Todo: paging or just show the last 20
         $messages = $sm->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
         // Gotta set the messages as read.
-        foreach ($messages as $mess) {
+        foreach ($messages as $message) {
             if ($message->getState() == "UNREAD")
                 $message->setState('READ');
         }

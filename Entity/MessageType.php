@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * MessageType
  *
  * @ORM\Table(name="sakonnin_messagetype")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\MessageTypeRepository")
+ * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Entity\Repositories\MessageTypeRepository")
  */
 class MessageType
 {
