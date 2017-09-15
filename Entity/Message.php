@@ -10,6 +10,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
+use BisonLab\SakonninBundle\Entity\MessageContext as Context;
 
 /**
  * Message
@@ -22,6 +23,7 @@ use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
  */
 class Message
 {
+    use \BisonLab\CommonBundle\Entity\ContextOwnerTrait;
     use TimestampableEntity;
     use BlameableEntity;
 
@@ -190,8 +192,8 @@ class Message
         }
 
         $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->receivers = new \Doctrine\Common\Collections\ArrayCollection();
+        return $this->traitConstruct($options);
     }
 
     public function __toString()
@@ -544,39 +546,6 @@ class Message
         // I could do the external config trick here aswell but I'd rather not
         // have so many states.
         return self::$states;
-    }
-
-    /**
-     * Get contexts
-     *
-     * @return objects
-     */
-    public function getContexts()
-    {
-        return $this->contexts;
-    }
-
-    /**
-     * Add contexts
-     *
-     * @param BisonLab\SakonninBundle\Entity\MessageContext $context;
-     * @return Message
-     */
-    public function addContext(\BisonLab\SakonninBundle\Entity\MessageContext $context)
-    {
-        $this->contexts[] = $context;
-        $context->setOwner($this);
-        return $this;
-    }
-
-    /**
-     * Remove context
-     *
-     * @param BisonLab\SakonninBundle\Entity\MessageContext $context;
-     */
-    public function removeContext(\BisonLab\SakonninBundle\Entity\MessageContext $context)
-    {
-        $this->contexts->removeElement($context);
     }
 
     /**
