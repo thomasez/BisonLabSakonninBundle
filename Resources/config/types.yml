@@ -14,3 +14,22 @@ parameters:
         # posted in the create.
         EXTERNAL:
             chooseable: false
+
+    # The simplest file types.
+    sakonnin.file_types:
+        IMAGE:
+            chooseable: true
+        VIDEO:
+            chooseable: true
+        TEXT:
+            chooseable: true
+        DOCUMENT:
+            chooseable: true
+        PRESENTATION:
+            chooseable: true
+        SPREADSHEET:
+            chooseable: true
+        BINARY:
+            chooseable: true
+        UNKNOWN:
+            chooseable: true

@@ -299,16 +299,6 @@ class Messages
         return null;
     }
 
-    public function getLoggedInUser()
-    {
-        // Note to whoever: Controllers have "$this->getUser()", but this is
-        // not one.
-        if (!$this->container) return null;
-        if (!$this->container->get('security.token_storage')) return null;
-        if (!$this->container->get('security.token_storage')->getToken()) return null;
-        return $this->container->get('security.token_storage')->getToken()->getUser();
-    }
-
     public function getMessageType($name)
     {
         if ($name instanceof MessageType)

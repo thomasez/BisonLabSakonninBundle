@@ -13,6 +13,9 @@ namespace BisonLab\SakonninBundle\Lib;
 class ExternalEntityConfig
 {
     protected static $address_types = array();
+
+    protected static $file_types = array();
+
     public static function setAddressTypesConfig($address_types)
     {
         self::$address_types = $address_types;
@@ -27,6 +30,26 @@ class ExternalEntityConfig
     {
         $choices = array();
         foreach (self::$address_types as $type => $params) {
+            if (!$params['chooseable']) continue;
+            $choices[$type] = $type;
+        }
+        return $choices;
+    }
+
+    public static function setFileTypesConfig($file_types)
+    {
+        self::$file_types = $file_types;
+    }
+
+    public static function getFileTypes()
+    {
+        return self::$file_types;
+    }
+
+    public static function getFileTypesAsChoices()
+    {
+        $choices = array();
+        foreach (self::$file_types as $type => $params) {
             if (!$params['chooseable']) continue;
             $choices[$type] = $type;
         }

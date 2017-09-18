@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Files list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Fileid</th>
+                <th>Contenttype</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for file in files %}
+            <tr>
+                <td><a href="{{ path('file_show', { 'id': file.id }) }}">{{ file.id }}</a></td>
+                <td>{{ file.name }}</td>
+                <td>{{ file.fileId }}</td>
+                <td>{{ file.contentType }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('file_show', { 'id': file.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('file_edit', { 'id': file.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('file_new') }}">Create a new file</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -3,6 +3,10 @@ services:
         class: BisonLab\SakonninBundle\Service\Messages
         arguments: ['@service_container' ]
 
+    sakonnin.files:
+        class: BisonLab\SakonninBundle\Service\Files
+        arguments: ['@service_container' ]
+
     sakonnin.functions:
         class: BisonLab\SakonninBundle\Service\Functions
         arguments: ['@service_container', '%sakonnin.function_factories%']
