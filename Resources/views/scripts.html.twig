@@ -76,7 +76,7 @@ jQuery(document).ready(function() {
 $( function() {
 $( "#createpmform #to" ).autocomplete({
   source: "{{ path('user_search', {'access': 'ajax'}) }}",
-  minlength: 4,
+  minLength: 2,
   select: function( event, ui ) {
     $( "#createpmform #to" ).val(ui.item.value);
     $( "#createpmform #to_userid" ).val(ui.item.userid);
