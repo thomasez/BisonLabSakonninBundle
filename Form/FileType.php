@@ -15,8 +15,6 @@ class FileType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('fileType')
-            ->add('contentType')
         ;
     }
     

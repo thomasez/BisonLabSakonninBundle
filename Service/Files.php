@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType as FileFormType;
 
 use BisonLab\SakonninBundle\Entity\File;
 use BisonLab\SakonninBundle\Entity\FileContext;
@@ -70,7 +71,7 @@ class Files
         return $file;
     }
 
-    public function getCreateForm($options = array())
+    public function getUploadForm($options = array())
     {
         $em = $this->getDoctrineManager();
         $file = null;
@@ -89,15 +90,6 @@ class Files
         if (isset($options['file_context'])) {
             $file_context = new FileContext($options['file_context']);
             $file->addContext($file_context);
-        }
-
-        // What does the form say?
-        if (isset($options['file_data']['in_reply_to'])) {
-            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:File')->findOneBy(array('file_id' => $options['file_data']['in_reply_to']))) {
-                return false;
-            } else {
-                $file->setInReplyTo($reply_to);
-            }
         }
 
         $c = new FileController();
