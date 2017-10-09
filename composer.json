@@ -18,6 +18,8 @@
         "stof/doctrine-extensions-bundle": "1.2.x-dev"
     },
     "autoload": {
-        "psr-0": { "BisonLab\\SakonninBundle": "" }
+        "psr-4": {
+            "BisonLab\\SakonninBundle\\": ""
+        }
     }
 }
