@@ -6,19 +6,19 @@ use BisonLab\CommonBundle\Entity\ContextBase;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * BisonLab\SakonninBundle\Entity\FileContext
+ * BisonLab\SakonninBundle\Entity\SakonninFileContext
  *
  * @ORM\Table(name="sakonnin_filecontext")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\FileContextRepository")
+ * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninFileContextRepository")
  */
-class FileContext
+class SakonninFileContext
 {
     use \BisonLab\CommonBundle\Entity\ContextBaseTrait;
 
     /**
      * @var mixed
      *
-     * @ORM\ManyToOne(targetEntity="File", inversedBy="contexts")
+     * @ORM\ManyToOne(targetEntity="SakonninFile", inversedBy="contexts")
      * @ORM\JoinColumn(name="file_id", referencedColumnName="id", nullable=false)
      */
     private $file;
@@ -26,7 +26,7 @@ class FileContext
     public function __construct($options = array())
     {
         if (isset($options['file'])) 
-            $this->setFile($options['file']);
+            $this->setSakonninFile($options['file']);
         return $this->traitConstruct($options);
     }
 
@@ -35,7 +35,7 @@ class FileContext
      *
      * @param object $file
      */
-    public function setFile(File $file)
+    public function setSakonninFile(SakonninFile $file)
     {
         $this->file = $file;
     }
@@ -45,7 +45,7 @@ class FileContext
      *
      * @return object 
      */
-    public function getFile()
+    public function getSakonninFile()
     {
         return $this->file;
     }
@@ -57,7 +57,7 @@ class FileContext
      */
     public function setOwner($object)
     {
-        return $this->setFile($object);
+        return $this->setSakonninFile($object);
     }
 
     /**
@@ -67,12 +67,12 @@ class FileContext
      */
     public function getOwner()
     {
-        return $this->getFile();
+        return $this->getSakonninFile();
     }
 
     public function getOwnerEntityAlias()
     {
-        return "BisonLabSakonninBundle:File";
+        return "BisonLabSakonninBundle:SakonninFile";
     }
 
     public function isDeleteable()

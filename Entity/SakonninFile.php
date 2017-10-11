@@ -9,16 +9,20 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 use BisonLab\SakonninBundle\Entity\MessageContext as Context;
 
 /**
- * File
+ * SakonninFile
  *
  * @ORM\Table(name="sakonnin_file")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\FileRepository")
+ * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninFileRepository")
+ * @Vich\Uploadable
  */
-class File
+class SakonninFile
 {
     use \BisonLab\CommonBundle\Entity\ContextOwnerTrait;
     use TimestampableEntity;
@@ -34,6 +38,16 @@ class File
     private $id;
 
     /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple
+     * property.
+     * 
+     * @Vich\UploadableField(mapping="sakonnin_file", fileNameProperty="name", size="size")
+     * 
+     * @var File
+     */
+    private $file;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -42,10 +56,20 @@ class File
 
     /**
      * @var string
+     * A uniquue ID, as also use byt message.
      *
      * @ORM\Column(name="file_id", type="string", length=100, unique=true)
      */
     private $fileId;
+
+    /**
+     * @var integer $size
+     *
+     * Simplest form, just a raw hint at what the files is or contains.
+     *
+     * @ORM\Column(name="size", type="integer", nullable=true)
+     */
+    private $size;
 
     /**
      * @var string $file_type
@@ -73,7 +97,7 @@ class File
     private $encoding;
 
     /**
-     * @ORM\OneToMany(targetEntity="FileContext", mappedBy="file", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="SakonninFileContext", mappedBy="file", cascade={"persist", "remove"})
      */
     private $contexts;
 
@@ -91,6 +115,22 @@ class File
     public function getId()
     {
         return $this->id;
+    }
+
+    /*
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     *
+     * @return Product
+     */
+    public function setFile(File $file = null)
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    public function getFile()
+    {
+        return $this->file;
     }
 
     /**
@@ -139,6 +179,30 @@ class File
     public function getFileId()
     {
         return $this->fileId;
+    }
+
+    /**
+     * Set size
+     *
+     * @param string $size
+     *
+     * @return File
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->size;
     }
 
     /**

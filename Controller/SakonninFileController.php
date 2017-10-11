@@ -8,14 +8,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
-use BisonLab\SakonninBundle\Entity\File;
+use BisonLab\SakonninBundle\Entity\SakonninFile;
 
 /**
- * File controller.
+ * SakonninFile controller.
  *
  * @Route("/{access}/file", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class FileController extends CommonController
+class SakonninFileController extends CommonController
 {
     /**
      * Lists all file entities.
@@ -33,7 +33,7 @@ class FileController extends CommonController
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $files, array('html' =>'file:_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:File:index.html.twig',
+        return $this->render('BisonLabSakonninBundle:SakonninFile:index.html.twig',
             array('files' => $files));
     }
 
@@ -51,7 +51,7 @@ class FileController extends CommonController
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $files, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:File:index.html.twig',
+        return $this->render('BisonLabSakonninBundle:SakonninFile:index.html.twig',
             array('entities' => $files));
     }
 
@@ -63,8 +63,8 @@ class FileController extends CommonController
      */
     public function newAction(Request $request, $access)
     {
-        $file = new File();
-        $form = $this->createForm('BisonLab\SakonninBundle\Form\FileType', $file);
+        $file = new SakonninFile();
+        $form = $this->createForm('BisonLab\SakonninBundle\Form\SakonninFileType', $file);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -75,7 +75,7 @@ class FileController extends CommonController
             return $this->redirectToRoute('file_show', array('id' => $file->getId()));
         }
 
-        return $this->render('BisonLabSakonninBundle:File:new.html.twig',
+        return $this->render('BisonLabSakonninBundle:SakonninFile:new.html.twig',
             array('file' => $file, 'form' => $form->createView()
         ));
     }
@@ -86,11 +86,11 @@ class FileController extends CommonController
      * @Route("/{id}", name="file_show")
      * @Method("GET")
      */
-    public function showAction(Request $request, File $file, $access)
+    public function showAction(Request $request, SakonninFile $file, $access)
     {
         $deleteForm = $this->createDeleteForm($file);
 
-        return $this->render('BisonLabSakonninBundle:File:show.html.twig',
+        return $this->render('BisonLabSakonninBundle:SakonninFile:show.html.twig',
             array(
             'file' => $file,
             'delete_form' => $deleteForm->createView(),
@@ -103,10 +103,10 @@ class FileController extends CommonController
      * @Route("/{id}/edit", name="file_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, File $file, $access)
+    public function editAction(Request $request, SakonninFile $file, $access)
     {
         $deleteForm = $this->createDeleteForm($file);
-        $editForm = $this->createForm('BisonLab\SakonninBundle\Form\FileType', $file);
+        $editForm = $this->createForm('BisonLab\SakonninBundle\Form\SakonninFileType', $file);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -115,7 +115,7 @@ class FileController extends CommonController
             return $this->redirectToRoute('file_edit', array('id' => $file->getId()));
         }
 
-        return $this->render('BisonLabSakonninBundle:File:edit.html.twig',
+        return $this->render('BisonLabSakonninBundle:SakonninFile:edit.html.twig',
             array(
             'file' => $file,
             'edit_form' => $editForm->createView(),
@@ -129,7 +129,7 @@ class FileController extends CommonController
      * @Route("/{id}", name="file_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, File $file, $access)
+    public function deleteAction(Request $request, SakonninFile $file, $access)
     {
         $form = $this->createDeleteForm($file);
         $form->handleRequest($request);
@@ -146,11 +146,11 @@ class FileController extends CommonController
     /**
      * Creates a form to delete a file entity.
      *
-     * @param File $file The file entity
+     * @param SakonninFile $file The file entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(File $file, $access)
+    private function createDeleteForm(SakonninFile $file, $access)
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('file_delete', array('id' => $file->getId())))
