@@ -131,7 +131,7 @@ class Files
 
     public function getFilesForUser($user, $criterias = array())
     {
-        $criterias['userid'] = $user->getId();
+        $criterias['username'] = $user->getUsername();
         return $this->getFiles($criterias);
     }
 
@@ -141,9 +141,9 @@ class Files
         $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
         $query = $repo->createQueryBuilder('f');
 
-        if (isset($criterias['userid'])) {
-            $query->where('f.createdBy = :userid');
-            $query->setParameter('userid', $criterias['userid']);
+        if (isset($criterias['username'])) {
+            $query->where('f.createdBy = :username');
+            $query->setParameter('username', $criterias['username']);
         }
 
         if (isset($criterias['file_type'])) {

@@ -31,6 +31,7 @@ class SakonninFileController extends CommonController
         $sf = $this->container->get('sakonnin.files');
         // Todo: paging or just show the last 20
         $files = $sf->getFilesForLoggedIn();
+dump($files);
 
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $files, array('html' =>'file:_index.html.twig'));
