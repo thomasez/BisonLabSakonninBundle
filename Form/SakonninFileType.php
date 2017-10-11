@@ -6,7 +6,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FileType extends AbstractType
+use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
+
+class SakonninFileType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,7 +18,14 @@ class FileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
+            ->add('file', VichFileType::class, [
+                'required' => true,
+                'allow_delete' => true, 
+        ])
+            ->add('file_type', ChoiceType::class, array(
+                'required' => false,
+                'choices' => ExternalEntityConfig::getFileTypesAsChoices(),
+                'placeholder' => 'Will be guessed'))
         ;
     }
     
@@ -24,7 +35,7 @@ class FileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'BisonLab\SakonninBundle\Entity\File'
+            'data_class' => 'BisonLab\SakonninBundle\Entity\SakonninFile'
         ));
     }
 

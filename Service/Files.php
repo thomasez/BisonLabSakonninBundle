@@ -9,9 +9,9 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType as FileFormType;
 
-use BisonLab\SakonninBundle\Entity\File;
+use BisonLab\SakonninBundle\Entity\SakonninFile;
 use BisonLab\SakonninBundle\Entity\FileContext;
-use BisonLab\SakonninBundle\Controller\FileController;
+use BisonLab\SakonninBundle\Controller\SakonninFileController;
 
 /**
  * Files service.
@@ -31,41 +31,59 @@ class Files
     {
         $em = $this->getDoctrineManager();
         $file = null;
-        if ($data instanceof File) {
+        if ($data instanceof SakonninFile) {
             $file = $data;
         } else {
-            $file = new File($data);
+            $file = new SakonninFile($data);
             if (isset($data['file_type'])) {
                 $file->setFileType($file_type);
-            } else {
-                $file->setFileType("UNKNOWN");
-            }
-
-            if (isset($context_data)
-                && isset($context_data['system'])
-                && isset($context_data['object_name'])
-                && isset($context_data['external_id'])) {
-
-                $file_context = new FileContext($context_data);
-                $file->addContext($file_context);
-                $em->persist($file_context);
             }
         }
 
-        // Gotta set the conteent type.
-        $content_type = mime_content_type( $filename);
-        $file->setContentType($content_type);
+        // I'll add context data regardless what the data was.
+        // If context data is provided we gotta handle it regardless.
+        if (isset($context_data)
+            && isset($context_data['system'])
+            && isset($context_data['object_name'])
+            && isset($context_data['external_id'])) {
+
+            $file_context = new FileContext($context_data);
+            $file->addContext($file_context);
+            $em->persist($file_context);
+        }
+        $em->persist($file);
+
+        // I want the eoncoding, no support for that in Symfony/SplFile yet.
         $finfo = finfo_open(FILEINFO_MIME_ENCODING);
-        $encoding = finfo_file($finfo, $filename);
+        $encoding = finfo_file($finfo, $file->getFilenameWithPath());
         $file->setEncoding($encoding);
+
+        if (!$file->getFileType()) {
+            /*
+             *  Gotta guess. I'll keep it here as with the content type above.
+             *  This is the way to store/add files, so it should work out
+             *  although having it in an event listener would be more correct.
+             *
+             * I'll start with being a coward and use the mime type. In a
+             * simple manner.
+             */
+            $mime_type = $file->getMimeType();
+            if (strpos($mime_type, 'image') !== false)
+                $file->setFileType('IMAGE');
+            elseif (strpos($mime_type, 'text') !== false)
+                $file->setFileType('TEXT');
+            else
+                $file->setFileType('UNKNOWN');
+        }
 
         $em->persist($file);
 
-        // I planned to use an event listener to dispatch callback/forward
-        // functions, but why? This storeFile functions shall be the only
-        // entry point for creating files, so why should I bother?
-        $dispatcher = $this->container->get('sakonnin.functions');
-        $dispatcher->dispatchFileFunctions($file);
+        /*
+         * Cut&paste from Messages. Not sure I ne3ed this, and it certainly
+         * does not work now.
+         */
+        // $dispatcher = $this->container->get('sakonnin.functions');
+        // $dispatcher->dispatchFileFunctions($file);
 
         $em->flush();
         return $file;
@@ -82,17 +100,17 @@ class Files
             if (isset($data['file_type']) && $file_type = $em->getRepository('BisonLabSakonninBundle:FileType')->findOneByName($data['file_type'])) {
                 $data['file_type'] = $file_type;
             }
-            $file = new File($data);
+            $file = new SakonninFile($data);
         } else {
-            $file = new File();
+            $file = new SakonninFile();
         }
 
         if (isset($options['file_context'])) {
-            $file_context = new FileContext($options['file_context']);
+            $file_context = new SakonninFileContext($options['file_context']);
             $file->addContext($file_context);
         }
 
-        $c = new FileController();
+        $c = new SakonninFileController();
         $c->setContainer($this->container);
 
         $form = $c->createCreateForm($file);
@@ -120,7 +138,7 @@ class Files
     public function getFiles($criterias = array())
     {
         $em = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:File');
+        $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
         $query = $repo->createQueryBuilder('f');
 
         if (isset($criterias['userid'])) {
@@ -146,7 +164,7 @@ class Files
     public function contextHasFiles($context)
     {
         $em = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:FileContext');
+        $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFileContext');
         return $repo->contextHasFiles($context);
     }
 }

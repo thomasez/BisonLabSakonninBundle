@@ -17,6 +17,8 @@ use BisonLab\SakonninBundle\Entity\SakonninFile;
  */
 class SakonninFileController extends CommonController
 {
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
     /**
      * Lists all file entities.
      *
@@ -25,7 +27,7 @@ class SakonninFileController extends CommonController
      */
     public function indexAction($access)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrineManager();
         $sf = $this->container->get('sakonnin.files');
         // Todo: paging or just show the last 20
         $files = $sf->getFilesForLoggedIn();
@@ -68,9 +70,9 @@ class SakonninFileController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($file);
-            $em->flush();
+dump($form);
+            $sf = $this->container->get('sakonnin.files');
+            $sf->storeFile($file, isset($data['message_context']) ? $data['message_context'] : array());
 
             return $this->redirectToRoute('file_show', array('id' => $file->getId()));
         }
@@ -88,7 +90,7 @@ class SakonninFileController extends CommonController
      */
     public function showAction(Request $request, SakonninFile $file, $access)
     {
-        $deleteForm = $this->createDeleteForm($file);
+        $deleteForm = $this->createDeleteForm($file, $access);
 
         return $this->render('BisonLabSakonninBundle:SakonninFile:show.html.twig',
             array(
@@ -105,12 +107,12 @@ class SakonninFileController extends CommonController
      */
     public function editAction(Request $request, SakonninFile $file, $access)
     {
-        $deleteForm = $this->createDeleteForm($file);
+        $deleteForm = $this->createDeleteForm($file, $access);
         $editForm = $this->createForm('BisonLab\SakonninBundle\Form\SakonninFileType', $file);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $this->getDoctrineManager()->flush();
 
             return $this->redirectToRoute('file_edit', array('id' => $file->getId()));
         }
@@ -131,11 +133,11 @@ class SakonninFileController extends CommonController
      */
     public function deleteAction(Request $request, SakonninFile $file, $access)
     {
-        $form = $this->createDeleteForm($file);
+        $form = $this->createDeleteForm($file, $access);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->getDoctrineManager();
             $em->remove($file);
             $em->flush();
         }

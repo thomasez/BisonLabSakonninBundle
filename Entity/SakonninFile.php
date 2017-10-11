@@ -10,6 +10,7 @@ use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
@@ -41,7 +42,7 @@ class SakonninFile
      * NOTE: This is not a mapped field of entity metadata, just a simple
      * property.
      * 
-     * @Vich\UploadableField(mapping="sakonnin_file", fileNameProperty="name", size="size")
+     * @Vich\UploadableField(mapping="sakonnin_file", fileNameProperty="storedAs", size="size", mimeType="mimeType", originalName="name")
      * 
      * @var File
      */
@@ -53,6 +54,15 @@ class SakonninFile
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
+
+    /**
+     * @var string
+     * This is the filename it's stored as in the file system. It's most
+     * probably a combination of fileId and extension.
+     *
+     * @ORM\Column(name="stored_as", type="string", length=255)
+     */
+    private $storedAs;
 
     /**
      * @var string
@@ -82,11 +92,10 @@ class SakonninFile
 
     /**
      * @var string
-     * The type from finfo / mime type. As specific as possible.
      *
-     * @ORM\Column(name="content_type", type="string", length=100, nullable=true)
+     * @ORM\Column(name="mime_type", type="string", length=100, nullable=true)
      */
-    private $contentType;
+    private $mimeType;
 
     /**
      * @var string
@@ -125,6 +134,13 @@ class SakonninFile
     public function setFile(File $file = null)
     {
         $this->file = $file;
+        // Until php7/uploaderbundle 1.7
+        if ($file instanceof UploadedFile) {
+            $this->setMimeType($file->getMimeType());
+            $this->setName($file->getClientOriginalName());
+            $this->setSize($file->getSize());
+        }
+        
         return $this;
     }
 
@@ -143,6 +159,30 @@ class SakonninFile
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get storedAs
+     *
+     * @return string
+     */
+    public function getStoredAs()
+    {
+        return $this->storedAs;
+    }
+
+    /**
+     * Set storedAs
+     *
+     * @param string $storedAs
+     *
+     * @return File
+     */
+    public function setStoredAs($storedAs)
+    {
+        $this->storedAs = $storedAs;
 
         return $this;
     }
@@ -233,27 +273,27 @@ class SakonninFile
     }
 
     /**
-     * Set contentType
+     * Set mimeType
      *
-     * @param string $contentType
+     * @param string $mimeType
      *
      * @return File
      */
-    public function setContentType($contentType)
+    public function setMimeType($mimeType)
     {
-        $this->contentType = $contentType;
+        $this->mimeType = $mimeType;
 
         return $this;
     }
 
     /**
-     * Get contentType
+     * Get mimeType
      *
      * @return string
      */
-    public function getContentType()
+    public function getMimeType()
     {
-        return $this->contentType;
+        return $this->mimeType;
     }
 
     /**
@@ -278,6 +318,18 @@ class SakonninFile
     public function getEncoding()
     {
         return $this->encoding;
+    }
+
+    /**
+     * Get the full name with path and filename
+     *
+     * @return string
+     */
+    public function getFilenameWithPath()
+    {
+        // Not sure which one is the best one for now, but this seemed logical.
+        // Yeah, read the docs stupid.
+        return $this->file->getRealPath();
     }
 
     /**
