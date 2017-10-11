@@ -70,7 +70,6 @@ class SakonninFileController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-dump($form);
             $sf = $this->container->get('sakonnin.files');
             $sf->storeFile($file, isset($data['message_context']) ? $data['message_context'] : array());
 

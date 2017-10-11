@@ -6,20 +6,18 @@
     <table>
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
-                <th>Fileid</th>
-                <th>Mimetype</th>
+                <th>File ID</th>
+                <th>Mime type</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for file in files %}
             <tr>
-                <td><a href="{{ path('file_show', { 'id': file.id }) }}">{{ file.id }}</a></td>
-                <td>{{ file.name }}</td>
+                <td><a href="{{ path('file_show', { 'id': file.id }) }}">{{ file.name }}</a></td>
                 <td>{{ file.fileId }}</td>
-                <td>{{ file.contentType }}</td>
+                <td>{{ file.mimetype }}</td>
                 <td>
                     <ul>
                         <li>
