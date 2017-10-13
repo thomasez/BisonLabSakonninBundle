@@ -52,7 +52,7 @@ function submitMessageForm() {
 </script>
 
 <div id="createpm" title="Create and send a Message">
-{% set pmform = sakonnin.getCreateForm({'message_data': pmconfig, 'message_context': pmconfig.context, 'create_view': true}) %}
+{% set pmform = sakonnin_messages.getCreateForm({'message_data': pmconfig, 'message_context': pmconfig.context, 'create_view': true}) %}
 <form id="createpmform" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm();">
 {% if pmconfig.message_type is defined %}
 <input id="message_type" type="hidden" name="message_type" value="{{pmconfig.message_type}}">

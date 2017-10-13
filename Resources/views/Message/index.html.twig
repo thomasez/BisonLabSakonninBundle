@@ -39,8 +39,8 @@ $(document).ready(function() {
                 {% endfor %}
                 {% endif %}
                 </td>
-                <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
-                <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
+                <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
+                <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
                 <td>{{ entity.state }}</td>
                 <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.messageid }}</a></td>
                 <td>{{ entity.messagetype.parent }} - {{ entity.messagetype }}</td>

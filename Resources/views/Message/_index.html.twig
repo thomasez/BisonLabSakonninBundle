@@ -20,7 +20,7 @@
         <tr>
 {% if entity.from %}
             <th valign="top">From:</th>
-            <td valign="top">{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
+            <td valign="top">{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
             <td>
 {% elseif entity.createdby %}
             <th valign="top">From:</th>
@@ -38,7 +38,7 @@
 {% if entity.to %}
         <tr>
             <th valign="top">To:</th>
-            <td valign="top">{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
+            <td valign="top">{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
         </tr>
 {% endif %}
         <tr>

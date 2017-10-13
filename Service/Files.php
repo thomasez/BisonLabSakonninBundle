@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType as FileFormType;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
-use BisonLab\SakonninBundle\Entity\FileContext;
+use BisonLab\SakonninBundle\Entity\SakonninFileContext;
 use BisonLab\SakonninBundle\Controller\SakonninFileController;
 
 /**
@@ -47,7 +47,7 @@ class Files
             && isset($context_data['object_name'])
             && isset($context_data['external_id'])) {
 
-            $file_context = new FileContext($context_data);
+            $file_context = new SakonninFileContext($context_data);
             $file->addContext($file_context);
             $em->persist($file_context);
         }
@@ -76,15 +76,12 @@ class Files
                 $file->setFileType('UNKNOWN');
         }
 
-        $em->persist($file);
-
         /*
          * Cut&paste from Messages. Not sure I ne3ed this, and it certainly
          * does not work now.
          */
         // $dispatcher = $this->container->get('sakonnin.functions');
         // $dispatcher->dispatchFileFunctions($file);
-
         $em->flush();
         return $file;
     }

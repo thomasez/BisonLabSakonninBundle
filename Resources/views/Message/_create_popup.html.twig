@@ -42,7 +42,7 @@ function submitMessageForm() {
     {% set title = mconfig.message_type %}
 {% endif %}
 <div id="createmessage" title="{{ title }}">
-{% set mform = sakonnin.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true}) %}
+{% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true}) %}
 <form id="createmessageform" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm();">
 {% if mconfig.message_type is defined %}
 <input id="message_type" type="hidden" name="message_type" value="{{mconfig.message_type}}">

@@ -88,7 +88,7 @@ $( "#createpmform #to" ).autocomplete({
 
 <div id="createpm" title="Write a PM">
  {# Gotta remember to add some way to send "in_reply_to" here. #}
- {% set pmform = sakonnin.getCreatePmForm({'create_view': true}) %}
+ {% set pmform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
  <form id="createpmform" method="POST" action="{{ path('pm_create', { 'access': 'ajax' }) }}" onSubmit="return submitPmMessageForm('createpmform', null);">
   <input type="hidden" name="to_userid" id="to_userid">
   <input type="hidden" name="message_type" id="pmmessage_type" value="PM">

@@ -33,10 +33,10 @@
         {% endif %}
         <sub>
         {% if entity.from and entity.from != app.user.id %}
-           From: <strong>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</strong>
+           From: <strong>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</strong>
         {% endif %}
         {% if entity.to and entity.to != app.user.id%}
-            To: <strong>{% if entity.totype == "INTERNAL" %}{{ sakonnin.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %} </strong>
+            To: <strong>{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %} </strong>
         {% endif %}
         {% if entity.createdAt %}
            {{ entity.createdAt|date('Y-m-d H:i:s') }}<br />
@@ -49,9 +49,9 @@
 <a href="#" onClick="openReply({{ formcount }});">Reply</a>
 <div class="pm_reply" id="createreply_{{ formcount }}" title="Reply">
  {# Gotta remember to add some way to send "in_reply_to" here. 
- {% set pmform = sakonnin.getCreatePmForm({'create_view': true}) %}
+ {% set pmform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
  #}
- {% set rpform = sakonnin.getCreatePmForm({'create_view': true}) %}
+ {% set rpform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
  <form id="createpmform_{{ formcount }}" method="POST" action="{{ path('pm_create', { 'access': 'ajax', 'in_reply_to': entity.messageid }) }}" onSubmit="return submitPmMessageForm('createpmform_{{ formcount }}', '{{ entity.messageid }}');">
   <input type="hidden" name="to_userid" value="{{entity.from}}">
   <input type="hidden" name="message_type" id="pmmessage_type" value="PM">

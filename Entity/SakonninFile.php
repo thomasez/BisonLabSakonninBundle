@@ -329,7 +329,7 @@ class SakonninFile
     {
         // Not sure which one is the best one for now, but this seemed logical.
         // Yeah, read the docs stupid.
-        return $this->file->getRealPath();
+        return $this->file ? $this->file->getRealPath() : "";
     }
 
     /**

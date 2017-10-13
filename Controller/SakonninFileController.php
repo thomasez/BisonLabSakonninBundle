@@ -6,6 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\SakonninFile;
@@ -31,7 +36,6 @@ class SakonninFileController extends CommonController
         $sf = $this->container->get('sakonnin.files');
         // Todo: paging or just show the last 20
         $files = $sf->getFilesForLoggedIn();
-dump($files);
 
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $files, array('html' =>'file:_index.html.twig'));
@@ -67,14 +71,26 @@ dump($files);
     public function newAction(Request $request, $access)
     {
         $file = new SakonninFile();
-        $form = $this->createForm('BisonLab\SakonninBundle\Form\SakonninFileType', $file);
-        $form->handleRequest($request);
+        $form = $this->createCreateForm($file);
+        $data = $request->request->all();
+
+        $this->handleForm($form, $request, $access);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $sf = $this->container->get('sakonnin.files');
-            $sf->storeFile($file, isset($data['message_context']) ? $data['message_context'] : array());
+            $sf->storeFile($file, isset($data['file_context']) ? $data['file_context'] : array());
 
+            if ($this->isRest($access)) {
+                return $this->returnRestData($request, "OK Done");
+            }
             return $this->redirectToRoute('file_show', array('id' => $file->getId()));
+        }
+
+        if ($this->isRest($access)) {
+            # We have a problem, and need to tell our user what it is.
+            # Better make this a Json some day.
+            return $this->returnErrorResponse("Validation Error", 400,
+                $this->handleFormErrors($form));
         }
 
         return $this->render('BisonLabSakonninBundle:SakonninFile:new.html.twig',
@@ -143,6 +159,28 @@ dump($files);
         }
 
         return $this->redirectToRoute('file_index');
+    }
+
+    /**
+     * Creates a form to create a Message entity.
+     *
+     * @param File $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createCreateForm(SakonninFile $entity)
+    {
+        $form = $this->createForm(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $entity, array(
+            'action' => $this->generateUrl('file_new'),
+            'method' => 'POST',
+        ));
+        $form->add('file', VichFileType::class, [
+            'required' => true,
+            'allow_delete' => true,
+        ]);
+        $form->add('submit', SubmitType::class, array('label' => 'Engage'));
+
+        return $form;
     }
 
     /**
