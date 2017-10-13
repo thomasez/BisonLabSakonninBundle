@@ -170,6 +170,12 @@ class Messages
     /*
      * Get and list messsag(es) functions.
      */
+    public function getMessagesForContext($context)
+    {
+        $criterias['context'] = $context;
+        return $this->getMessages($criterias);
+    }
+
     public function getMessagesForLoggedIn($criterias = array())
     {
         $user = $this->getLoggedInUser();
@@ -187,6 +193,14 @@ class Messages
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
         $query = $repo->createQueryBuilder('m');
+
+        if (isset($criterias['context'])) {
+            return $repo->findByContext(
+                $criterias['context']['system'],
+                $criterias['context']['object_name'],
+                $criterias['context']['external_id']
+                );
+        }
 
         if (isset($criterias['userid'])) {
             $query->where('m.from = :userid')

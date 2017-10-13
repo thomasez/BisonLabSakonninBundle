@@ -120,6 +120,12 @@ class Files
             return $form;
     }
 
+    public function getFilesForContext($context)
+    {
+        $criterias['context'] = $context;
+        return $this->getFiles($criterias);
+    }
+
     public function getFilesForLoggedIn($criterias = array())
     {
         $user = $this->getLoggedInUser();
@@ -137,6 +143,14 @@ class Files
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
         $query = $repo->createQueryBuilder('f');
+
+        if (isset($criterias['context'])) {
+            return $repo->findByContext(
+                $criterias['context']['system'],
+                $criterias['context']['object_name'],
+                $criterias['context']['external_id']
+                );
+        }
 
         if (isset($criterias['username'])) {
             $query->where('f.createdBy = :username');
