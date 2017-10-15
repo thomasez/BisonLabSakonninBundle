@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Service;
 use BisonLab\SakonninBundle\Entity\Message;
+use BisonLab\SakonninBundle\Entity\SakonninFile;
 
 /**
  * Functions service. This handles the callback and forward functions, both
@@ -101,5 +102,17 @@ class Functions
             'config'     => $config,
         );
         return $class->execute($options);
+    }
+
+    /* 
+     * The dispatch functions regarding files.
+     *
+     * Not in use yet. (Had a plan about thumbnailing, but decided to create
+     * those on demand (but cache).
+     * 
+     */
+    public function dispatchFileFunctions(SakonninFile $sfile)
+    {
+        return true;
     }
 }

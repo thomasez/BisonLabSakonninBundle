@@ -55,7 +55,7 @@ class Files
 
         // I want the eoncoding, no support for that in Symfony/SplFile yet.
         $finfo = finfo_open(FILEINFO_MIME_ENCODING);
-        $encoding = finfo_file($finfo, $file->getFilenameWithPath());
+        $encoding = finfo_file($finfo, $file->getRealPath());
         $file->setEncoding($encoding);
 
         if (!$file->getFileType()) {
@@ -77,11 +77,11 @@ class Files
         }
 
         /*
-         * Cut&paste from Messages. Not sure I ne3ed this, and it certainly
-         * does not work now.
+         * Cut&paste from Messages. Does not do all that one can, for now.
+         * 
          */
-        // $dispatcher = $this->container->get('sakonnin.functions');
-        // $dispatcher->dispatchFileFunctions($file);
+        $dispatcher = $this->container->get('sakonnin.functions');
+        $dispatcher->dispatchFileFunctions($file);
         $em->flush();
         return $file;
     }
@@ -177,5 +177,27 @@ class Files
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFileContext');
         return $repo->contextHasFiles($context);
+    }
+
+    public function getThumbnailFilename($sfile, $x, $y)
+    {
+        if ($sfile->getFileType() != "IMAGE" || !is_numeric($x) || !is_numeric($y)) {
+            return null;
+        }
+        $path = $this->container->getParameter('vich_uploader.mappings')['sakonnin_file']['upload_destination'];
+        // Gotta store the thumbs in a directory.
+        $filename = $path . "/" . $sfile->getStoredAs();
+        $thumbdir = $filename . "_thumbs";
+        $thumbname = $thumbdir . "/" . $x . "_" . $y . "_" . $sfile->getStoredAs();
+        if (file_exists($thumbname))
+            return $thumbname;
+        if (!file_exists($thumbdir))
+            mkdir ($thumbdir);
+        $imagine = new \Imagine\Gd\Imagine();
+        $image = $imagine->open($realpath);
+        $thumb = $image->thumbnail(new \Imagine\Image\Box($x, $y));
+        $thumb->save($thumbname);
+
+        return $thumbname;
     }
 }

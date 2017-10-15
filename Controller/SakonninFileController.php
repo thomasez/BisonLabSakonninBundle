@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -116,6 +118,53 @@ class SakonninFileController extends CommonController
     }
 
     /**
+     * Download a file.
+     *
+     * @Route("/{id}/download", name="file_download")
+     * @Method("GET")
+     */
+    public function downloadAction(Request $request, SakonninFile $file, $access)
+    {
+        // TODO: Add access control.
+        $path = $this->getFilePath();
+        $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        return $response;
+    }
+
+    /**
+     * View a file.
+     *
+     * @Route("/{id}/view", name="file_view")
+     * @Method("GET")
+     */
+    public function viewAction(Request $request, SakonninFile $file, $access)
+    {
+        // TODO: Add access control.
+        $path = $this->getFilePath();
+        $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
+        return $response;
+    }
+
+    /**
+     * Create/cache thumbnail.
+     *
+     * @Route("/{id}/thumbnail/{x}/{y}", name="file_thumbnail")
+     * @Method("GET")
+     */
+    public function thumbnailAction(Request $request, $access, SakonninFile $file, $x, $y)
+    {
+        if ($file->getFileType() != 'IMAGE')
+            $this->returnError($request, 'Not an image');
+        // TODO: Add access control.
+        // Gotta get the thumbnail then.
+        $sf = $this->container->get('sakonnin.files');
+        $thumbfile = $sf->getThumbnailFilename($file, $x, $y);
+        $response = new BinaryFileResponse($thumbfile);
+        return $response;
+    }
+
+    /**
      * Displays a form to edit an existing file entity.
      *
      * @Route("/{id}/edit", name="file_edit")
@@ -197,5 +246,10 @@ class SakonninFileController extends CommonController
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    private function getFilePath()
+    {
+        return $this->container->getParameter('vich_uploader.mappings')['sakonnin_file']['upload_destination'];
     }
 }

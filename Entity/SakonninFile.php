@@ -321,11 +321,11 @@ class SakonninFile
     }
 
     /**
-     * Get the full name with path and filename
+     * Get the stored as name with path and filename
      *
      * @return string
      */
-    public function getFilenameWithPath()
+    public function getRealPath()
     {
         // Not sure which one is the best one for now, but this seemed logical.
         // Yeah, read the docs stupid.
