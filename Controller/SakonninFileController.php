@@ -205,7 +205,6 @@ class SakonninFileController extends CommonController
             $em = $this->getDoctrineManager();
             $em->remove($file);
             $em->flush();
-throw new \Exception("nei");
         }
 
         return $this->redirectToRoute('file_index');
