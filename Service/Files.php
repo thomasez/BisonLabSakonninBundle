@@ -194,7 +194,7 @@ class Files
         if (!file_exists($thumbdir))
             mkdir ($thumbdir);
         $imagine = new \Imagine\Gd\Imagine();
-        $image = $imagine->open($realpath);
+        $image = $imagine->open($filename);
         $thumb = $image->thumbnail(new \Imagine\Image\Box($x, $y));
         $thumb->save($thumbname);
 
