@@ -184,7 +184,7 @@ class Files
         if ($sfile->getFileType() != "IMAGE" || !is_numeric($x) || !is_numeric($y)) {
             return null;
         }
-        $path = $this->container->getParameter('vich_uploader.mappings')['sakonnin_file']['upload_destination'];
+        $path = $this->container->getParameter('file_storage');
         // Gotta store the thumbs in a directory.
         $filename = $path . "/" . $sfile->getStoredAs();
         $thumbdir = $filename . "_thumbs";

@@ -205,6 +205,7 @@ class SakonninFileController extends CommonController
             $em = $this->getDoctrineManager();
             $em->remove($file);
             $em->flush();
+throw new \Exception("nei");
         }
 
         return $this->redirectToRoute('file_index');
@@ -250,6 +251,6 @@ class SakonninFileController extends CommonController
 
     private function getFilePath()
     {
-        return $this->container->getParameter('vich_uploader.mappings')['sakonnin_file']['upload_destination'];
+        return $this->container->getParameter('file_storage');
     }
 }

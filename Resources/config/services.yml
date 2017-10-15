@@ -20,6 +20,14 @@ services:
         tags:
             - { name: security.voter }
 
+    sakonnin.file_listener:
+        class: BisonLab\SakonninBundle\EventListener\SakonninFileListener
+        arguments: ['%file_storage%']
+        public: false
+        tags:
+            - { name: doctrine.event_listener, event: preRemove  }
+            - { name: doctrine.event_listener, event: postRemove  }
+
     sakonnin_messages:
         alias: sakonnin.messages
 
