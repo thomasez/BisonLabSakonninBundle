@@ -14,7 +14,7 @@
     "require": {
         "bisonlab/common-bundle": "dev-master",
         "symfony/framework-bundle": ">=2.8",
-        "vich/uploader-bundle": "1.4.x-dev",
+        "vich/uploader-bundle": "~1.4",
         "imagine/imagine": "~0.7",
         "stof/doctrine-extensions-bundle": "1.2.x-dev"
     },
