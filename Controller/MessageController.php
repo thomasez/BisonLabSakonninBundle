@@ -299,20 +299,23 @@ class MessageController extends CommonController
     public function createAction(Request $request, $access)
     {
         $sm = $this->container->get('sakonnin.messages');
-        if ($data = json_decode($request->getContent(), true)) {
-            if (!isset($data['message_data']['from_type'])) {
-                $data['message_data']['from_type'] = "EXTERNAL";
+        $em = $this->getDoctrineManager();
+        if ($parsed = json_decode($request->getContent(), true)) {
+            $data = $parsed['message_data'];
+            if (!isset($data['from_type'])) {
+                $data['from_type'] = "EXTERNAL";
             }
             // Gotta do some security check. This is a hack, but it should
             // work..
             if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+                $message = new  Message();
                 $message->setMessageType($message_type);
                 $this->denyAccessUnlessGranted('create', $message);
             } else {
                 // No messaagetype? naaah.
-                throw $this->createAccessDeniedException('No access.');
+                throw $this->createAccessDeniedException('No access, no message type found for message.');
             }
-            $message = $sm->postMessage($data['message_data'], isset($data['message_context']) ? $data['message_context'] : array());
+            $message = $sm->postMessage($data, isset($parsed['message_context']) ? $parsed['message_context'] : array());
             if ($message) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
