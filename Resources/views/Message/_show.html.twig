@@ -4,10 +4,14 @@
                 <th>Subject</th>
                 <td>{{ entity.subject }}</td>
             </tr>
+            {% if entity.inreplyto %}
             <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
+                <th>In Reply To</th>
+                <td>
+                  <a href="{{ path('message_show', { 'id': entity.inreplyto }) }}">Message</a><br />
+                </td>
             </tr>
+            {% endif %}
             <tr>
                 <th>Message ID</th>
                 <td>{{ entity.messageid }}</td>
