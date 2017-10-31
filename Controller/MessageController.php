@@ -137,8 +137,16 @@ class MessageController extends CommonController
      * @Route("/{id}", name="message_show")
      * @Method("GET")
      */
-    public function showAction(Request $request, $access, Message $message)
+    public function showAction(Request $request, $access, $id)
     {
+        $em = $this->getDoctrineManager();
+        if (is_numeric($id)) {
+            $message = $em->getRepository('BisonLabSakonninBundle:Message')
+                    ->find($id);
+        } else {
+            $message = $em->getRepository('BisonLabSakonninBundle:Message')
+                    ->findOneBy(array('message_id' => $id));
+        }
         $this->denyAccessUnlessGranted('show', $message);
         // If it's shown to receiver, it's read.
         $sm = $this->container->get('sakonnin.messages');
