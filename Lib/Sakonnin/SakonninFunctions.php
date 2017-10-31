@@ -25,6 +25,12 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'attribute_spec' => "Mail address",
             'needs_attributes' => true,
         ),
+        'AckInMessageMailOnErrorSubject' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\AckInMessageMailOnErrorSubject',
+            'description' => "Send a PM about message received. If ERROR in subject, send mail aswell.",
+            'attribute_spec' => "Username",
+            'needs_attributes' => false,
+        ),
         'ForwardOnErrorSubject' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\ForwardOnErrorSubject',
             'description' => "Forward to user and addresses in attribute list when the subject has the word error in it.",

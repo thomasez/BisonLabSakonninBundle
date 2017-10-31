@@ -39,10 +39,7 @@ class MailAndPmOnErrorSubject
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $user = $um->findUserBy(array('username'=>$receiver));
-            if ($addr = $sm->getEmailFromUser($user) {
-                $this->sendMail($message, $addr, $options);
-            }
+            $this->sendMail($message, $receiver, $options);
             $this->sendPm($message, $receiver, $options);
         }
     }

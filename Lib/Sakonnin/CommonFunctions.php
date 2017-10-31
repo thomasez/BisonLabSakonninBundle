@@ -2,6 +2,8 @@
 
 namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
+use BisonLab\SakonninBundle\Entity\Message;
+
 /*
  */
 
@@ -61,7 +63,7 @@ trait CommonFunctions
         return true;
     }
 
-    public function sendPm($message, $receiver, $options = array())
+    public function sendPm($body, $receiver, $options = array())
     {
         $sm = $this->container->get('sakonnin.messages');
         // Receiver should/could be userid, username or user object.
@@ -72,6 +74,7 @@ trait CommonFunctions
                 return false;
             $receiver = $user->getId();
         }
+        $message = new Message();
         $message->setTo($receiver);
         $message->setToType('INTERNAL');
         $message->setBody($body);

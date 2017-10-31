@@ -2,10 +2,12 @@
 
 namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
+use BisonLab\SakonninBundle\Entity\Message;
+
 /*
  */
 
-class PmOnErrorSubject
+class AckInMessageMailOnErrorSubject
 {
     use CommonFunctions;
 
@@ -17,32 +19,38 @@ class PmOnErrorSubject
         $this->container = $container;
     }
 
-    /* You may call this lazyness, just having an options array, but it's also
-     * more future proof. */
     public function execute($options = array())
     {
-        $sm = $this->container->get('sakonnin.messages');
-        $um = $this->container->get('fos_user.user_manager');
-
         $message = $options['message'];
-
-        // First, check subject, no error, return.
-        if (!preg_match("/error/i", $message->getSubject())) return true;
 
         // Find who to send this to.
         $first = $message->getFirstPost();
 
-        $receivers = isset($options['attributes']) ? $options['attributes'] : array();
+        $receivers = isset($options['attributes']) 
+            ? $options['attributes'] : array();
+
         // I'm not ready for validating a mail address. this is just a simple.
         if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
             $receivers[] = $first->getFrom();
 
-        $options['provide_link'] = true;
+        $pm = 'You got a message\nSubject:' . $message->getSubject();
+
+        $router = $this->getRouter();
+        $url = $router->generate('message_show',
+            array('id' => $message->getId()), true);
+        $pm .= "Link to the message: " . $url  . "\n\n";
+
         foreach ($receivers as $receiver) {
-            $this->sendPm($message, $receiver, $options);
+            $this->sendPm($pm, $receiver, $options);
         }
 
-        return true;
+        // Then, check subject, no error, no mail.
+        if (!preg_match("/error/i", $message->getSubject())) return true;
+
+        $options['provide_link'] = true;
+        foreach ($receivers as $receiver) {
+            $this->sendMail($message, $addr, $options);
+        }
     }
 
     public function getRouter()
