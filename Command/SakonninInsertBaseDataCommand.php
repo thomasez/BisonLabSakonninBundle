@@ -43,6 +43,12 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 'security_model' => 'PRIVATE',
                 'description' => "Personal Message"
                 ),
+           'Notification' => array(
+                'parent' => 'Messages',
+                'security_model' => 'PRIVATE',
+                'expunge_days' => 5,
+                'description' => "Notification"
+                ),
            'Broadcast' => array(
                 'parent' => 'Messages',
                 'security_model' => 'PRIVATE',
@@ -117,6 +123,8 @@ EOT
                 $mt->setSecurityModel($type['security_model']);
             if (isset($type['forward_function']))
                 $mt->setForwardFunction($type['forward_function']);
+            if (isset($type['expunge_days']))
+                $mt->setExpungeDays($type['expunge_days']);
             $this->entityManager->persist($mt);
             if ($parent) {
                 $output->writeln("Setting parent " 

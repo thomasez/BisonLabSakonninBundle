@@ -3,6 +3,7 @@
 namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
 /*
+ * Send a PM to everyone.
  */
 
 class Broadcast
@@ -14,8 +15,6 @@ class Broadcast
         $this->container = $container;
     }
 
-    /* You may call this lazyness, just having an options array, but it's also
-     * more future proof. */
     public function execute($options = array())
     {
         $message = $options['message'];
@@ -23,7 +22,8 @@ class Broadcast
         
         foreach ($userManager->findUsers() as $receiver) {
             if ($receiver->getEnabled())
-                $this->sendPm($message, $receiver, $options);
+                $this->sendNotification($receiver, $message->getBody(),
+                    array('message_type' => 'PM'));
         }
     }
 }

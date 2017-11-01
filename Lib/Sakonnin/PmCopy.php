@@ -3,9 +3,10 @@
 namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
 /*
+ *
  */
 
-class SendPmToUserList
+class PmCopy
 {
     use CommonFunctions;
 
@@ -14,9 +15,11 @@ class SendPmToUserList
     public function execute($options = array())
     {
         $message = $options['message'];
-        $receivers = isset($options['attributes']) ? $options['attributes'] : array();
+        $receivers = $message->getReceivers();
+
+        $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendPm($message, $receiver, $options);
+            $this->sendNotification($receiver, $message->getBody(), array('message_type' => 'PM'));
         }
     }
 }

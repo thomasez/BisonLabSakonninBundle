@@ -9,6 +9,8 @@ use BisonLab\SakonninBundle\Entity\Message;
 
 trait CommonFunctions
 {
+    use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
     protected $container;
     protected $router;
 
@@ -63,29 +65,41 @@ trait CommonFunctions
         return true;
     }
 
-    public function sendPm($body, $receiver, $options = array())
+    public function sendNotification($to, $body, $options = array())
     {
         $sm = $this->container->get('sakonnin.messages');
         // Receiver should/could be userid, username or user object.
-        if (!is_numeric($receiver)) {
-            // Gotta find user.
-            $userManager = $this->container->get('fos_user.user_manager');
-            if (!$user = $userManager->findUserBy(array('username' => $receiver)))
-                return false;
-            $receiver = $user->getId();
+        if (!is_object($to)) {
+            if (is_numeric($to)) {
+                // Gotta find user.
+                $userManager = $this->container->get('fos_user.user_manager');
+                if (!$to = $userManager->findUserBy(array('id' => $to)))
+                    return false;
+            } else {
+                $userManager = $this->container->get('fos_user.user_manager');
+                if (!$to = $userManager->findUserBy(array('username' => $to)))
+                    return false;
+            }
         }
         $message = new Message();
-        $message->setTo($receiver);
+        $em = $this->getDoctrineManager();
+
+        $message_type = $options['message_type'] ?: "Notification";
+
+        $message->setMessageType(
+            $em->getRepository('BisonLabSakonninBundle:MessageType')
+                  ->findOneByName($message_type)
+        );
+
+        $message->setTo($to->getId());
         $message->setToType('INTERNAL');
         $message->setBody($body);
 
-        if (!$from = $message->getFrom()) {
-            $user = $sm->getLoggeInUser();
-            $message->setFrom($user->getId());
-            $message->setFromType('INTERNAL');
-        }
+        $from = $this->getLoggedInUser();
+        $message->setFrom($from->getId());
+        $message->setFromType('INTERNAL');
 
-        $this->container->get('sakonnin')->postMessage($message);
+        $this->container->get('sakonnin.messages')->postMessage($message);
 
         return true;
     }

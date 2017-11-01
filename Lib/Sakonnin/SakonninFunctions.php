@@ -11,9 +11,9 @@ class SakonninFunctions implements SakonninFunctionsInterface
     protected $container;
 
     public $callback_functions = array(
-        'sendpmtouserlist' => array(
-            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\SendPmToUserList',
-            'description' => "Send PM to everyone in the attributes list.",
+        'sendnotificationtouserlist' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\SendNotificationToUserList',
+            'description' => "Send a notification to everyone in the attributes list.",
             'attribute_spec' => "Username",
             'needs_attributes' => true,
         ),
@@ -25,9 +25,9 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'attribute_spec' => "Mail address",
             'needs_attributes' => true,
         ),
-        'AckInMessageMailOnErrorSubject' => array(
-            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\AckInMessageMailOnErrorSubject',
-            'description' => "Send a PM about message received. If ERROR in subject, send mail aswell.",
+        'NotifyiOnReceptionMailOnErrorSubject' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\NotifyiOnReceptionMailOnErrorSubject',
+            'description' => "Send a Notification when message received. If ERROR in subject, send mail aswell.",
             'attribute_spec' => "Username",
             'needs_attributes' => false,
         ),
@@ -37,9 +37,9 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'attribute_spec' => null,
             'needs_attributes' => false,
         ),
-        'MailAndPmOnErrorSubject' => array(
-            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailAndPmOnErrorSubject',
-            'description' => "Send mail and PM to user when the subject has the word error in it.",
+        'MailAndNotifyOnErrorSubject' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailAndNotifyPmOnErrorSubject',
+            'description' => "Send mail and notification to user when the subject has the word error in it.",
             'attribute_spec' => "Username",
             'needs_attributes' => true,
         ),
@@ -47,7 +47,7 @@ class SakonninFunctions implements SakonninFunctionsInterface
 
     public $forward_functions = array(
         'mailcopy' => array(
-            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailCompy',
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailCopy',
             'description' => "Send copy of message as mail.",
             'attribute_spec' => null,
             'needs_attributes' => false,
@@ -76,9 +76,9 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'attribute_spec' => null,
             'needs_attributes' => false,
         ),
-        'sendpmtouserlist' => array(
-            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\WritePm',
-            'description' => "Send copy as PM to users in attributes list",
+        'sendnotificationtouserlist' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\SendNotificationToUserList',
+            'description' => "Send copy as notification to users in attributes list",
             'attribute_spec' => "Username",
             'needs_attributes' => true,
         )

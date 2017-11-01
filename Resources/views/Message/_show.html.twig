@@ -8,7 +8,7 @@
             <tr>
                 <th>In Reply To</th>
                 <td>
-                  <a href="{{ path('message_show', { 'id': entity.inreplyto }) }}">Message</a><br />
+                  <a href="{{ path('message_show', { 'id': entity.inreplyto }) }}">{{ entity.inreplyto }}</a><br />
                 </td>
             </tr>
             {% endif %}

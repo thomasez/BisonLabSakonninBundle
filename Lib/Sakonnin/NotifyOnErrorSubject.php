@@ -5,7 +5,7 @@ namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 /*
  */
 
-class PmOnErrorSubject
+class NotifyOnErrorSubject
 {
     use CommonFunctions;
 
@@ -34,12 +34,14 @@ class PmOnErrorSubject
 
         $receivers = isset($options['attributes']) ? $options['attributes'] : array();
         // I'm not ready for validating a mail address. this is just a simple.
+        // TODO: Find out where this came from and decide who/what til get it.
+        // This is most probably wrong and the From is a username.
         if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
             $receivers[] = $first->getFrom();
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendPm($message, $receiver, $options);
+            $this->sendNotification($receiver, $message->getBody());
         }
 
         return true;
