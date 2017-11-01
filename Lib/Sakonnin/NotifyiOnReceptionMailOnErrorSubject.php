@@ -31,13 +31,12 @@ class NotifyiOnReceptionMailOnErrorSubject
 
         $receivers[] = $first->getFrom();
 
-        $pm = 'You got a message\nSubject: ' . $message->getSubject();
+        $pm = 'You got a message<br/>Subject: ' . $message->getSubject();
 
         $router = $this->getRouter();
         $url = $router->generate('message_show',
             array('id' => $message->getId()), true);
-        $pm .= "Link to the message: " . $url  . "\n\n";
-error_log("PM " . $pm);
+        $pm .= '<br/><a href="' . $url . '">Link to the message</a>';
 
         foreach ($receivers as $receiver) {
             $this->sendNotification($receiver, $pm);
