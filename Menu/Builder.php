@@ -38,8 +38,8 @@ class Builder implements ContainerAwareInterface
         $menu['Messages']->addChild('Personal Messages', array('uri' => '#'));
         $menu['Messages']['Personal Messages']->setAttribute('id', 'menu_unread');
         $menu['Messages']['Personal Messages']->setLinkAttribute('onclick', $read_new_click);
-        $menu['Messages']->addChild('Write Personal Message', array('uri' => '#'));
-        $menu['Messages']['Write Personal Message']->setLinkAttribute('onclick', 'createPmMessage()');
+        $menu['Messages']->addChild('Send Personal Message', array('uri' => '#'));
+        $menu['Messages']['Send Personal Message']->setLinkAttribute('onclick', 'createPmMessage()');
         return $menu;
     }
 }
