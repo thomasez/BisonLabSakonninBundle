@@ -185,6 +185,7 @@ class Messages
     public function getMessagesForUser($user, $criterias = array())
     {
         $criterias['userid'] = $user->getId();
+        $criterias['username'] = $user->getUsername();
         return $this->getMessages($criterias);
     }
 
@@ -203,9 +204,10 @@ class Messages
         }
 
         if (isset($criterias['userid'])) {
-            $query->where('m.from = :userid')
-            ->orWhere('m.to = :userid');
+            $query->where('m.from in (:userid, :username)')
+            ->orWhere('m.to in (:userid, :username)');
             $query->setParameter('userid', $criterias['userid']);
+            $query->setParameter('username', $criterias['username']);
         }
 
         if (isset($criterias['state'])) {
