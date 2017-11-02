@@ -119,6 +119,17 @@ class SecurityModelVoter extends Voter
             if (('INTERNAL' == $subject->getToType())
                 && $subject->getTo() == $user->getId())
                     return true;
+            // See what I'm doing here? Yes, accepting username. Which does
+            // mean that someone may get the wrong messages if usernames are
+            // changed. But username is used here and there in both to and from
+            // (which I may be able to fix?) so that will create a breach
+            // whatever you do.
+            if (('INTERNAL' == $subject->getFromType())
+                && $subject->getFrom() == $user->getUsername())
+                    return true;
+            if (('INTERNAL' == $subject->getToType())
+                && $subject->getTo() == $user->getUsername())
+                    return true;
             // Then, how do I get the object the context is pointing at?
             // Answer: "The ExternalRetriever" in my CommonBundle.
             foreach ($subject->getContexts() as $context) {
