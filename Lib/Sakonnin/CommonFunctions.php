@@ -98,6 +98,9 @@ trait CommonFunctions
         $from = $this->getLoggedInUser();
         $message->setFrom($from->getId());
         $message->setFromType('INTERNAL');
+        // I'll let it contain HTML. This is a security risk if the message
+        // contains the wrong HTML or includes something from the outside.
+        $message->setContentType('text/html');
 
         $this->container->get('sakonnin.messages')->postMessage($message);
 
