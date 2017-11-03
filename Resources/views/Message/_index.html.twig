@@ -2,12 +2,28 @@
 {% if entities is not defined and data is defined %}
 {% set entities = data %}
 {% endif %}
-    {% for entity in entities if is_granted('show', entity)%}
-    <table style="border-spacing: 10px;" id="message_list">
+{% if entities | length == 0 %}
+<p>You've got no mail.</p>
+{% else %}
+    {% set formcount = 0 %}
+    {% for entity in entities if is_granted('show', entity) %}
+      {% set formcount = formcount + 1 %}
+      {% if entity.from and entity.from == app.user.id %}
+          {% set me = true %}
+      {% else %}
+          {% set me = false %}
+      {% endif %}
+      <table style="border-spacing: 10px;" id="message_list">
         <tbody>
         {% if not entity.inreplyto %}
         <tr>
+            {% if entity.messagetype == "PM" %}
+            {% set pm = true %}
+            <th valign="top">PM</th>
+            {% else %}
+            {% set pm = false %}
             <th valign="top">Subject:</th>
+            {% endif %}
             <td valign="top">
               <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
             </td>
@@ -45,17 +61,41 @@
             <th valign="top">Time:</th>
             <td valign="top">{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
+{% if pm and not me %}
         <tr>
+        <td>
+<a href="#" onClick="openReply({{ formcount }});">Reply</a>
+<div class="pm_reply" id="createreply_{{ formcount }}" title="Reply">
+ {# Gotta remember to add some way to send "in_reply_to" here. 
+ {% set pmform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
+ #}
+ {% set rpform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
+ <form id="createpmform_{{ formcount }}" method="POST" action="{{ path('pm_create', { 'access': 'ajax', 'in_reply_to': entity.messageid }) }}" onSubmit="return submitPmMessageForm('createpmform_{{ formcount }}', '{{ entity.messageid }}');">
+  <input type="hidden" name="to_userid" value="{{entity.from}}">
+  <input type="hidden" name="message_type" id="pmmessage_type" value="PM">
+  <input type="textarea" name="body">
+  <input type="submit" value="Send">
+  {{ form_row(rpform._token)}} 
+ </form>
+</div>
+        </td>
+        </tr>
+{% else %}
+<tr><td>Ikke PM eller fra meg</td></tr>
+{% endif %}
 {% if entity.replies %}
+        <tr>
+        Replies:
         <td valign="top">
          {% for reply in entity.replies %}
-              <br />reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a>
+            {% include 'BisonLabSakonninBundle:Message:_show.html.twig' with { 'entity': reply }  %}
          {% endfor %}
         </td>
-{% endif %}
         </tr>
+{% endif %}
         {% endif %}
         </tbody>
     </table>
     <hr>
     {% endfor %}
+{% endif %}

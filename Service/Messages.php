@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Service;
 
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -79,6 +78,16 @@ class Messages
         // All this is a hack, but it's gotta be somewhere and this works 
         // for now.
         if ($message->getToType() == "INTERNAL") {
+            // In case of no userid, but username
+            // (Gotta consider some more automagic handling of all this.)
+            // (And is_numeric is kinda wrong since a user can be named "666")
+            if (!is_numeric($message->getTo())) {
+                if ($touser = $this->getUserFromUserName($message->getTo())) {
+                    $message->setTo($touser->getId());
+                } else {
+                    throw new \InvalidArgumentException("No user with that username.");
+                }
+            }
             $message->setState("UNREAD");
             // Add the To-user object as a receiver.
             $message->addReceiver($message->getTo());
@@ -262,65 +271,4 @@ class Messages
     /*
      * Helper functions.
      */
-    public function getUserNameFromUserId($userid)
-    {
-        // It may just not be an ID.
-        if (!is_numeric($userid)) return $userid;
-        $userManager = $this->container->get('fos_user.user_manager');
-        $user = $userManager->findUserBy(array('id' => $userid));
-        if (!$user) return $userid;
-        return $user->getUserName();;
-    }
-
-    public function getEmailFromUser($user = null)
-    {
-        if (!$user)
-            $user = $this->getLoggedInUser();
-        // It may just be an ID.
-        if (is_numeric($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('id' => $user));
-        }
-        // Or string?
-        if (is_string($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('username' => $user));
-        }
-
-        if (is_object($user) && method_exists($user, 'getEmail'))
-            return $user->getEmail();
-        return null;
-    }
-
-    /* For finding a number to send SMSes to. It's still mobiles. */
-    public function getMobilePhoneNumberFromUser($user = null)
-    {
-        if (!$user)
-            $user = $this->getLoggedInUser();
-        // It may just be an ID.
-        if (is_numeric($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('id' => $user));
-        }
-        // Or string?
-        if (is_string($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('username' => $user));
-        }
-
-        if (is_object($user) && method_exists($user, 'getMobilePhoneNumber'))
-            return $user->getMobilePhoneNumber();
-        if (is_object($user) && method_exists($user, 'getPhoneNumber'))
-            return $user->getPhoneNumber();
-        return null;
-    }
-
-    public function getMessageType($name)
-    {
-        if ($name instanceof MessageType)
-            return $name;
-        $em = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:MessageType');
-        return $repo->findOneByName($name);
-    }
 }

@@ -63,20 +63,14 @@ class MessageController extends CommonController
         $sm = $this->container->get('sakonnin.messages');
         $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         // Gotta set the messages as read.
-        if (count($messages) > 0)
-            $unread_starts_at = $messages[0]->getId();
-        else
-            $unread_starts_at = null;
         foreach ($messages as $message) {
             $message->setState('READ');
         }
         $em = $this->getDoctrineManager();
         $em->flush();
         if ($this->isRest($access)) {
-            $data = array('messages' => $messages,
-                'unread_starts_at' => $unread_starts_at);
-            return $this->returnRestData($request, $data,
-                array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+            return $this->returnRestData($request, $messages,
+                array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
         }
         return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
             array('entities' => $messages, 
@@ -403,11 +397,7 @@ class MessageController extends CommonController
         $user = $this->getUser();
 
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
-        $messages = $repo->createQueryBuilder('m')
-            ->where("m.state = 'UNREAD'")
-            ->andWhere('m.to = :userid')
-            ->setParameter('userid', $user->getId())
-            ->getQuery()->getResult();
+        $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
         }
