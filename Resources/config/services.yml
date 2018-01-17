@@ -22,7 +22,7 @@ services:
 
     sakonnin.file_listener:
         class: BisonLab\SakonninBundle\EventListener\SakonninFileListener
-        arguments: ['%file_storage%']
+        arguments: ['%sakonnin.file_storage%']
         public: false
         tags:
             - { name: doctrine.event_listener, event: preRemove  }
