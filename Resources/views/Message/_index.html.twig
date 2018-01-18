@@ -81,9 +81,8 @@
         </td>
         </tr>
 {% else %}
-<tr><td>Ikke PM eller fra meg</td></tr>
 {% endif %}
-{% if entity.replies %}
+{% if entity.replies  and entity.replies is not empty %}
         <tr>
         Replies:
         <td valign="top">
