@@ -21,6 +21,8 @@ class MessageType
         'ALL_READWRITE' => array('short' => 'All read write', 'description' => 'Everyone can read and write.'),
         // Only Admins can read and write.
         'ADMIN_ONLY' => array('short' => 'Admin only', 'description' => 'Only Admin can read and write.'),
+        'ADMIN_RW_USER_R' => array('short' => 'Admin read and write, object read', 'description' => 'Only Admin can write and the object (user) can read.'),
+        'ADMIN_RW_USER_RW' => array('short' => 'Admin, user read and write', 'description' => 'Admin and user can read and write')
         );
 
     /**

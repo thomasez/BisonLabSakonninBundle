@@ -65,6 +65,15 @@ class SecurityModelVoter extends Voter
             case 'ADMIN_ONLY':
                 return $this->_isAdmin($token);
                 break;
+            case 'ADMIN_RW_USER_R':
+                if (in_array($attribute, array('show', 'index')))
+                    return $this->_isAdmin($token) || $this->_checkPrivate($attribute, $subject, $token);
+                elseif (in_array($attribute, array('delete', 'edit', 'create')))
+                    return $this->_isAdmin($token);
+                break;
+            case 'ADMIN_RW_USER_RW':
+                return $this->_isAdmin($token) || $this->_checkPrivate($attribute, $subject, $token);
+                break;
             case 'PRIVATE':
                 return $this->_checkPrivate($attribute, $subject, $token);
                 break;
