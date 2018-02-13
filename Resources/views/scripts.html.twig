@@ -6,6 +6,11 @@
 <script type="text/javascript">
 function createPmMessage(type = "PM") {
     $( "#createpm" ).dialog("open");
+    $("#createpm").dialog("widget").position({
+       my: 'bottom',
+       at: 'right+80',
+       of: "#createPmMenu"
+    });
     $( "#createpmform #pmmessage_type" ).val(type);
     return false;
 }
