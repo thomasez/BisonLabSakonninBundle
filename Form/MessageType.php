@@ -27,13 +27,7 @@ class MessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
-            ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false))
-            ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
-            ->add('in_reply_to', HiddenType::class, array('required' => false))
-            ->add('state', ChoiceType::class, array('choices' => array_combine(Message::getStates(), Message::getStates())))
-            ->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
-        ;
+            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")));
         $type_choices = array();
         if (!$options['data']->getMessageType()) {
             $builder->add('message_type', EntityType::class,
@@ -75,6 +69,13 @@ class MessageType extends AbstractType
                     ));
             }
         }
+        $builder
+            ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false))
+            ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
+            ->add('in_reply_to', HiddenType::class, array('required' => false))
+            ->add('state', ChoiceType::class, array('choices' => array_combine(Message::getStates(), Message::getStates())))
+            ->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
+        ;
     }
     
     /**

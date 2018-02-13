@@ -74,7 +74,7 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
            'Note' => array(
                 'parent' => 'Notes',
                 'security_model' => 'ALL_READ',
-                'description' => "Note"
+                'description' => "Note everyone can read"
                 ),
     );
 

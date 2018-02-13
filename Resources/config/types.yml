@@ -1,11 +1,12 @@
 parameters:
     sakonnin.address_types:
-        # Good old SMTP. (Or POP or IMAP if we pull them ourselves.)
-        EMAIL:
-            chooseable: true
         # PMs - I Wish I used "USERID" as type. As it *is* an address type.
         # TODO: Change to USERID.
+        # But as INTERNAL it is used for Notes and Announcements.
         INTERNAL:
+            chooseable: true
+        # Good old SMTP. (Or POP or IMAP if we pull them ourselves.)
+        EMAIL:
             chooseable: true
         # Yup, text message.
         SMS:
