@@ -4,7 +4,7 @@
     "description": "A message/log/feedback handling bundle with callback/replies capabilities",
     "keywords": ["logging messages feedback symfony"],
     "homepage": "https://github.com/thomasez/BisonLabSakonninBundle",
-    "license": "LGPLv2.1",
+    "license": "LGPL-2.1-or-later",
     "authors": [
         {
             "name": "Thomas Lundquist",
