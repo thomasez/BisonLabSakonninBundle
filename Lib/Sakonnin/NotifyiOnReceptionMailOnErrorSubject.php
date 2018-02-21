@@ -39,11 +39,21 @@ class NotifyiOnReceptionMailOnErrorSubject
         $pm .= '<br/><a href="' . $url . '">Link to the message</a>';
 
         foreach ($receivers as $receiver) {
-            $this->sendNotification($receiver, $pm);
+            $this->sendNotification($receiver, $pm, array('content_type' => 'text/html'));
         }
 
         // Then, check subject, no error, no mail.
         if (!preg_match("/error/i", $message->getSubject())) return true;
+
+        // Find who to send this to.
+        $first = $message->getFirstPost();
+
+        $receivers = isset($options['attributes']) 
+            ? $options['attributes'] : array();
+
+        // I'm not ready for validating a mail address. this is just a simple.
+        if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
+            $receivers[] = $first->getFrom();
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
