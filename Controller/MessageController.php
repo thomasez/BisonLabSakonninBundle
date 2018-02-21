@@ -134,12 +134,20 @@ class MessageController extends CommonController
     public function showAction(Request $request, $access, $id)
     {
         $em = $this->getDoctrineManager();
-        if (is_numeric($id)) {
+        // Hack. The contextGetAction in CommonBundle is not as smart as it
+        // looks.
+        $message = null;
+        if ($id instanceof Message) {
+            $message = $id;
+        } elseif (is_numeric($id)) {
             $message = $em->getRepository('BisonLabSakonninBundle:Message')
                     ->find($id);
         } else {
             $message = $em->getRepository('BisonLabSakonninBundle:Message')
                     ->findOneBy(array('message_id' => $id));
+        }
+        if (!$message) {
+            return $this->returnNotFound($request, 'Unable to find Message.');
         }
         $this->denyAccessUnlessGranted('show', $message);
         // If it's shown to receiver, it's read.
