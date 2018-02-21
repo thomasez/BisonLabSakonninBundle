@@ -85,11 +85,13 @@ trait CommonFunctions
         $em = $this->getDoctrineManager();
 
         $message_type = $options['message_type'] ?: "Notification";
+        $content_type = $options['content_type'] ?: "text/plain";
 
         $message->setMessageType(
             $em->getRepository('BisonLabSakonninBundle:MessageType')
                   ->findOneByName($message_type)
         );
+        $message->setContentType($content_type);
 
         $message->setTo($to->getId());
         $message->setToType('INTERNAL');

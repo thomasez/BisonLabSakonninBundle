@@ -28,9 +28,13 @@
               <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
             </td>
             <td rowspan="5">
+            {% if entity.contenttype == 'text/html' %}
+            {{ entity.body | raw }}
+            {% else %}
             <pre>
             {{ entity.body }}
             </pre>
+            {% endif %}
             </td>
         </tr>
         <tr>

@@ -42,9 +42,13 @@
            {{ entity.createdAt|date('Y-m-d H:i:s') }}<br />
         {% endif %}
         </sub>
+            {% if entity.contenttype == 'text/html' %}
+            {{ entity.body | raw }}
+            {% else %}
             <pre>
             {{ entity.body }}
             </pre>
+            {% endif %}
 {% if not me %}
 <a href="#" onClick="openReply({{ formcount }});">Reply</a>
 <div class="pm_reply" id="createreply_{{ formcount }}" title="Reply">
@@ -73,9 +77,13 @@
             {% else %}
             <sub><b>To me {{ rtime }}</b></sub>
             {% endif %}
+            {% if reply.contenttype == 'text/html' %}
+            {{ reply.body | raw }}
+            {% else %}
             <pre>
             {{ reply.body }}
             </pre>
+            {% endif %}
          {% endfor %}
         </ul>
 {% endif %}
