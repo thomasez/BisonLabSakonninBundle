@@ -43,6 +43,11 @@ EOMSG;
         // Make it one.
 		if (!is_array($receivers))
             $receivers = array($receivers);
+
+        // Handle "special" chars. Like & and "
+//        $message = htmlentities($message);
+        $message = preg_replace('/&/', '&amp;', $message);
+        $message = preg_replace('/"/', '&quot;', $message);
 		
         foreach ($receivers as $number) {
             if (strlen((string)$number) == $this->national_number_lenght) $number = $this->default_country_prefix . $number;
@@ -68,7 +73,9 @@ EOMSG;
         $headers = $mail->getHeaders();
         $headers->addTextHeader('Return-Path', $this->mailfrom);
         $headers->addTextHeader('X-Sender', $this->mailfrom);
-
+        // $headers->addTextHeader('Content-Disposition', 'inline');
+        $headers->removeAll('Content-Transfer-Encoding');
+        $headers->addTextHeader('Content-Transfer-Encoding',  '8bit');
         $this->container->get('mailer')->send($mail);
     }
 }

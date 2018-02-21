@@ -90,7 +90,7 @@ class Messages
             }
             $message->setState("UNREAD");
             // Add the To-user object as a receiver.
-            $message->addReceiver($message->getTo());
+            $message->addReceiver($this->getUserFromUserId($message->getTo()));
         } else {
             // Gotta have something.
             $message->setState("SENT");

@@ -19,6 +19,12 @@ trait CommonStuff
         return $this->container->get('security.token_storage')->getToken()->getUser();
     }
 
+    public function getUserFromUserId($id)
+    {
+        $userManager = $this->container->get('fos_user.user_manager');
+        return $userManager->findUserBy(array('id'=>$id));
+    }
+
     public function getUserFromUserName($username)
     {
         $userManager = $this->container->get('fos_user.user_manager');

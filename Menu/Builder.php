@@ -39,6 +39,7 @@ class Builder implements ContainerAwareInterface
         $menu['Messages']->addChild('Message History', array( 'route' => 'message'));
         $menu['Messages']->addChild('Send Personal Message', array('uri' => '#'));
         $menu['Messages']['Send Personal Message']->setLinkAttribute('onclick', 'createPmMessage()');
+        $menu['Messages']['Send Personal Message']->setLinkAttribute('id', 'createPmMenu');
         return $menu;
     }
 }

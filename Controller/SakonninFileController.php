@@ -250,6 +250,6 @@ class SakonninFileController extends CommonController
 
     private function getFilePath()
     {
-        return $this->container->getParameter('file_storage');
+        return $this->container->getParameter('sakonnin.file_storage');
     }
 }

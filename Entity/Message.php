@@ -38,7 +38,7 @@ class Message
      * different message types should be able to have. Either as a free array
      * or from a pick list of these.
      */
-    private static $states = array('SENDING', 'UNREAD', 'SENT', 'READ', 'SHOW', 'HIDE');
+    private static $states = array('SHOW', 'HIDE', 'SENDING', 'UNREAD', 'SENT', 'READ');
 
     /**
      * @var integer

@@ -17,7 +17,8 @@ class SmsCopy
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendSms($message, $receiver, $options);
+            if ($number = $receiver->getMobilePhoneNumber())
+                $this->sendSms($message, $number, $options);
         }
     }
 }
