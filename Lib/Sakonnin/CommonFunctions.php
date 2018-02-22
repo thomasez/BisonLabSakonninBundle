@@ -22,8 +22,11 @@ trait CommonFunctions
     public function sendMail($message, $receiver, $options = array())
     {
         $sm = $this->container->get('sakonnin.messages');
+        // Just a pure user object?
+        if ($receiver instanceof \FOS\UserBundle\Model\User) {
+            $receiver = $sm->getEmailFromUser($receiver);
         // In case of userid
-        if (is_numeric($receiver)) {
+        } elseif (is_numeric($receiver)) {
             // Gotta find email address user.
             $userManager = $this->container->get('fos_user.user_manager');
             if (!$user = $userManager->findUserBy(array('id'=>$receiver)))
@@ -38,6 +41,8 @@ trait CommonFunctions
                 return false;
             $receiver = $sm->getEmailFromUser($user);
         }
+        // OK, we're hoping we've filtered enough and are stuck with an email
+        // address
 
         $body = '';
         if (isset($options['provide_link'])) {
@@ -52,7 +57,6 @@ trait CommonFunctions
             $message->setFrom($from);
             $message->setFromType('EMAIL');
         }
-
         $mail = \Swift_Message::newInstance()
         ->setSubject($message->getSubject())
         ->setFrom($from)
@@ -61,7 +65,6 @@ trait CommonFunctions
             'text/plain'
         ) ;
         $this->container->get('mailer')->send($mail);
-
         return true;
     }
 

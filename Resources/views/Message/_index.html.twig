@@ -3,7 +3,7 @@
 {% set entities = data %}
 {% endif %}
 {% if entities | length == 0 %}
-<p>You've got no mail.</p>
+<p>You've got zilch.</p>
 {% else %}
     {% set formcount = 0 %}
     {% for entity in entities if is_granted('show', entity) %}

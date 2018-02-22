@@ -52,12 +52,12 @@ class NotifyiOnReceptionMailOnErrorSubject
             ? $options['attributes'] : array();
 
         // I'm not ready for validating a mail address. this is just a simple.
-        if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
+        if ($first->getFrom())
             $receivers[] = $first->getFrom();
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendMail($message, $addr, $options);
+            $this->sendMail($message, $receiver, $options);
         }
     }
 

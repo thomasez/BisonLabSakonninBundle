@@ -36,7 +36,7 @@ class NotifyOnErrorSubject
         // I'm not ready for validating a mail address. this is just a simple.
         // TODO: Find out where this came from and decide who/what til get it.
         // This is most probably wrong and the From is a username.
-        if ($first->getFrom() && preg_match("/\w+@\w+/", $first->getFrom()))
+        if ($first->getFrom())
             $receivers[] = $first->getFrom();
 
         $options['provide_link'] = true;
