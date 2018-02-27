@@ -38,7 +38,7 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'needs_attributes' => false,
         ),
         'MailAndNotifyOnErrorSubject' => array(
-            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailAndNotifyPmOnErrorSubject',
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\MailAndNotifyOnErrorSubject',
             'description' => "Send mail and notification to user when the subject has the word error in it.",
             'attribute_spec' => "Username",
             'needs_attributes' => true,
