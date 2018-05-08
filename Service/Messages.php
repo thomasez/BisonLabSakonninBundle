@@ -14,6 +14,8 @@ use BisonLab\SakonninBundle\Controller\MessageController;
 
 /**
  * Messages service.
+ *
+ * TODO: Remove the userstuff from here. Lots of it is in commonbundle now.
  */
 class Messages
 {
