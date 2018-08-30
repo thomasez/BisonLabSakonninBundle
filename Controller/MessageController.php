@@ -284,8 +284,8 @@ class MessageController extends CommonController
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, "OK Done");
             }
-            return $this->redirect($this->generateUrl('message_show',
-                array('access' => $access, 'id' => $message->getId())));
+            return $this->redirectToRoute('message_show',
+                array('access' => $access, 'id' => $message->getId()));
         }
 
         if ($this->isRest($access)) {
@@ -358,8 +358,8 @@ class MessageController extends CommonController
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
-            return $this->redirect($this->generateUrl('message_show',
-                    array('access' => $access, 'id' => $message->getId())));
+            return $this->redirectToRoute('message_show',
+                array('access' => $access, 'id' => $message->getId()));
         }
 
         if ($this->isRest($access)) {
