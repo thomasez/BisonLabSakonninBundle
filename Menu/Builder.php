@@ -31,15 +31,17 @@ class Builder implements ContainerAwareInterface
         $message_log_route = $router->generate('message', array('access' => 'ajax'));
         $message_log_click = 'openMessageLogBox("' . $message_log_route . '")';
 
-        $menu->addChild('Messages');
-        $menu['Messages']->addChild('Unread Messages', array('uri' => '#'));
-        $menu['Messages']['Unread Messages']->setAttribute('id', 'menu_unread');
-        $menu['Messages']['Unread Messages']->setLinkAttribute('onclick', $read_new_click);
-        $menu['Messages']->setAttribute('id', 'message_menu');
-        $menu['Messages']->addChild('Message History', array( 'route' => 'message'));
-        $menu['Messages']->addChild('Send Personal Message', array('uri' => '#'));
-        $menu['Messages']['Send Personal Message']->setLinkAttribute('onclick', 'createPmMessage()');
-        $menu['Messages']['Send Personal Message']->setLinkAttribute('id', 'createPmMenu');
+        $messagesmenu = $menu->addChild('Messages');
+        $messagesmenu->setAttribute('id', 'message_menu');
+
+        $unread = $messagesmenu->addChild('Unread Messages', array('uri' => '#'));
+        $unread->setAttribute('id', 'menu_unread');
+        $unread->setLinkAttribute('onclick', $read_new_click);
+
+        $messagesmenu->addChild('Message History', array( 'route' => 'message'));
+        $pmm = $messagesmenu->addChild('Send Personal Message', array('uri' => '#'));
+        $pmm->setLinkAttribute('onclick', 'createPmMessage()');
+        $pmm->setLinkAttribute('id', 'createPmMenu');
         return $menu;
     }
 }
