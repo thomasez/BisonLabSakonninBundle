@@ -20,7 +20,7 @@ use BisonLab\SakonninBundle\Entity\SakonninFile;
 /**
  * SakonninFile controller.
  *
- * @Route("/{access}/file", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
+ * @Route("/{access}/sakonninfile", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
 class SakonninFileController extends CommonController
 {
