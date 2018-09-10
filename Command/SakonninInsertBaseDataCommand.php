@@ -10,7 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 
 /**
- * Imports message types. Either for fixtures or just install for prod.
+ * Inserts a fixed set of message types and can also be used for
+ * other data to be inserted at database creation.
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
@@ -28,12 +29,12 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
            'Manual' => array(
                 'parent' => 'Email',
                 'security_model' => 'PRIVATE',
-                'description' => "Emails sent by people"
+                'description' => "Emails sent by people to a user"
                 ),
            'Automated' => array(
                 'parent' => 'Email',
-                'security_model' => 'ALL_READ',
-                'description' => "Emails sent by a system"
+                'security_model' => 'PRIVATE',
+                'description' => "Emails sent by a system to a user"
                 ),
        'Messages' => array(
                 'description' => 'Messaging'

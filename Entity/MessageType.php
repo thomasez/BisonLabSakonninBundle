@@ -101,6 +101,12 @@ class MessageType
      */
     private $expunge_days = 0;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="SakonninTemplate", inversedBy="message_types")
+     * @ORM\JoinColumn(name="sakonnin_template_id", referencedColumnName="id", nullable=true)
+     **/
+    private $sakonnin_template;
+
     /* This is a tree structure while in the UI it's just to show a group.
      * I've chosen to do this in case of more advanced functionality is needed
      * one day.
@@ -489,5 +495,28 @@ class MessageType
     public function getExpungeDays()
     {
         return $this->expunge_days;
+    }
+
+    /**
+     * Set sakonnin_template
+     *
+     * @param \BisonLab\SakonninBundle\Entity\SakonninTemplate $messageType
+     * @return Message
+     */
+    public function setSakonninTemplate(\BisonLab\SakonninBundle\Entity\SakonninTemplate $sakonninTemplate = null)
+    {
+        $this->sakonnin_template = $sakonninTemplate;
+
+        return $this;
+    }
+
+    /**
+     * Get sakonnin_template
+     *
+     * @return \BisonLab\SakonninBundle\Entity\SakonninTemplate
+     */
+    public function getSakonninTemplate()
+    {
+        return $this->sakonnin_template;
     }
 }

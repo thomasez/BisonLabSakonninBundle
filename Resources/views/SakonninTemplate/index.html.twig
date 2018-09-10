@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Templates</h1>
+
+    <table class="table table-striped table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Langcode</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sakonninTemplate in sakonninTemplates %}
+            <tr>
+                <td><a href="{{ path('sakonnintemplate_show', { 'id': sakonninTemplate.id }) }}">{{ sakonninTemplate.name }}</a></td>
+                <td>{{ sakonninTemplate.description }}</td>
+                <td>{{ sakonninTemplate.langCode }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('sakonnintemplate_show', { 'id': sakonninTemplate.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('sakonnintemplate_edit', { 'id': sakonninTemplate.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('sakonnintemplate_new') }}">Create a new Template</a>
+        </li>
+    </ul>
+{% endblock %}

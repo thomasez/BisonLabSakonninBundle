@@ -1,16 +1,13 @@
 {% extends 'BisonLabSakonninBundle::base.html.twig' %}
 
 {% block body -%}
-    <h1>Message Types</h1>
+    <h1>Templates</h1>
 
     <table class="table table-striped table-bordered table-sm">
         <thead>
             <tr>
-                <th>Group</th>
                 <th>Name</th>
-                <th>Description</th>
-                <th>Callback function</th>
-                <th>Forward function</th>
+                <th>Type</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -18,11 +15,11 @@
         {% for entity in entities %}
             <tr>
                 {% if entity.parent  is empty %}
-                <td><strong><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.name }}:</a></strong></td>
+                <td><strong><a href="{{ path('sakonnintemplate_show', { 'id': entity.id }) }}">{{ entity.name }}:</a></strong></td>
                 <td>&nbsp;</td>
                 {% else %}
                 <td>&nbsp;</td>
-                <td><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                <td><a href="{{ path('sakonnintemplate_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
                 {% endif %}
                 <td>{{ entity.description }}</td>
                 <td>{{ entity.callbackFunction }}</td>
@@ -30,10 +27,10 @@
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('messagetype_show', { 'id': entity.id }) }}">show</a>
+                        <a href="{{ path('sakonnintemplate_show', { 'id': entity.id }) }}">show</a>
                     </li>
                     <li>
-                        <a href="{{ path('messagetype_edit', { 'id': entity.id }) }}">edit</a>
+                        <a href="{{ path('sakonnintemplate_edit', { 'id': entity.id }) }}">edit</a>
                     </li>
                 </ul>
                 </td>
@@ -44,7 +41,7 @@
 
         <ul>
         <li>
-            <a href="{{ path('messagetype_new') }}">
+            <a href="{{ path('sakonnintemplate_new') }}">
                 Create a new entry
             </a>
         </li>

@@ -13,6 +13,10 @@ services:
         class: BisonLab\SakonninBundle\Service\Functions
         arguments: ['@service_container', '%sakonnin.function_factories%']
 
+    sakonnin.templates:
+        class: BisonLab\SakonninBundle\Service\Templates
+        arguments: ['@service_container' ]
+
     sakonnin.securitymodel_voter:
         class: BisonLab\SakonninBundle\Service\SecurityModelVoter
         arguments: ['@external_retriever' ]

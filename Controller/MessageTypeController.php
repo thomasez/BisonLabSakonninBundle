@@ -75,8 +75,7 @@ class MessageTypeController extends Controller
             $em = $this->getDoctrineManager();
             $em->persist($entity);
             $em->flush();
-
-            return $this->redirectToRoute('messagetype_show', array('id' => $file->getId()));
+            return $this->redirectToRoute('messagetype_show', array('id' => $entity->getId()));
         }
 
         return $this->render(
@@ -216,8 +215,7 @@ class MessageTypeController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
-
-            return $this->redirectToRoute('messagetype_show', array('id' => $file->getId()));
+            return $this->redirectToRoute('messagetype_show', array('id' => $entity->getId()));
         }
 
         return $this->render(
@@ -302,7 +300,6 @@ class MessageTypeController extends Controller
                     'allow_add'=>true,
                     'allow_delete'=>true,
                 ));
-
         return $form;
     }
 }

@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use BisonLab\SakonninBundle\Entity\MessageType;
 
@@ -27,8 +28,8 @@ class MessageTypeType extends AbstractType
                 'placeholder' => "None",
                 'choices' => MessageType::getSecurityModelsAsChoices(),
                 ))
-            ->add('expunge_days', NumberType::class, array('label' => "Expunge, in days. 0 means never delete messages. Only applicable on types, not groups."))
-            ->add('parent', 'Symfony\Bridge\Doctrine\Form\Type\EntityType',
+            ->add('expunge_days', NumberType::class, array('label' => "Expunge, in days. 0 means never delete messages.<br>Only applicable on types, not groups.", "attr" => array("size" => "3")))
+            ->add('parent', EntityType::class,
                 array(
                     'label' => 'Group',
                     'placeholder' => 'Choose a Group',
@@ -40,6 +41,13 @@ class MessageTypeType extends AbstractType
                      ->orderBy('mt.name', 'ASC');
                     },
                 ))
+            ->add('sakonnin_template', EntityType::class,
+                array(
+                    'label' => 'Template',
+                    'placeholder' => 'Eventual template',
+                    'required' => false,
+                    'class' => 'BisonLabSakonninBundle:SakonninTemplate'
+                ));
         ;
     }
     
