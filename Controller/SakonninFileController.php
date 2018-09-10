@@ -3,7 +3,6 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,8 +28,7 @@ class SakonninFileController extends CommonController
     /**
      * Lists all file entities.
      *
-     * @Route("/", name="file_index")
-     * @Method("GET")
+     * @Route("/", name="file_index", methods={"GET"})
      */
     public function indexAction($access)
     {
@@ -50,8 +48,7 @@ class SakonninFileController extends CommonController
      * Lists all Message entities of a certain type.
      * Warning: This can be *a lot* of files.
      *
-     * @Route("/filetype/{id}", name="file_filetype")
-     * @Method("GET")
+     * @Route("/filetype/{id}", name="file_filetype", methods={"GET"})
      */
     public function listByTypeAction(Request $request, $access, FileType $fileType)
     {
@@ -67,8 +64,7 @@ class SakonninFileController extends CommonController
     /**
      * Creates a new file entity.
      *
-     * @Route("/new", name="file_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="file_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {
@@ -103,8 +99,7 @@ class SakonninFileController extends CommonController
     /**
      * Finds and displays a file entity.
      *
-     * @Route("/{id}", name="file_show")
-     * @Method("GET")
+     * @Route("/{id}", name="file_show", methods={"GET"})
      */
     public function showAction(Request $request, SakonninFile $file, $access)
     {
@@ -120,8 +115,7 @@ class SakonninFileController extends CommonController
     /**
      * Download a file.
      *
-     * @Route("/{id}/download", name="file_download")
-     * @Method("GET")
+     * @Route("/{id}/download", name="file_download", methods={"GET"})
      */
     public function downloadAction(Request $request, SakonninFile $file, $access)
     {
@@ -135,8 +129,7 @@ class SakonninFileController extends CommonController
     /**
      * View a file.
      *
-     * @Route("/{id}/view", name="file_view")
-     * @Method("GET")
+     * @Route("/{id}/view", name="file_view", methods={"GET"})
      */
     public function viewAction(Request $request, SakonninFile $file, $access)
     {
@@ -149,8 +142,7 @@ class SakonninFileController extends CommonController
     /**
      * Create/cache thumbnail.
      *
-     * @Route("/{id}/thumbnail/{x}/{y}", name="file_thumbnail")
-     * @Method("GET")
+     * @Route("/{id}/thumbnail/{x}/{y}", name="file_thumbnail", methods={"GET"})
      */
     public function thumbnailAction(Request $request, $access, SakonninFile $file, $x, $y)
     {
@@ -167,8 +159,7 @@ class SakonninFileController extends CommonController
     /**
      * Displays a form to edit an existing file entity.
      *
-     * @Route("/{id}/edit", name="file_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="file_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, SakonninFile $file, $access)
     {
@@ -193,8 +184,7 @@ class SakonninFileController extends CommonController
     /**
      * Deletes a file entity.
      *
-     * @Route("/{id}", name="file_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="file_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, SakonninFile $file, $access)
     {

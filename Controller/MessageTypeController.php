@@ -4,7 +4,6 @@ namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -28,8 +27,7 @@ class MessageTypeController extends Controller
     /**
      * Lists all MessageType entities.
      *
-     * @Route("/", name="messagetype")
-     * @Method("GET")
+     * @Route("/", name="messagetype", methods={"GET"})
      */
     public function indexAction()
     {
@@ -58,8 +56,7 @@ class MessageTypeController extends Controller
     /**
      * Creates a new MessageType entity.
      *
-     * @Route("/", name="messagetype_create")
-     * @Method("POST")
+     * @Route("/", name="messagetype_create", methods={"POST"})
      */
     public function createAction(Request $request)
     {
@@ -109,8 +106,7 @@ class MessageTypeController extends Controller
     /**
      * Displays a form to create a new MessageType entity.
      *
-     * @Route("/new", name="messagetype_new")
-     * @Method("GET")
+     * @Route("/new", name="messagetype_new", methods={"GET"})
      */
     public function newAction()
     {
@@ -127,8 +123,7 @@ class MessageTypeController extends Controller
     /**
      * Finds and displays a MessageType entity.
      *
-     * @Route("/{id}", name="messagetype_show")
-     * @Method("GET")
+     * @Route("/{id}", name="messagetype_show", methods={"GET"})
      */
     public function showAction($id)
     {
@@ -152,8 +147,7 @@ class MessageTypeController extends Controller
     /**
      * Displays a form to edit an existing MessageType entity.
      *
-     * @Route("/{id}/edit", name="messagetype_edit")
-     * @Method("GET")
+     * @Route("/{id}/edit", name="messagetype_edit", methods={"GET"})
      */
     public function editAction($id)
     {
@@ -197,8 +191,7 @@ class MessageTypeController extends Controller
     /**
      * Edits an existing MessageType entity.
      *
-     * @Route("/{id}", name="messagetype_update")
-     * @Method("PUT")
+     * @Route("/{id}", name="messagetype_update", methods={"PUT"})
      */
     public function updateAction(Request $request, $id)
     {
@@ -229,8 +222,7 @@ class MessageTypeController extends Controller
     /**
      * Deletes a MessageType entity.
      *
-     * @Route("/{id}", name="messagetype_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="messagetype_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, $id)
     {

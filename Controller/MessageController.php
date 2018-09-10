@@ -3,7 +3,6 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -31,8 +30,7 @@ class MessageController extends CommonController
      * don't like this. Using just "/" which would be logical makes the
      * routecomponent match every GET below this one.
      * Another option is to put this one as the last one.
-     * @Route("/me", * name="message")
-     * @Method("GET")
+     * @Route("/me", * name="message", methods={"GET"})
      */
     public function indexAction(Request $request, $access)
     {
@@ -80,8 +78,7 @@ class MessageController extends CommonController
     /**
      * Lists all Message entities.
      *
-     * @Route("/pm", name="pm_list")
-     * @Method("GET")
+     * @Route("/pm", name="pm_list", methods={"GET"})
      */
     public function pmAction(Request $request, $access)
     {
@@ -111,8 +108,7 @@ class MessageController extends CommonController
      * Lists all Message entities of a certain type.
      * Warning: This can be *a lot* of messages.
      *
-     * @Route("/messagetype/{id}", name="message_messagetype")
-     * @Method("GET")
+     * @Route("/messagetype/{id}", name="message_messagetype", methods={"GET"})
      */
     public function listByTypeAction(Request $request, $access, MessageType $messageType)
     {
@@ -128,8 +124,7 @@ class MessageController extends CommonController
     /**
      * Finds and displays a Message entity.
      *
-     * @Route("/{id}", name="message_show")
-     * @Method("GET")
+     * @Route("/{id}", name="message_show", methods={"GET"})
      */
     public function showAction(Request $request, $access, $id)
     {
@@ -168,8 +163,7 @@ class MessageController extends CommonController
     /**
      * Displays a form to edit an existing person entity.
      *
-     * @Route("/{id}/edit", name="message_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="message_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, $access, Message $message)
     {
@@ -196,8 +190,7 @@ class MessageController extends CommonController
     /**
      * Lists all Messages with that context.
      *
-     * @Route("/search_context/system/{system}/object_name/{object_name}/external_id/{external_id}", name="message_context_search")
-     * @Method("GET")
+     * @Route("/search_context/system/{system}/object_name/{object_name}/external_id/{external_id}", name="message_context_search", methods={"GET"})
      */
     public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
     {
@@ -238,8 +231,7 @@ class MessageController extends CommonController
      * Creates a new PM
      * (Which does look more and more like the usual createMessage.)
      *
-     * @Route("/pm", name="pm_create")
-     * @Method("POST")
+     * @Route("/pm", name="pm_create", methods={"POST"})
      */
     public function createPmAction(Request $request, $access)
     {
@@ -303,8 +295,7 @@ class MessageController extends CommonController
     /**
      * Creates a new Message
      *
-     * @Route("/", name="message_create")
-     * @Method("POST")
+     * @Route("/", name="message_create", methods={"POST"})
      */
     public function createAction(Request $request, $access)
     {
@@ -374,8 +365,7 @@ class MessageController extends CommonController
     /**
      * Deletes a message entity.
      *
-     * @Route("/{id}", name="message_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="message_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, $access, Message $message)
     {
@@ -395,8 +385,7 @@ class MessageController extends CommonController
     /**
      * Check for unread messages
      *
-     * @Route("/check_unread/", name="check_unread")
-     * @Method("GET")
+     * @Route("/check_unread/", name="check_unread", methods={"GET"})
      */
     public function checkUnreadAction(Request $request, $access)
     {
@@ -416,8 +405,7 @@ class MessageController extends CommonController
     /**
      * Creates a new person entity.
      *
-     * @Route("/new/", name="message_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new/", name="message_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {

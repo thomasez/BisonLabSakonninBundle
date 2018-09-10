@@ -4,7 +4,6 @@ namespace BisonLab\SakonninBundle\Controller;
 
 use BisonLab\SakonninBundle\Entity\SakonninTemplate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -19,8 +18,7 @@ class SakonninTemplateController extends Controller
     /**
      * Lists all sakonninTemplate entities.
      *
-     * @Route("/", name="sakonnintemplate_index")
-     * @Method("GET")
+     * @Route("/", name="sakonnintemplate_index", methods={"GET"})
      */
     public function indexAction()
     {
@@ -37,8 +35,7 @@ $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
     /**
      * Creates a new sakonninTemplate entity.
      *
-     * @Route("/new", name="sakonnintemplate_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="sakonnintemplate_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request)
     {
@@ -64,8 +61,7 @@ $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
     /**
      * Finds and displays a sakonninTemplate entity.
      *
-     * @Route("/{id}", name="sakonnintemplate_show")
-     * @Method("GET")
+     * @Route("/{id}", name="sakonnintemplate_show", methods={"GET"})
      */
     public function showAction(SakonninTemplate $sakonninTemplate)
     {
@@ -81,8 +77,7 @@ $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
     /**
      * Displays a form to edit an existing sakonninTemplate entity.
      *
-     * @Route("/{id}/edit", name="sakonnintemplate_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="sakonnintemplate_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
@@ -107,8 +102,7 @@ $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
     /**
      * Deletes a sakonninTemplate entity.
      *
-     * @Route("/{id}", name="sakonnintemplate_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="sakonnintemplate_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, SakonninTemplate $sakonninTemplate)
     {

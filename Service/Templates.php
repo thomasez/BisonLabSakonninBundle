@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Service;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\ORM\EntityRepository;
