@@ -21,6 +21,12 @@
                 <th>Security model</th>
                 <td>{{ entity.securitymodel }}</td>
             </tr>
+{% if entity.sakonnintemplate is not null %}
+            <tr>
+                <th>Template</th>
+                <td>{{ entity.sakonnintemplate }}</td>
+            </tr>
+{% endif %}
             <tr>
                 <th>Callbackfunction</th>
                 <td>{{ entity.callbackFunction  }}</td>

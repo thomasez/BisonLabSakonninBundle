@@ -24,20 +24,28 @@ class Templates
         $this->container         = $container;
     }
 
-    public function storeTemplate($data)
+    public function getTemplate($name)
     {
         $em = $this->getDoctrineManager();
-        $file = null;
-        if ($data instanceof SakonninTemplate) {
-            $file = $data;
-        } else {
-            $file = new SakonninFile($data);
-            if (isset($data['file_type'])) {
-                $file->setFileType($file_type);
-            }
-        }
+        if (is_numeric($name))
+            $template = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->find($name);
+        else
+            $template = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findOneByName($name);
+        return $template;
+    }
 
-        return $file;
+    /*
+     * Should I bother having this one?
+     * Not sure "Put everything in a service" is a fad any more.
+     * But the options is the key here. It's for futureproofing and reminding
+     * me why I have this.
+     * (Why you say? May be that I add contexts or some logging to it all.)
+     */
+    public function storeTemplate(SakonninTemplate $template, array $options)
+    {
+        $em = $this->getDoctrineManager();
+        $em->persist($template)
+        return $template;
     }
 
     public function parse($template, $template_data = array(), $options = array())
@@ -53,7 +61,6 @@ class Templates
         $bin2hex_filter = new \Twig_SimpleFilter('bin2hex', 'bin2hex');
         $twig->addFilter($bin2hex_filter);
         $twig->addExtension(new \Twig_Extension_StringLoader());
-        $twig->addExtension(new TwigAddressInfo($this->dabaru_helper));
         if ($debug) {
             $profile = new \Twig_Profiler_Profile();
             $twig->addExtension(new \Twig_Extension_Profiler($profile));

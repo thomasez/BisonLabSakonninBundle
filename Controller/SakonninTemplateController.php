@@ -25,8 +25,6 @@ class SakonninTemplateController extends Controller
         $em = $this->getDoctrineManager();
 
         $sakonninTemplates = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findAll();
-        
-$entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
 
         return $this->render('BisonLabSakonninBundle:SakonninTemplate:index.html.twig',
             array( 'sakonninTemplates' => $sakonninTemplates,));
@@ -88,7 +86,7 @@ $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $em = $this->getDoctrineManager()->flush();
 
-            return $this->redirectToRoute('sakonnintemplate_edit', array('id' => $sakonninTemplate->getId()));
+            return $this->redirectToRoute('sakonnintemplate_show', array('id' => $sakonninTemplate->getId()));
         }
 
         return $this->render('BisonLabSakonninBundle:SakonninTemplate:edit.html.twig',
