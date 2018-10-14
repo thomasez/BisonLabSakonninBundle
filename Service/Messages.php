@@ -24,7 +24,8 @@ class Messages
 
     public function __construct($container)
     {
-        $this->container         = $container;
+        $this->container  = $container;
+        $this->stemplates = $container->get('sakonnin.templates');
     }
 
     public function postMessage($data, $context_data = array())
@@ -35,6 +36,14 @@ class Messages
             $message = $data;
         } else {
             $message = new Message($data);
+            if (isset($data['template'])) {
+                $template_data = $data['template_data'];
+                $template_data['user'] = $this->getLoggedInUser();
+                if (!$template = $this->stemplates->getTemplate($data['template']))
+                    throw new \InvalidArgumentException("There is no template named " . $data['template']);
+                $message->setBody($this->stemplates->parse($template->getTemplate(), $template_data));
+            }
+
             if (isset($data['message_type']) 
                     && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            

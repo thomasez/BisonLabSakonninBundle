@@ -44,16 +44,15 @@ class Templates
     public function storeTemplate(SakonninTemplate $template, array $options)
     {
         $em = $this->getDoctrineManager();
-        $em->persist($template)
+        $em->persist($template);
         return $template;
     }
 
     public function parse($template, $template_data = array(), $options = array())
     {
         $debug = isset($options['debug']) ? true : false;
-        $sloader = new \Twig_Loader_Array(['config_template' => $template]);
-        $dbloader = new TwigConfigLoader($this->ct_manager);
-        $loader = new \Twig_Loader_Chain(array($sloader, $dbloader));
+        $sloader = new \Twig_Loader_Array(['message_template' => $template]);
+        $loader = new \Twig_Loader_Chain(array($sloader));
         $twig = new \Twig_Environment($loader, array(
             'debug' => $debug, 
             'strict_variables' => isset($options['strict_variables']),
@@ -70,7 +69,7 @@ class Templates
         // (It does. And I like it.)
         $template_data['configparser'] = $this;
 
-        $parsed = $twig->render('config_template', $template_data);
+        $parsed = $twig->render('message_template', $template_data);
         // First, just strip whitespaces.
         // First, just strip whitespaces.
         if (isset($options['strip_empty_lines'])) {
