@@ -26,10 +26,9 @@
 
     <ul>
         <li>
-            <a href="{{ path('file_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('file_edit', { 'id': file.id }) }}">Edit</a>
+            <a  href="{{ path('file_edit', { 'id': file.id }) }}">
+            <button>Edit</button>
+            </a>
         </li>
         <li>
             {{ form_start(delete_form) }}

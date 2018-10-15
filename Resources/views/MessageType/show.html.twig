@@ -56,13 +56,8 @@
 
         <ul class="record_actions">
     <li>
-        <a href="{{ path('messagetype') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('messagetype_edit', { 'id': entity.id }) }}">
-            Edit
+        <a  href="{{ path('messagetype_edit', { 'id': entity.id }) }}">
+        <button>Edit</button>
         </a>
     </li>
     <li>{{ form(delete_form) }}</li>
