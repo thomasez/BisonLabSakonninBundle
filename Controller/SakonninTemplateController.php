@@ -38,6 +38,8 @@ class SakonninTemplateController extends Controller
     public function newAction(Request $request)
     {
         $sakonninTemplate = new Sakonnintemplate();
+        $default_lang_code = $this->container->get('translator')->getLocale();
+        $sakonninTemplate->setLangCode($default_lang_code);
         $form = $this->createForm('BisonLab\SakonninBundle\Form\SakonninTemplateType', $sakonninTemplate);
         $form->handleRequest($request);
 

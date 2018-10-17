@@ -19,7 +19,10 @@ class SakonninTemplateType extends AbstractType
         $builder
             ->add('name', TextType::class, array('label' => "Name", 'required' => true, "attr" => array("size" => "50")))
             ->add('description')
-            ->add('lang_code', TextType::class, array('label' => "Language code:", 'required' => true, "attr" => array("size" => "7")))
+            ->add('lang_code', TextType::class, array(
+                'label' => "Language code:",
+                'required' => true,
+                "attr" => array("size" => "7")))
             ->add('template', AceEditorType::class, array(
                 'label' => 'Template',
                 'required' => false,
