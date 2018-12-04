@@ -6,7 +6,7 @@ namespace BisonLab\SakonninBundle\Lib\Sakonnin;
  *
  */
 
-class MailCopy
+class PmSmsMailCopy
 {
     use CommonFunctions;
 
@@ -19,8 +19,11 @@ class MailCopy
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
+            if ($number = $receiver->getMobilePhoneNumber())
+                $this->sendSms($message, $number, $options);
             if ($email = $this->extractEmailFromReceiver($receiver))
                 $this->sendMail($message, $email, $options);
+            $this->sendNotification($receiver, $message->getBody(), array('message_type' => 'PM'));
         }
     }
 }

@@ -88,19 +88,28 @@ class Messages
         // All this is a hack, but it's gotta be somewhere and this works 
         // for now.
         if ($message->getToType() == "INTERNAL") {
-            // In case of no userid, but username
-            // (Gotta consider some more automagic handling of all this.)
-            // (And is_numeric is kinda wrong since a user can be named "666")
-            if (!is_numeric($message->getTo())) {
-                if ($touser = $this->getUserFromUserName($message->getTo())) {
-                    $message->setTo($touser->getId());
-                } else {
-                    throw new \InvalidArgumentException("No user with that username.");
-                }
+            // Gotta be able to have multiple receivers/to.
+            if (preg_match("/,/", $message->getTo())) {
+                $toers = explode(",", $message->getTo());
+            } else {
+                $toers = array($message->getTo());
             }
-            $message->setState("UNREAD");
+            foreach ($toers as $toer) {
+                // In case of no userid, but username
+                // (Gotta consider some more automagic handling of all this.)
+                // (And is_numeric is kinda wrong since a user can be named
+                // "666")
+                if (!is_numeric($toer)) {
+                    if ($touser = $this->getUserFromUserName($toer)) {
+                        $message->setTo($touser->getId());
+                    } else {
+                        throw new \InvalidArgumentException("No user with that username.(" . $toer . ")");
+                    }
+                }
+                $message->setState("SENT");
+                $message->addReceiver($this->getUserFromUserId($toer));
+            }
             // Add the To-user object as a receiver.
-            $message->addReceiver($this->getUserFromUserId($message->getTo()));
         } else {
             // Gotta have something.
             $message->setState("SENT");
