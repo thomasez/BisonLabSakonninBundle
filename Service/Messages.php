@@ -195,6 +195,17 @@ class Messages
             return $form;
     }
 
+    public function getCreateDeleteForm($message, $create_view = false)
+    {
+        $c = new MessageController();
+        $c->setContainer($this->container);
+        $form = $c->createDeleteForm($message);
+        if ($create_view)
+            return $form->createView();
+        else
+            return $form;
+    }
+
     /*
      * Get and list messsag(es) functions.
      */

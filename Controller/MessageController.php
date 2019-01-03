@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
@@ -14,6 +15,7 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 /**
  * Message controller.
@@ -378,8 +380,11 @@ class MessageController extends CommonController
             $em->remove($message);
             $em->flush($message);
         }
-
-        return $this->redirectToRoute('homepage');
+        if ($this->isRest($access))
+            return new JsonResponse(array("status" => "DELETED"),
+                Response::HTTP_OK);
+        else
+            return $this->redirect($request->headers->get('referer'));
     }
 
     /**
@@ -462,10 +467,13 @@ class MessageController extends CommonController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(Message $message)
+    public function createDeleteForm(Message $message, $access = "ajax")
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('message_delete', array('id' => $message->getId())))
+        $form_name = "message_delete_" . $message->getId();
+        return $this->get('form.factory')->createNamedBuilder($form_name,FormType::class)
+            ->setAction($this->generateUrl('message_delete', array(
+                'id' => $message->getId(),
+                'access' => $access)))
             ->setMethod('DELETE')
             ->getForm()
         ;
