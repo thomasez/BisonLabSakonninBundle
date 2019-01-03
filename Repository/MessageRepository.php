@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\Criteria;
  */
 class MessageRepository extends EntityRepository
 {
-    public function getOneByContext($system, $object_name, $external_id, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function getOneByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
         $qb2 = $this->_em->createQueryBuilder();
@@ -36,7 +36,7 @@ class MessageRepository extends EntityRepository
         return current($message_context)->getMessage();
     }
     
-    public function findByContext($system, $object_name, $external_id, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function findByContext($system, $object_name, $external_id, $criterias = array())
     {
         // This is so annoyng! I Just did not get subselects working, at all.
         $qb2 = $this->_em->createQueryBuilder();

@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\Criteria;
  */
 class SakonninFileRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getOneByContext($system, $object_name, $external_id, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function getOneByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
         $qb2 = $this->_em->createQueryBuilder();
@@ -35,7 +35,7 @@ class SakonninFileRepository extends \Doctrine\ORM\EntityRepository
         return current($file_context)->getSakonninFile();
     }
     
-    public function findByContext($system, $object_name, $external_id, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function findByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
         $qb2 = $this->_em->createQueryBuilder();
