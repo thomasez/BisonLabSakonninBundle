@@ -211,6 +211,10 @@ class Messages
      */
     public function getMessagesForContext($context)
     {
+        if (isset($context['message_type']))
+            $criterias['message_type'] = $context['message_type'];
+        if (isset($context['message_group']))
+            $criterias['message_group'] = $context['message_group'];
         $criterias['context'] = $context;
         return $this->getMessages($criterias);
     }
@@ -235,15 +239,23 @@ class Messages
         $query = $repo->createQueryBuilder('m');
 
         if (isset($criterias['context'])) {
-            return $repo->findByContext(
-                $criterias['context']['system'],
-                $criterias['context']['object_name'],
-                $criterias['context']['external_id']
-                );
+            $system      = $criterias['context']['system'];
+            $object_name = $criterias['context']['object_name'];
+            $external_id = $criterias['context']['external_id'];
+            $query = $em->createQueryBuilder();
+            $query->select('m')
+                ->from('BisonLabSakonninBundle:Message', 'm')
+                ->leftJoin('m.contexts', 'mc')
+                ->where("mc.system = :system")
+                ->andWhere("mc.object_name = :object_name")
+                ->andWhere("mc.external_id = :external_id")
+                ->setParameter('system', $system)
+                ->setParameter('object_name', $object_name)
+                ->setParameter('external_id', $external_id);
         }
 
         if (isset($criterias['userid'])) {
-            $query->where('m.from in (:userid, :username)')
+            $query->andWhere('m.from in (:userid, :username)')
             ->orWhere('m.to in (:userid, :username)');
             $query->setParameter('userid', $criterias['userid']);
             $query->setParameter('username', $criterias['username']);
@@ -264,8 +276,8 @@ class Messages
             $mg = $this->getMessageType($criterias['message_group']);
             $types = $mg->getChildren();
             $types->add($mg);
-            $query->andWhere("m.message_type in :message_types")
-                ->setParameter('message_type', $types);
+            $query->andWhere("m.message_type in (:message_types)")
+                ->setParameter('message_types', $types);
         }
 
         if (isset($criterias['not_message_type'])) {
@@ -278,8 +290,8 @@ class Messages
             $mg = $this->getMessageType($criterias['not_message_group']);
             $types = $mg->getChildren();
             $types->add($mg);
-            $query->andWhere("m.message_type not in :message_types")
-                ->setParameter('message_type', $types);
+            $query->andWhere("m.message_type not in (:message_types)")
+                ->setParameter('message_types', $types);
         }
 
         if (isset($criterias['order'])) {
@@ -287,7 +299,6 @@ class Messages
         } else {
             $query->orderBy("m.createdAt", "ASC");
         }
-
         return $query->getQuery()->getResult();
     }
 
