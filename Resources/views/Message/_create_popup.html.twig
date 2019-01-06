@@ -1,5 +1,7 @@
-{% if formname is not defined %}
-{% set formname = '' %}
+{% if mconfig.formname is defined %}
+{% set formname = mconfig.formname %}
+{% else %}
+{% set formname = "" %}
 {% endif %}
 <script type="text/javascript">
 jQuery(document).ready(function() {
@@ -30,7 +32,7 @@ function submitMessageForm(formname = '') {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             $( "#createmessage" + formname).dialog("close");
-{% if reload_after_post is defined and reload_after_post %}
+{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
             parent.location.reload();
 {% endif %}
       }).fail(function(xhr, status, error) {
