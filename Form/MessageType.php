@@ -33,7 +33,7 @@ class MessageType extends AbstractType
             $builder->add('message_type', EntityType::class,
                 array(
                     'label' => 'Type',
-                    'placeholder' => 'Choose a Message Type',
+                    'placeholder' => 'Choose a Type',
                     'required' => true,
                     'class' => 'BisonLabSakonninBundle:MessageType',
                     'query_builder' => function(EntityRepository $er) {
@@ -61,8 +61,8 @@ class MessageType extends AbstractType
             } else {
                 $builder->add('message_type', EntityType::class,
                     array(
-                        'label' => 'Message type',
-                        'placeholder' => 'Choose a Message Type',
+                        'label' => 'Type',
+                        'placeholder' => 'Choose a Type',
                         'required' => true,
                         'class' => 'BisonLabSakonninBundle:MessageType',
                         'choices' => $type_choices,
