@@ -1,0 +1,50 @@
+<script type="text/javascript">
+
+function grabEditMessageForm(message_id) {
+    orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", message_id);
+    $.get(url, function( data ) {
+        $( "#editmessage" ).html(data);
+        $( "#editmessage" ).dialog({
+          autoOpen: true,
+          height: 500,
+          width: 500,
+          modal: true
+        });
+        $( "#editMessageForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitEditMessageForm(message_id);
+        });
+    });
+    return false;
+}
+
+function submitEditMessageForm(message_id) {
+
+    orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", message_id);
+    formdata = $( "#editMessageForm" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: formdata,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $( "#editmessage").dialog("close");
+{% if reload_after_post is defined and reload_after_post %}
+            parent.location.reload();
+{% endif %}
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+</script>
+<div id="editmessage">
+</div>

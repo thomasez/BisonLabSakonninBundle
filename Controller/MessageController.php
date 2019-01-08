@@ -170,17 +170,35 @@ class MessageController extends CommonController
     public function editAction(Request $request, $access, Message $message)
     {
         $this->denyAccessUnlessGranted('edit', $message);
-        $deleteForm = $this->createDeleteForm($message);
-        $editForm = $this->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
+        $editForm = $this
+            ->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
         $editForm->handleRequest($request);
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrineManager()->flush();
+        if ($editForm->isSubmitted()) {
+            if ($editForm->isValid()) {
+                $this->getDoctrineManager()->flush();
 
-            return $this->redirectToRoute('message_show',
-                array('access' => $access, 'id' => $message->getId()));
+                if ($this->isRest($access)) {
+                    return new JsonResponse(array("status" => "OK", 200));
+                }
+                return $this->redirectToRoute('message_show',
+                    array('access' => $access, 'id' => $message->getId()));
+           } else {
+                $errors = $this->handleFormErrors($editForm);
+                return new JsonResponse(array("status" => "ERROR",
+                    'errors' => $errors), 422);
+            }
         }
 
+        if ($this->isRest($access)) {
+            return $this
+                    ->render('BisonLabSakonninBundle:Message:_edit.html.twig',
+                array(
+                    'message' => $message,
+                    'edit_form' => $editForm->createView(),
+            ));
+        }
+        $deleteForm = $this->createDeleteForm($message);
         return $this->render('BisonLabSakonninBundle:Message:edit.html.twig',
             array(
                 'message' => $message,
