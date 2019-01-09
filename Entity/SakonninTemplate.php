@@ -50,7 +50,7 @@ class SakonninTemplate
     private $template;
 
     /**
-     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="templates", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="sakonnin_template", fetch="EXTRA_LAZY")
      **/
     private $message_types;
 
