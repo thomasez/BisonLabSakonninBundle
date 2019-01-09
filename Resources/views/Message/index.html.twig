@@ -53,8 +53,7 @@ $(document).ready(function() {
                     </li>
                     {% if is_granted('edit', entity) %}
                     <li>
-                        <a href="{{ path('message_edit', { 'id': entity.id }) }}">edit</a>
-                        <a href="#" onClick='grabEditMessageForm({{ entity.id }});'>Edit</a><br />
+                        <a href="#" onClick='grabEditMessageForm({{ entity.id }});'>edit</a><br />
                     {% endif %}
                     </li>
                 </ul>
