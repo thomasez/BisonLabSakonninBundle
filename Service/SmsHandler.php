@@ -21,7 +21,7 @@ class SmsHandler
         'dummy' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\Dummy',
             'description' => "SMSes goes nowhere",
-        )
+        ),
         'pswincom_mail' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComMail',
             'description' => "SMS via pswin.com old mailinterface",
