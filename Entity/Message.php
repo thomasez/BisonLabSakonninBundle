@@ -144,6 +144,14 @@ class Message
     private $message_type;
 
     /**
+     * This is on top of/under expunge on message types. This is for
+     * individual setting  of when to set state DELETED or plainly delete the
+     * message.
+     * @ORM\Column(name="expire_at", type="datetime", * nullable=true)
+     **/
+    private $expire_at;
+
+    /**
      * @ORM\OneToMany(targetEntity="MessageContext", mappedBy="message", cascade={"persist", "remove"})
      */
     private $contexts;
@@ -592,6 +600,17 @@ class Message
             return $this;
         else
             return $this->getInReplyTo();
+    }
+
+    public function getExpireAt()
+    {
+        return $this->expire_at;
+    }
+
+    public function setExpireAt($expire_at)
+    {
+        $this->expire_at = $expire_at;
+        return $this;
     }
 
     /* 

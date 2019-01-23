@@ -28,7 +28,7 @@ class SakonninExpungeCommand extends ContainerAwareCommand
                 ))
                 ->setDescription('Use the expunge days value in Message Type to delete older messages..')
                 ->setHelp(<<<EOT
-This is for cleaning up old messages based on the Expunge Days value on the Message Types.
+This is for cleaning up old messages based on the Expunge Days value on the Message Types and "Expire at" on messages if it's set.
 
 Option --doit=yes to enable real deletion. (Not just a message that it's supposed to delete.)
 EOT
@@ -40,9 +40,7 @@ EOT
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         parent::initialize($input, $output);
-
         $this->doit      = $input->getOption('doit');
-
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -58,6 +56,7 @@ EOT
 
         // First, Find the message types that has expunge.
         // I'll just pick the types, not the groups (parents)
+        // TODO: Probably also handle parent/group.
         $mt_iterable = $this->mt_repo->createQueryBuilder('mt')
             ->where('mt.parent is not null')
             ->andWhere('mt.expunge_days > 0')
@@ -83,6 +82,7 @@ EOT
 
             while (($mess = $m_iterable->next()) !== false) {
                 $message = $mess[0];
+                // TODO: Explain to myself why this.. newest from newest..
                 $newest = $message->getNewestInThread();
                 $i = $newest->getNewestInThread()->getCreatedAt()->diff(new \DateTime());
                 // drop if newer than the expunge.
@@ -99,6 +99,34 @@ EOT
             if ($this->doit == "yes") {
                 $this->entityManager->flush();
             }
+        }
+
+        // And scondly, handle expire at.
+        $m_query = $this->m_repo->createQueryBuilder('m')
+            ->where('m.expire_at is not null')
+            ->andWhere('CURRENT_TIMESTAMP() > m.expire_at')
+            ->getQuery();
+
+        $m_iterable = $m_query->iterate();
+
+        while (($mess = $m_iterable->next()) !== false) {
+            $message = $mess[0];
+
+            /*
+             * When expunging I am checking newest in thread. But this is
+             * another matter. This is a set time for an expire, and since
+             * someone has decided that, I'll listen and kill it.
+             */
+            
+            // I am kinda hoping cascade remove and orphanremoval will do
+            // the delete whole thread deed.
+            $output->writeln("Will Expunge " . $message->getSubject());
+            if ($this->doit == "yes") {
+                $this->entityManager->remove($message);
+            }
+        }
+        if ($this->doit == "yes") {
+            $this->entityManager->flush();
         }
     }
 

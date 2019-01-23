@@ -69,6 +69,9 @@ function submitMessageForm(formname = '') {
 {% endif %}
 {{ form_row(mform.body)}} 
 {{ form_row(mform.message_type)}} 
+{% if mconfig.expire_field is defined and mconfig.expire_field %}
+{{ form_row(mform.expire_at)}} 
+{% endif %}
 {{ form_widget(mform.submit)}} 
 {{ form_widget(mform._token)}} 
 </form>

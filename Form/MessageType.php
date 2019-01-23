@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use FOS\UserBundle\Form\Type\UsernameFormType;
 
@@ -74,6 +75,9 @@ class MessageType extends AbstractType
             ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
             ->add('state', ChoiceType::class, array('choices' => array_combine(Message::getStates(), Message::getStates())))
+            ->add('expire_at', DateType::class, array(
+                'label' => "Expire at",
+                'widget' => "single_text"))
             ->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
     }
