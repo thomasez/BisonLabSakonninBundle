@@ -48,6 +48,8 @@ EOT
         $this->entityManager = $this->getDoctrineManager();
         // This is to make sure we don't end up with massige memory useage. 
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
+        $expunge_method = $this->container->getParameter('sakonnin.expunge_method') ?: "Delete";
+        $expire_method = $this->container->getParameter('sakonnin.expire_method') ?: "Delete";
 
         $this->mt_repo    = $this->entityManager
                 ->getRepository('BisonLabSakonninBundle:MessageType');
@@ -91,8 +93,10 @@ EOT
                 // I am kinda hoping cascade remove and orphanremoval will do
                 // the delete whole thread deed.
                 $output->writeln("Will Expunge " . $message->getSubject());
-                if ($this->doit == "yes") {
+                if ($this->doit == "yes" && $expunge_methon == "Delete") {
                     $this->entityManager->remove($message);
+                } elseif ($expunge_methon == "Archive") {
+                    $message->setState("ARCHIVED");
                 }
             }
 
@@ -121,8 +125,10 @@ EOT
             // I am kinda hoping cascade remove and orphanremoval will do
             // the delete whole thread deed.
             $output->writeln("Will Expunge " . $message->getSubject());
-            if ($this->doit == "yes") {
+            if ($this->doit == "yes" && $expire_methon == "Delete") {
                 $this->entityManager->remove($message);
+            } elseif ($expire_methon == "Archive") {
+                $message->setState("ARCHIVED");
             }
         }
         if ($this->doit == "yes") {
