@@ -29,6 +29,14 @@ class MessageTypeType extends AbstractType
                 'choices' => MessageType::getSecurityModelsAsChoices(),
                 ))
             ->add('expunge_days', NumberType::class, array('label' => "Expunge, in days. 0 means never delete messages.<br>Only applicable on types, not groups.", "attr" => array("size" => "3")))
+            ->add('expunge_method', ChoiceType::class, array(
+                'label' => 'What to do when the expunge is triggered.',
+                'choices' => MessageType::getExpungeMethodsAsChoices(),
+                ))
+            ->add('expire_method', ChoiceType::class, array(
+                'label' => 'What to do at the expire at date.',
+                'choices' => MessageType::getExpungeMethodsAsChoices(),
+                ))
             ->add('parent', EntityType::class,
                 array(
                     'label' => 'Group',

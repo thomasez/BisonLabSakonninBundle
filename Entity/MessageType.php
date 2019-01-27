@@ -23,7 +23,12 @@ class MessageType
         'ADMIN_ONLY' => array('short' => 'Admin only', 'description' => 'Only Admin can read and write.'),
         'ADMIN_RW_USER_R' => array('short' => 'Admin read and write, object read', 'description' => 'Only Admin can write and the object (user) can read.'),
         'ADMIN_RW_USER_RW' => array('short' => 'Admin, user read and write', 'description' => 'Admin and user can read and write')
-        );
+    );
+
+    private static $expunge_methods = array(
+        'DELETE' => array('short' => 'Delete', 'description' => 'Message is deleted.'),
+        'ARCHIVE' => array('short' => 'Archive', 'description' => 'Message is marked as archived.'),
+    );
 
     /**
      * @var integer
@@ -56,7 +61,7 @@ class MessageType
      * Definately adding complexity by adding more than one function.
      * @var string
      *
-     * @ORM\Column(name="security_model", type="string", length=40, nullable=true)
+     * @ORM\Column(name="security_model", type="string", length=40, nullable=false, options={"default"="PRIVATE"})
      */
     private $security_model;
 
@@ -100,6 +105,20 @@ class MessageType
      * @ORM\Column(name="expunge_days", type="integer")
      */
     private $expunge_days = 0;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="expunge_method", type="string", length=10, nullable=false, options={"default"="DELETE"})
+     */
+    private $expunge_method;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="expire_method", type="string", length=10, nullable=false, options={"default"="DELETE"})
+     */
+    private $expire_method;
 
     /**
      * @ORM\ManyToOne(targetEntity="SakonninTemplate", inversedBy="message_types")
@@ -495,6 +514,79 @@ class MessageType
     public function getExpungeDays()
     {
         return $this->expunge_days;
+    }
+
+    /**
+     * Set expunge_method
+     *
+     * @param string $expunge_method
+     * @return Site
+     */
+    public function setExpungeMethod($expunge_method)
+    {
+        $expunge_method = strtoupper($expunge_method);
+        if (!isset(self::getExpungeMethods()[$expunge_method])) { 
+            throw new \InvalidArgumentException(sprintf('The "%s" expunge_method is not a valid expunge_method.', $expunge_method));
+        }
+        $this->expunge_method = $expunge_method;
+        return $this;
+    }
+
+    /**
+     * Get expunge_method
+     *
+     * @return string 
+     */
+    public function getExpungeMethod()
+    {
+        return $this->expunge_method;
+    }
+
+    /**
+     * Get expunge_methods
+     *
+     * @return array 
+     */
+    public static function getExpungeMethods()
+    {
+        // I could do the external config trick here aswell but I'd rather not
+        // have so many expunge_methods.
+        return self::$expunge_methods;
+    }
+
+    public static function getExpungeMethodsAsChoices()
+    {
+        $mods = array();
+        foreach (self::$expunge_methods as $name => $sm) {
+            $mods[$sm['short']] = $name;
+        }
+        return $mods;
+    }
+
+    /**
+     * Set expire_method
+     *
+     * @param string $expire_method
+     * @return Site
+     */
+    public function setExpireMethod($expire_method)
+    {
+        $expire_method = strtoupper($expire_method);
+        if (!isset(self::getExpireMethods()[$expire_method])) { 
+            throw new \InvalidArgumentException(sprintf('The "%s" expire_method is not a valid expire_method.', $expire_method));
+        }
+        $this->expire_method = $expire_method;
+        return $this;
+    }
+
+    /**
+     * Get expire_method
+     *
+     * @return string 
+     */
+    public function getExpireMethod()
+    {
+        return $this->expire_method;
     }
 
     /**

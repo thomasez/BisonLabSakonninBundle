@@ -48,9 +48,6 @@ EOT
         $this->entityManager = $this->getDoctrineManager();
         // This is to make sure we don't end up with massige memory useage. 
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-        $expunge_method = $this->container->getParameter('sakonnin.expunge_method') ?: "Delete";
-        $expire_method = $this->container->getParameter('sakonnin.expire_method') ?: "Delete";
-
         $this->mt_repo    = $this->entityManager
                 ->getRepository('BisonLabSakonninBundle:MessageType');
         $this->m_repo    = $this->entityManager
@@ -66,6 +63,8 @@ EOT
 
         while (($res = $mt_iterable->next()) !== false) {
             $mt = $res[0];
+            $expunge_method = $mt->getExpungeMethod();
+
             $edays = $mt->getExpungeDays();
             $output->writeln("Will Expunge messages from " . $mt->getName() . " with age over " . $edays . " days.");
 
@@ -93,9 +92,9 @@ EOT
                 // I am kinda hoping cascade remove and orphanremoval will do
                 // the delete whole thread deed.
                 $output->writeln("Will Expunge " . $message->getSubject());
-                if ($this->doit == "yes" && $expunge_methon == "Delete") {
+                if ($this->doit == "yes" && $expunge_method == "DELETE") {
                     $this->entityManager->remove($message);
-                } elseif ($expunge_methon == "Archive") {
+                } elseif ($expunge_method == "ARCHIVE") {
                     $message->setState("ARCHIVED");
                 }
             }
@@ -115,6 +114,7 @@ EOT
 
         while (($mess = $m_iterable->next()) !== false) {
             $message = $mess[0];
+            $expire_method = $message->getMessageType()->getExpireMethod();
 
             /*
              * When expunging I am checking newest in thread. But this is
@@ -125,9 +125,9 @@ EOT
             // I am kinda hoping cascade remove and orphanremoval will do
             // the delete whole thread deed.
             $output->writeln("Will Expunge " . $message->getSubject());
-            if ($this->doit == "yes" && $expire_methon == "Delete") {
+            if ($this->doit == "yes" && $expire_method == "DELETE") {
                 $this->entityManager->remove($message);
-            } elseif ($expire_methon == "Archive") {
+            } elseif ($expire_method == "ARCHIVE") {
                 $message->setState("ARCHIVED");
             }
         }
@@ -136,7 +136,8 @@ EOT
         }
     }
 
-    private function _findMt($name) {
+    private function _findMt($name)
+    {
         if (isset($this->mt_cache[$name]))
             return $this->mt_cache[$name];
             
@@ -145,9 +146,7 @@ EOT
             $this->mt_cache[$name] = $mt;
         else
             return null;
-
         return $this->mt_cache[$name];
     }
-
 }
 

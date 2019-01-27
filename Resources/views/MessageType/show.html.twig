@@ -44,9 +44,25 @@
                 <td>{% for attr in entity.forwardAttributes %}{{ attr }}<br />{%endfor %}</td>
             </tr>
             <tr>
-                <th>Expungde, in days.<br>0 means never delete.</th>
+                <th>Expunge, in days.<br>0 means never delete.</th>
                 {% if entity.parent %}
                 <td>{{ entity.expungedays }}</td>
+                {% else %}
+                <td>N/A - This is set on the types, not group.</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <th>Expunge method.</th>
+                {% if entity.parent %}
+                <td>{{ entity.expungemethod }}</td>
+                {% else %}
+                <td>N/A - This is set on the types, not group.</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <th>Expire method.</th>
+                {% if entity.parent %}
+                <td>{{ entity.expiremethod }}</td>
                 {% else %}
                 <td>N/A - This is set on the types, not group.</td>
                 {% endif %}
