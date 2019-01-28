@@ -208,13 +208,15 @@ class Messages
     /*
      * Get and list messsag(es) functions.
      */
-    public function getMessagesForContext($context)
+    public function getMessagesForContext($criterias)
     {
-        if (isset($context['message_type']))
-            $criterias['message_type'] = $context['message_type'];
-        if (isset($context['message_group']))
-            $criterias['message_group'] = $context['message_group'];
-        $criterias['context'] = $context;
+        if (!isset($criterias['context'])) {
+            $criterias['context'] = [ 
+                'system' => $criterias['system'],
+                'object_name' => $criterias['object_name'],
+                'external_id' => $criterias['external_id'],
+                ];
+        }
         return $this->getMessages($criterias);
     }
 

@@ -572,7 +572,7 @@ class MessageType
     public function setExpireMethod($expire_method)
     {
         $expire_method = strtoupper($expire_method);
-        if (!isset(self::getExpireMethods()[$expire_method])) { 
+        if (!isset(self::getExpungeMethods()[$expire_method])) { 
             throw new \InvalidArgumentException(sprintf('The "%s" expire_method is not a valid expire_method.', $expire_method));
         }
         $this->expire_method = $expire_method;

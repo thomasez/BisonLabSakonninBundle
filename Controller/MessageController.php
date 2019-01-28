@@ -40,12 +40,14 @@ class MessageController extends CommonController
         // Todo: paging or just show the last 20
         $messages = $sm->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
         // Gotta set the messages as read.
+        /* No, not while listing the messages, only when viewving separately.
         foreach ($messages as $message) {
             if ($message->getState() == "UNREAD")
                 $message->setState('READ');
+            $em = $this->getDoctrineManager();
+            $em->flush();
         }
-        $em = $this->getDoctrineManager();
-        $em->flush();
+        */
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
         }
@@ -63,11 +65,13 @@ class MessageController extends CommonController
         $sm = $this->container->get('sakonnin.messages');
         $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         // Gotta set the messages as read.
+        /* Unread means not read, this should not automatically mean it's read.
         foreach ($messages as $message) {
             $message->setState('READ');
         }
         $em = $this->getDoctrineManager();
         $em->flush();
+        */
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages,
                 array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
@@ -150,6 +154,8 @@ class MessageController extends CommonController
         // If it's shown to receiver, it's read.
         $sm = $this->container->get('sakonnin.messages');
         $user = $this->getUser();
+        // Not sure I want to set READ automatically. But UNREAD/READ is not
+        // archived, which the users should set themselves.
         if ($message->getTo() == $user->getId()) {
             $message->setState("READ");
             $em = $this->getDoctrineManager();
@@ -205,6 +211,24 @@ class MessageController extends CommonController
                 'edit_form' => $editForm->createView(),
                 'delete_form' => $deleteForm->createView(),
         ));
+    }
+
+    /**
+     * Displays a form to edit an existing person entity.
+     *
+     * @Route("/{id}/state/{state}", name="message_state", methods={"GET", "POST"})
+     */
+    public function stateAction(Request $request, $access, Message $message, $state)
+    {
+        $this->denyAccessUnlessGranted('edit', $message);
+        $message->setState($state);
+        $this->getDoctrineManager()->flush();
+
+        if ($this->isRest($access)) {
+            return new JsonResponse(array("status" => "OK", 200));
+        }
+        return $this->redirectToRoute('message_show',
+            array('access' => $access, 'id' => $message->getId()));
     }
 
     /**
