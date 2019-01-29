@@ -175,8 +175,14 @@ class Message
     public function __construct($options = array())
     {
         $this->setMessageId(uniqid());
+        if (isset($options['from_type']) ) {
+            $this->setFromType($options['from_type']);
+        }
         if (isset($options['from']) ) {
             $this->setFrom($options['from']);
+        }
+        if (isset($options['to_type']) ) {
+            $this->setToType($options['to_type']);
         }
         if (isset($options['to']) ) {
             $this->setTo($options['to']);
