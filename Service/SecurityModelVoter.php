@@ -75,7 +75,6 @@ class SecurityModelVoter extends Voter
                 return $this->_isAdmin($token) || $this->_checkPrivate($attribute, $subject, $token);
                 break;
             case 'PRIVATE':
-dump($subject);
                 return $this->_checkPrivate($attribute, $subject, $token);
                 break;
             default:
