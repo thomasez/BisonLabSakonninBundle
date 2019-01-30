@@ -75,6 +75,7 @@ class SecurityModelVoter extends Voter
                 return $this->_isAdmin($token) || $this->_checkPrivate($attribute, $subject, $token);
                 break;
             case 'PRIVATE':
+dump($subject);
                 return $this->_checkPrivate($attribute, $subject, $token);
                 break;
             default:
@@ -122,11 +123,11 @@ class SecurityModelVoter extends Voter
         $user = $token->getUser();
 
         if ($subject instanceof Message) {
-            if (('INTERNAL' == $subject->getFromType())
-                && $subject->getFrom() == $user->getId())
+            if (('INTERNAL' == $subject->getFromType()) && 
+                ($subject->getFrom() == $user->getId() || $subject->getFrom() == $user->getUsername()))
                     return true;
-            if (('INTERNAL' == $subject->getToType())
-                && $subject->getTo() == $user->getId())
+            if (('INTERNAL' == $subject->getToType()) &&
+                ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
                     return true;
             // Then, how do I get the object the context is pointing at?
             // Answer: "The ExternalRetriever" in my CommonBundle.
