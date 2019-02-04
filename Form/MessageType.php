@@ -70,13 +70,27 @@ class MessageType extends AbstractType
                     ));
             }
         }
+        if ($options['data']->getToType()) {
+            $builder
+            ->add('to_type', HiddenType::class, array('required' => false));
+        } else {
+            $builder
+                ->add('to_type', ChoiceType::class,
+                    array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()));
+        }
+        if ($options['data']->getTo()) {
+            $builder
+            ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false));
+        } else {
+            $builder
+                ->add('to', HiddenType::class, array('required' => false));
+        }
         $builder
-            ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false))
-            ->add('to_type', ChoiceType::class, array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
             ->add('state', ChoiceType::class, array('choices' => array_combine(Message::getStates(), Message::getStates())))
             ->add('expire_at', DateType::class, array(
                 'label' => "Expire at",
+                'required' => false,
                 'widget' => "single_text"))
             ->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
@@ -88,6 +102,7 @@ class MessageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
+            'edit' => false,
             'data_class' => 'BisonLab\SakonninBundle\Entity\Message'
         ));
     }

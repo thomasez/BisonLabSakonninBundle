@@ -1,8 +1,10 @@
 parameters:
     sakonnin.address_types:
+        # None at all. Notes uses createdBy and contexts.
+        NONE:
+            chooseable: true
         # PMs - I Wish I used "USERID" as type. As it *is* an address type.
         # TODO: Change to USERID.
-        # But as INTERNAL it is used for Notes and Announcements.
         INTERNAL:
             chooseable: true
         # Good old SMTP. (Or POP or IMAP if we pull them ourselves.)
