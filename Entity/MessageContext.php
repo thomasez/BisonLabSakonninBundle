@@ -23,6 +23,16 @@ class MessageContext
      */
     private $message;
 
+    /*
+     * This is to override the trait. I see no reason to log context changes
+     * here. There should be only one doring the whole life span of the
+     * message.
+     */
+    public function doNotLog()
+    {
+        return true;
+    }
+
     public function __construct($options = array())
     {
         if (isset($options['message'])) 

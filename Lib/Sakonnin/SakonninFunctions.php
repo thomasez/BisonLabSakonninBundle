@@ -104,5 +104,4 @@ class SakonninFunctions implements SakonninFunctionsInterface
     {
         return $this->forward_functions;
     }
-
 }
