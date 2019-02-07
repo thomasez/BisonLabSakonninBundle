@@ -285,7 +285,7 @@ class MessageController extends CommonController
 
         $data = $request->request->all();
         $form = $sm->getCreatePmForm($data);
-        $this->handleForm($form, $request, $access);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
             $message = $form->getData();
@@ -371,7 +371,7 @@ class MessageController extends CommonController
 
         $data = $request->request->all();
         $form = $sm->getCreateForm($data);
-        $this->handleForm($form, $request, $access);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
             // Ok, it's valid. We'll send this to postMessage then.

@@ -72,7 +72,7 @@ class SakonninFileController extends CommonController
         $form = $this->createCreateForm($file);
         $data = $request->request->all();
 
-        $this->handleForm($form, $request, $access);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $sf = $this->container->get('sakonnin.files');
