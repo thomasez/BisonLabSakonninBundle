@@ -216,16 +216,18 @@ class MessageController extends CommonController
     /**
      * Displays a form to edit an existing person entity.
      *
-     * @Route("/{id}/state/{state}", name="message_state", methods={"GET", "POST"})
+     * @Route("/{id}/state/{state}", name="message_state", methods={"POST"})
      */
     public function stateAction(Request $request, $access, Message $message, $state)
     {
         $this->denyAccessUnlessGranted('edit', $message);
         $message->setState($state);
-        $this->getDoctrineManager()->flush();
+        $this->getDoctrineManager()->flush($message);
 
         if ($this->isRest($access)) {
-            return new JsonResponse(array("status" => "OK", 200));
+            return new JsonResponse(array("status" => "OK",
+                'state' => $message->getState()),
+                Response::HTTP_OK);
         }
         return $this->redirectToRoute('message_show',
             array('access' => $access, 'id' => $message->getId()));

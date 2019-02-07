@@ -268,10 +268,24 @@ dump($message);
                 ->setParameter('state', $criterias['state']);
         }
 
+        if (isset($criterias['states'])) {
+            $query->andWhere("m.state in (:states)")
+                ->setParameter('states', $criterias['states']);
+        }
+
         if (isset($criterias['message_type'])) {
             $mt = $this->getMessageType($criterias['message_type']);
             $query->andWhere("m.message_type = :message_type")
                 ->setParameter('message_type', $mt);
+        }
+
+        if (isset($criterias['message_types'])) {
+            $types = [];
+            foreach ($criterias['message_types'] as $mt) {
+                $types[] = $this->getMessageType($mt);
+            }
+            $query->andWhere("m.message_type in (:message_types)")
+                ->setParameter('message_types', $types);
         }
 
         if (isset($criterias['message_group'])) {
