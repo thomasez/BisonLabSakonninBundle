@@ -158,8 +158,6 @@ class Messages
 
         $c = new MessageController();
         $c->setContainer($this->container);
-
-dump($message);
         $form = $c->createCreateForm($message);
 
         // You may wonder why. It's beause this one is called from twig

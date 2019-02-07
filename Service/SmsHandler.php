@@ -29,11 +29,15 @@ class SmsHandler
     );
 
     // Receiving on the other hand, is done how?
-    // The only way I can think of is sending the whole Request object to
-    // the recceive function and make it do whatever it needs to it.
+    // Thought about sending the request object, but no. The Controller
+    // compiles as much data as possible and sends that.
     public $receivers = array(
         'pswincom_web_xml' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComWebXml',
+            'description' => "SMS via pswin.com old webservice like thingie",
+        ),
+        'pswincom_post' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComPost',
             'description' => "SMS via pswin.com old webservice like thingie",
         )
     );
@@ -64,11 +68,14 @@ class SmsHandler
         }
     }
 
-    public function handleReception(Request $request)
+    /*
+     * 
+     */
+    public function receive($data)
     {
         if ($this->receiver_class) {
-            $this->receiver = new $this->receiver_class($container);
-            return $this->receiver->handleReception($message, $receivers);;
+            $this->receiver = new $this->receiver_class($this->container, $this->options);
+            return $this->receiver->receive($data);;
         } else {
             throw new \InvalidArgumentException("Cannot handle SMS reception because no method is set");
         }
