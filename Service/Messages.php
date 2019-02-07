@@ -105,7 +105,9 @@ class Messages
                         throw new \InvalidArgumentException("No user with that username.(" . $toer . ")");
                     }
                 }
-                $message->setState("SENT");
+                // It's the state for the receivers, not sender as long as
+                // this is an INTERAL to-type.
+                $message->setState("UNREAD");
                 $message->addReceiver($this->getUserFromUserId($toer));
             }
             // Add the To-user object as a receiver.
@@ -255,8 +257,9 @@ class Messages
         }
 
         if (isset($criterias['userid'])) {
-            $query->andWhere('m.from in (:userid, :username)')
-            ->orWhere('m.to in (:userid, :username)');
+            $query->andWhere('m.to in (:userid, :username)');
+            if (isset($criterias['include_from']))
+                $query->orWhere('m.from in (:userid, :username)');
             $query->setParameter('userid', $criterias['userid']);
             $query->setParameter('username', $criterias['username']);
         }

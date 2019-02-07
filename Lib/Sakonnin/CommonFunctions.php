@@ -57,6 +57,8 @@ trait CommonFunctions
             $message->setFrom($from);
             $message->setFromType('EMAIL');
         }
+        $message->setTo($receiver);
+        $message->setToType('EMAIL');
         $mail = \Swift_Message::newInstance()
         ->setSubject($message->getSubject())
         ->setFrom($from)
