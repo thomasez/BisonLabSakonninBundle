@@ -27,20 +27,6 @@ class Message
     use TimestampableEntity;
     use BlameableEntity;
 
-    /* 
-     * There are states for two types of messages. Those you send or receive
-     * and the others.
-     * 'SENDING', 'UNREAD', 'SENT', 'READ' are typical for the first.
-     * 'SHOW', 'HIDE' are not really the words I like, but they do express the
-     * purpose.
-     * "ARCHIVED" is for both.
-     *
-     * I guess I should consider the option to decide which states the
-     * different message types should be able to have. Either as a free array
-     * or from a pick list of these.
-     */
-    private static $states = array('SHOW', 'HIDE', 'SENDING', 'UNREAD', 'SENT', 'READ', 'ARCHIVED');
-
     /**
      * @var integer
      *
@@ -560,7 +546,7 @@ class Message
     {
         // I could do the external config trick here aswell but I'd rather not
         // have so many states.
-        return self::$states;
+        return ExternalEntityConfig::getStatesFor('Message');
     }
 
     /**
@@ -696,5 +682,21 @@ class Message
             return $this->getMessageType()->getSecurityModel();
         else
             return null;
+    }
+
+    public function getBaseType()
+    {
+        if ($this->getMessageType())
+            return $this->getMessageType()->getBaseType();
+        else
+            return null;
+    }
+
+    public function setFirstState()
+    {
+        if ($mt = $this->getMessageType())
+            $this->setState($mt->getFirstState());
+        else
+            $this->setState("UNREAD");
     }
 }

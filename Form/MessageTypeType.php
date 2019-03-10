@@ -24,8 +24,10 @@ class MessageTypeType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('base_type', ChoiceType::class, array(
+                'choices' => MessageType::getBaseTypesAsChoices(),
+                ))
             ->add('security_model', ChoiceType::class, array(
-                'placeholder' => "None",
                 'choices' => MessageType::getSecurityModelsAsChoices(),
                 ))
             ->add('expunge_days', NumberType::class, array('label' => "Expunge, in days. 0 means never delete messages.<br>Only applicable on types, not groups.", "attr" => array("size" => "3")))

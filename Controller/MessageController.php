@@ -484,12 +484,19 @@ class MessageController extends CommonController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    public function createCreateForm(Message $entity)
+    public function createCreateForm(Message $message)
     {
-        $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $entity, array(
-            'action' => $this->generateUrl('message_create'),
-            'method' => 'POST',
-        ));
+        if ($message->getBaseType() == "CHECK") {
+            $form = $this->createForm(\BisonLab\SakonninBundle\Form\CheckType::class, $message, array(
+                'action' => $this->generateUrl('message_create'),
+                'method' => 'POST',
+            ));
+        } else {
+            $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
+                'action' => $this->generateUrl('message_create'),
+                'method' => 'POST',
+            ));
+        }
         $form->add('submit', SubmitType::class, array('label' => 'Send'));
         return $form;
     }

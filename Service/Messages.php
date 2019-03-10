@@ -107,13 +107,13 @@ class Messages
                 }
                 // It's the state for the receivers, not sender as long as
                 // this is an INTERAL to-type.
-                $message->setState("UNREAD");
+                $message->setFirstState();
                 $message->addReceiver($this->getUserFromUserId($toer));
             }
             // Add the To-user object as a receiver.
         } else {
             // Gotta have something.
-            $message->setState("SENT");
+            $message->setFirstState();
         }
         $em->persist($message);
 

@@ -3,15 +3,28 @@
 namespace BisonLab\SakonninBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 
 /**
  * MessageType
+ * TODO: This will probably become MesageGroup or something like it.
+ *       Why? I added "Type" here..
+ *       Which is "Base Type" for now.
  *
  * @ORM\Table(name="sakonnin_messagetype")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\MessageTypeRepository")
  */
 class MessageType
 {
+    /*
+     * Why are they here and not in ExternalConfig thingie, aka types.yml?
+     * Good question.
+     * The answer is that this is programmed in and extending it has to be
+     * programmed into the system itself, in many places.
+     * Most others does not have to.
+     */
     private static $security_models = array(
         // Maybe not the best word for it, but is User, Sender and Receiver.
         'PRIVATE' => array('short' => 'Private', 'description' => 'User/Sender and receiver can read.'),
@@ -52,6 +65,14 @@ class MessageType
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
     private $description;
+
+    /**
+     * @var string $base_type
+     *
+     * @ORM\Column(name="base_type", type="string", length=50, nullable=true)
+     * @Assert\Choice(callback = "getBaseTypes")
+     */
+    private $base_type;
 
     /**
      * Yes, there is only one. I am not sure this is enough and to be honest,
@@ -217,6 +238,51 @@ class MessageType
     }
 
     /**
+     * Set base_type
+     *
+     * @param string $base_type
+     * @return Site
+     */
+    public function setBaseType($base_type)
+    {
+        $base_type = strtoupper($base_type);
+        if (!in_array($base_type, self::getBaseTypes())) {
+            throw new \InvalidArgumentException(sprintf('The "%s" base type is not a valid base type.', $base_type));
+        }
+        $this->base_type = $base_type;
+        return $this;
+    }
+
+    /**
+     * Get base_type
+     *
+     * @return string 
+     */
+    public function getBaseType()
+    {
+        return $this->base_type;
+    }
+
+    /**
+     * Get base_types
+     *
+     * @return array 
+     */
+    public static function getBaseTypes()
+    {
+        return array_keys(ExternalEntityConfig::getBaseTypes());
+    }
+
+    public static function getBaseTypesAsChoices()
+    {
+        $bases = array();
+        foreach (ExternalEntityConfig::getBaseTypes() as $name => $bt) {
+            $bases[$bt['short']] = $name;
+        }
+        return $bases;
+    }
+
+    /**
      * Set security_model
      *
      * @param string $security_model
@@ -226,7 +292,7 @@ class MessageType
     {
         $security_model = strtoupper($security_model);
         if (!isset(self::getSecurityModels()[$security_model])) { 
-            throw new \InvalidArgumentException(sprintf('The "%s" security_model is not a valid security_model.', $security_model));
+            throw new \InvalidArgumentException(sprintf('The "%s" security model is not a valid security model.', $security_model));
         }
         $this->security_model = $security_model;
         return $this;
@@ -526,7 +592,7 @@ class MessageType
     {
         $expunge_method = strtoupper($expunge_method);
         if (!isset(self::getExpungeMethods()[$expunge_method])) { 
-            throw new \InvalidArgumentException(sprintf('The "%s" expunge_method is not a valid expunge_method.', $expunge_method));
+            throw new \InvalidArgumentException(sprintf('The "%s" expunge method is not a valid expunge method.', $expunge_method));
         }
         $this->expunge_method = $expunge_method;
         return $this;
@@ -573,7 +639,7 @@ class MessageType
     {
         $expire_method = strtoupper($expire_method);
         if (!isset(self::getExpungeMethods()[$expire_method])) { 
-            throw new \InvalidArgumentException(sprintf('The "%s" expire_method is not a valid expire_method.', $expire_method));
+            throw new \InvalidArgumentException(sprintf('The "%s" expire method is not a valid expire method.', $expire_method));
         }
         $this->expire_method = $expire_method;
         return $this;
@@ -610,5 +676,12 @@ class MessageType
     public function getSakonninTemplate()
     {
         return $this->sakonnin_template;
+    }
+
+    public function getFirstState()
+    {
+        if (!$this->base_type)
+            return null;
+        return ExternalEntityConfig::getBaseTypes()[$this->base_type]['states'][0];
     }
 }

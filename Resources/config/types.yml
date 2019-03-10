@@ -1,4 +1,20 @@
 parameters:
+    # Base message types.
+    # States is the common order they are set. Default is the first one in the
+    # list.
+    sakonnin.base_types:
+        MESSAGE:
+            states: ['UNREAD', 'READ']
+            short: "Message"
+            description: "Messages with to, from, subject and body"
+        NOTE:
+            states: ['UNREAD', 'READ']
+            short: "Note"
+            description: "Notes attached to a context (object)"
+        CHECK:
+            states: ['UNCHECKED', 'CHECKED']
+            short: "Checkitem"
+            description: "Check(list) item"
     sakonnin.address_types:
         # None at all. Notes uses createdBy and contexts.
         NONE:
