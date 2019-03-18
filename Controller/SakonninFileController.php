@@ -103,7 +103,7 @@ class SakonninFileController extends CommonController
      */
     public function showAction(Request $request, SakonninFile $file, $access)
     {
-        $deleteForm = $this->createDeleteForm($file, $access);
+        $deleteForm = $this->createDeleteForm($file);
 
         return $this->render('BisonLabSakonninBundle:SakonninFile:show.html.twig',
             array(
@@ -146,7 +146,7 @@ class SakonninFileController extends CommonController
      */
     public function thumbnailAction(Request $request, $access, SakonninFile $file, $x, $y)
     {
-        if ($file->getFileType() != 'IMAGE')
+        if (!$file->getThumbnailable())
             $this->returnError($request, 'Not an image');
         // TODO: Add access control.
         // Gotta get the thumbnail then.
@@ -163,7 +163,7 @@ class SakonninFileController extends CommonController
      */
     public function editAction(Request $request, SakonninFile $file, $access)
     {
-        $deleteForm = $this->createDeleteForm($file, $access);
+        $deleteForm = $this->createDeleteForm($file);
         $editForm = $this->createForm('BisonLab\SakonninBundle\Form\SakonninFileType', $file);
         $editForm->handleRequest($request);
 
@@ -188,13 +188,15 @@ class SakonninFileController extends CommonController
      */
     public function deleteAction(Request $request, SakonninFile $file, $access)
     {
-        $form = $this->createDeleteForm($file, $access);
+        $form = $this->createDeleteForm($file);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrineManager();
             $em->remove($file);
             $em->flush();
+            if ($back = $request->request->get('back'))
+                return $this->redirect($back);
         }
 
         return $this->redirectToRoute('file_index');
@@ -229,7 +231,7 @@ class SakonninFileController extends CommonController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(SakonninFile $file, $access)
+    public function createDeleteForm(SakonninFile $file)
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('file_delete', array('id' => $file->getId())))

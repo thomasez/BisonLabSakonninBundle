@@ -254,7 +254,6 @@ class SakonninFile
     public function setFileType($fileType)
     {
         if ($fileType == $this->fileType) return $this;
-        $fileType = strtoupper($fileType);
         if (!isset(self::getFileTypes()[$fileType])) {
             throw new \InvalidArgumentException(sprintf('"%s" is not a valid file type.', $fileType));
         }
@@ -270,6 +269,15 @@ class SakonninFile
     public function getFileType()
     {
         return $this->fileType;
+    }
+
+    /**
+     * Get fileType
+     * @return string
+     */
+    public function getThumbnailable()
+    {
+        return self::getFileTypes()[$this->fileType]['thumbnailable'];
     }
 
     /**

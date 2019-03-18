@@ -118,9 +118,23 @@ class Files
             return $form;
     }
 
-    public function getFilesForContext($context)
+    public function getDeleteForm($file, $options = array())
     {
-        $criterias['context'] = $context;
+        $c = new SakonninFileController();
+        $c->setContainer($this->container);
+        $form = $c->createDeleteForm($file);
+
+        // You may wonder why. It's beause this one is called from twig
+        // templates as well as the file controller (Which adds stuff).
+        if (isset($options['create_view'])) 
+            return $form->createView();
+        else
+            return $form;
+    }
+
+    public function getFilesForContext($criterias)
+    {
+        $criterias['context'] = $criterias;
         return $this->getFiles($criterias);
     }
 
@@ -179,7 +193,7 @@ class Files
 
     public function getThumbnailFilename($sfile, $x, $y)
     {
-        if ($sfile->getFileType() != "IMAGE" || !is_numeric($x) || !is_numeric($y)) {
+        if (!$sfile->getThumbnailable() || !is_numeric($x) || !is_numeric($y)) {
             return null;
         }
         $path = $this->container->getParameter('sakonnin.file_storage');

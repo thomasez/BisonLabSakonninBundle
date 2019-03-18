@@ -44,6 +44,7 @@ function submitFileForm() {
             $( "#uploadfile" ).dialog("close");
             msg = xhr.responseText + "\n";
             alert(msg);
+            parent.location.reload();
       }).fail(function(xhr, status, error) {
             errmsg = "File sending failed\n";
             errmsg = errmsg + xhr.responseText + "\n";

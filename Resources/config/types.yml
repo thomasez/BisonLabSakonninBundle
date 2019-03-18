@@ -38,17 +38,25 @@ parameters:
     sakonnin.file_types:
         IMAGE:
             chooseable: true
+            thumbnailable: true
         VIDEO:
             chooseable: true
+            thumbnailable: false
         TEXT:
             chooseable: true
+            thumbnailable: false
         DOCUMENT:
             chooseable: true
+            thumbnailable: false
         PRESENTATION:
             chooseable: true
+            thumbnailable: false
         SPREADSHEET:
             chooseable: true
+            thumbnailable: false
         BINARY:
             chooseable: true
+            thumbnailable: false
         UNKNOWN:
             chooseable: true
+            thumbnailable: false
