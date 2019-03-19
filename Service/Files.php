@@ -154,8 +154,16 @@ class Files
     {
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
-        $query = $repo->createQueryBuilder('f');
 
+        // There can be only one
+        if (isset($criterias['fileid'])) {
+            return $repo->findOneBy(['fileId' => $criterias['fileid']]);
+        }
+        if (isset($criterias['id'])) {
+            return $repo->findOneBy(['id' => $criterias['id']]);
+        }
+
+        $query = $repo->createQueryBuilder('f');
         if (isset($criterias['context'])) {
             return $repo->findByContext(
                 $criterias['context']['system'],
@@ -191,7 +199,24 @@ class Files
         return $repo->contextHasFiles($context);
     }
 
-    public function getThumbnailFilename($sfile, $x, $y)
+    public function getStoredFileName(SakonninFile $sfile)
+    {
+        // TODO: Add access control.
+        $path = $this->container->getParameter('sakonnin.file_storage');
+        $filename = $path . "/" . $sfile->getStoredAs();
+        return $filename;
+    }
+
+    public function getStoredFile(SakonninFile $sfile)
+    {
+        // TODO: Add access control.
+        $path = $this->container->getParameter('sakonnin.file_storage');
+        $filename = $path . "/" . $sfile->getStoredAs();
+        // Not entirely sure this is a good idea. Supposed to be binary safe.
+        return file_get_contents($filename);
+    }
+
+    public function getThumbnailFilename(SakonninFile $sfile, $x, $y)
     {
         if (!$sfile->getThumbnailable() || !is_numeric($x) || !is_numeric($y)) {
             return null;

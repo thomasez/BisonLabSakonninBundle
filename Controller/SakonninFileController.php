@@ -144,13 +144,21 @@ class SakonninFileController extends CommonController
      *
      * @Route("/{id}/thumbnail/{x}/{y}", name="file_thumbnail", methods={"GET"})
      */
-    public function thumbnailAction(Request $request, $access, SakonninFile $file, $x, $y)
+    public function thumbnailAction(Request $request, $access, $id, $x, $y)
     {
+        $sf = $this->container->get('sakonnin.files');
+        if (is_numeric($id)) {
+            $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
+            $file->find($id);
+        } else {
+            $sfiles = $sf->getFiles(['fileid' => $id]);
+            $file = current($sfiles);
+        }
+
         if (!$file->getThumbnailable())
             $this->returnError($request, 'Not an image');
         // TODO: Add access control.
         // Gotta get the thumbnail then.
-        $sf = $this->container->get('sakonnin.files');
         $thumbfile = $sf->getThumbnailFilename($file, $x, $y);
         $response = new BinaryFileResponse($thumbfile);
         return $response;

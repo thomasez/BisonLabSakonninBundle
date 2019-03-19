@@ -50,6 +50,7 @@ class Messages
                 throw new \InvalidArgumentException("No message type found or set.");
             }
 
+            // This does not fail properly when there is something missing.
             if (isset($context_data)
                 && isset($context_data['system'])
                 && isset($context_data['object_name'])
@@ -67,17 +68,21 @@ class Messages
                     $message->setInReplyTo($reply_to);
                 }
             }
+
+            // Get a default one?
             if (isset($data['from_type'])) {
                 $message->setFromType($data['from_type']);
             } else {
                 throw new \InvalidArgumentException("No from address type found or set.");
             }
 
+            if (isset($data['state'])) {
+                $message->setState($data['state']);
+            }
+
+            // Dependant on what this is.
             if (isset($data['from'])) {
                 $message->setFrom($data['from']);
-            } else {
-                // To be considered.
-                // throw new \InvalidArgumentException("No from found or set.");
             }
 
             if (isset($data['to_type']))
@@ -113,7 +118,8 @@ class Messages
             // Add the To-user object as a receiver.
         } else {
             // Gotta have something.
-            $message->setFirstState();
+            if (!$message->getState())
+                $message->setFirstState();
         }
         $em->persist($message);
 
@@ -238,6 +244,14 @@ class Messages
     {
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
+
+        // There can be only one
+        if (isset($criterias['id'])) {
+            return $repo->find($criterias['id']);
+        }
+        if (isset($criterias['message_id'])) {
+            return $repo->findOneBy(['message_id' => $criterias['message_id']]);
+        }
         $query = $repo->createQueryBuilder('m');
 
         if (isset($criterias['context'])) {
