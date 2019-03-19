@@ -151,15 +151,14 @@ class SakonninFileController extends CommonController
             $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
             $file->find($id);
         } else {
-            $sfiles = $sf->getFiles(['fileid' => $id]);
-            $file = current($sfiles);
+            $sfile = $sf->getFiles(['fileid' => $id]);
         }
 
-        if (!$file->getThumbnailable())
+        if (!$sfile->getThumbnailable())
             $this->returnError($request, 'Not an image');
         // TODO: Add access control.
         // Gotta get the thumbnail then.
-        $thumbfile = $sf->getThumbnailFilename($file, $x, $y);
+        $thumbfile = $sf->getThumbnailFilename($sfile, $x, $y);
         $response = new BinaryFileResponse($thumbfile);
         return $response;
     }
