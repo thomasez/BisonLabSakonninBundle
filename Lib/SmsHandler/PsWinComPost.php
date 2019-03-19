@@ -35,7 +35,6 @@ class PsWinComPost
 
     public function receive($data)
     {
-$logger = $this->container->get('logger');
         // Sender is a phone number. I wonder if I should do an attempt at
         // finding a user based on it, but to me honest I think I'll make the
         // "Callback function" handle that part.

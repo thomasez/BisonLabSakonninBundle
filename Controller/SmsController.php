@@ -53,7 +53,6 @@ class SmsController extends CommonController
             $data = array_merge($request->query->all(),
                 $request->request->all());
         }
-error_log(print_r($data, true));
 
         $sm = $this->container->get('sakonnin.sms_handler');
         $status = $sm->receive($data);
