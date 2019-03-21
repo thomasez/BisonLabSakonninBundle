@@ -57,6 +57,15 @@ class SakonninFile
 
     /**
      * @var string
+     * I am not adding notes to this, too complex and can be done by whoever
+     * really needing it, in their code.
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string
      * This is the filename it's stored as in the file system. It's most
      * probably a combination of fileId and extension.
      *
@@ -164,6 +173,40 @@ class SakonninFile
     }
 
     /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return File
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
      * Get storedAs
      *
      * @return string
@@ -185,16 +228,6 @@ class SakonninFile
         $this->storedAs = $storedAs;
 
         return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
