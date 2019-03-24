@@ -64,6 +64,7 @@ function submitFileForm() {
 <input id="external_id" type="hidden" name="file_context[external_id]" value="{{sfconfig.context.external_id}}">
 {% endif %}
 {{ form_widget(sfform.file)}} 
+{{ form_row(sfform.description)}}
 {{ form_row(sfform.file_type)}} 
 {{ form_end(sfform) }}
 </form>

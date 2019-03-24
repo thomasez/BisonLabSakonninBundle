@@ -7,6 +7,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 
 class SakonninFileType extends AbstractType
@@ -16,12 +18,19 @@ class SakonninFileType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('file_type', ChoiceType::class, array(
+        if (isset($options['data']) && $options['data']->getDescription()) {
+            $builder->add('description', HiddenType::class);
+        } else {
+            $builder->add('description');
+        }
+        if (isset($options['data']) && $options['data']->getFileType()) {
+            $builder->add('file_type', HiddenType::class);
+        } else {
+            $builder->add('file_type', ChoiceType::class, array(
                 'required' => false,
                 'choices' => ExternalEntityConfig::getFileTypesAsChoices(),
-                'placeholder' => 'Will be guessed'))
-        ;
+                'placeholder' => 'Will be guessed'));
+        }
     }
     
     /**

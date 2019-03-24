@@ -34,7 +34,10 @@ class Files
         } else {
             $file = new SakonninFile($data);
             if (isset($data['file_type'])) {
-                $file->setFileType($file_type);
+                $file->setFileType($data['file_type']);
+            }
+            if (isset($data['description'])) {
+                $file->setDescription($data['description']);
             }
         }
 
@@ -92,9 +95,6 @@ class Files
         if (isset($options['file']) && $options['file'] instanceof File) {
              $file =  $options['file'];
         } elseif (isset($options['file_data']) && $data = $options['file_data']) {
-            if (isset($data['file_type']) && $file_type = $em->getRepository('BisonLabSakonninBundle:FileType')->findOneByName($data['file_type'])) {
-                $data['file_type'] = $file_type;
-            }
             $file = new SakonninFile($data);
         } else {
             $file = new SakonninFile();
@@ -164,23 +164,31 @@ class Files
         }
 
         $query = $repo->createQueryBuilder('f');
+
         if (isset($criterias['context'])) {
-            return $repo->findByContext(
-                $criterias['context']['system'],
-                $criterias['context']['object_name'],
-                $criterias['context']['external_id']
-                );
+            $query->innerJoin('f.contexts', 'fc')
+                ->where('fc.system = :system')
+                ->andWhere('fc.object_name = :object_name')
+                ->andWhere('fc.external_id = :external_id')
+                ->setParameter('system', $criterias['context']['system'])
+                ->setParameter('object_name', $criterias['context']['object_name'])
+                ->setParameter('external_id', $criterias['context']['external_id'])
+            ;
         }
 
         if (isset($criterias['username'])) {
-            $query->where('f.createdBy = :username');
+            $query->andWhere('f.createdBy = :username');
             $query->setParameter('username', $criterias['username']);
         }
 
         if (isset($criterias['file_type'])) {
-            $mt = $this->getFileType($criterias['file_type']);
-            $query->andWhere("f.file_type = :file_type")
-                ->setParameter('file_type', $mt);
+            $query->andWhere("f.fileType = :fileType")
+                ->setParameter('fileType', $criterias['file_type']);
+        }
+
+        if (isset($criterias['description'])) {
+            $query->andWhere("f.description = :description")
+                ->setParameter('description', $criterias['description']);
         }
 
         if (isset($criterias['order'])) {
@@ -188,7 +196,6 @@ class Files
         } else {
             $query->orderBy("f.createdAt", "ASC");
         }
-
         return $query->getQuery()->getResult();
     }
 

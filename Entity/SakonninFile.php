@@ -121,6 +121,9 @@ class SakonninFile
 
     public function __construct($options = array())
     {
+        $this->description = $options['description'] ?? null;
+        if (isset($options['file_type']))
+            $this->setFileType($options['file_type']);
         $this->setFileId(uniqid());
         return $this->traitConstruct($options);
     }
