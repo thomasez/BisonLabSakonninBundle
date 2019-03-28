@@ -459,7 +459,15 @@ class MessageController extends CommonController
     public function newAction(Request $request, $access)
     {
         $message = new Message();
-        $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
+        if ($message_type = $request->get('message_type')) {
+            $em = $this->getDoctrineManager();
+            $message->setMessageType(
+                $em->getRepository('BisonLabSakonninBundle:MessageType')
+                    ->find($message_type)
+            );
+        }
+        $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType',
+            $message);
         $form->handleRequest($request);
 
         // Should or should not use the service createmessage here?
