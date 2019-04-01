@@ -120,12 +120,14 @@ EOT
                 $mt->setDescription($type['description']);
             if (isset($type['callback_function']))
                 $mt->setCallbackFunction($type['callback_function']);
-            if (isset($type['security_model']))
-                $mt->setSecurityModel($type['security_model']);
+            $mt->setSecurityModel($type['security_model'] ?? "PRIVATE");
             if (isset($type['forward_function']))
                 $mt->setForwardFunction($type['forward_function']);
             if (isset($type['expunge_days']))
                 $mt->setExpungeDays($type['expunge_days']);
+
+            $mt->setExpungeMethod($type['expunge_method'] ?? "DELETE");
+            $mt->setExpireMethod($type['expire_method'] ?? "DELETE");
             $this->entityManager->persist($mt);
             if ($parent) {
                 $output->writeln("Setting parent " 
