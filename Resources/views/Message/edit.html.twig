@@ -3,13 +3,9 @@
 {% block body %}
     <h1>Message edit</h1>
 {% include 'BisonLabSakonninBundle:Message:_edit.html.twig' %}
-    <ul>
 {% if delete_form %}
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
+  {{ form_start(delete_form) }}
+      <input type="submit" value="Delete">
+  {{ form_end(delete_form) }}
 {% endif %}
-    </ul>
 {% endblock %}
