@@ -66,7 +66,9 @@ function submitMessageForm(formname = '') {
 {% if mconfig.from_field is defined and mconfig.from_field %}
 {{ form_widget(mform.from)}} 
 {% endif %}
+{% if mconfig.to_type is defined and mconfig.to_type %}
 {{ form_widget(mform.to_type)}} 
+{% endif %}
 {% if mconfig.to_field is defined and mconfig.to_field %}
 {{ form_widget(mform.to)}} 
 {% endif %}
