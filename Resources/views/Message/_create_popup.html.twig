@@ -63,18 +63,17 @@ function submitMessageForm(formname = '') {
 <input id="external_id" type="hidden" name="message_context[external_id]" value="{{mconfig.context.external_id}}">
 {% endif %}
 {{ form_row(mform.subject)}} 
-{% if mconfig.from_field is defined and mconfig.from_field %}
+{% if mconfig.to_type is defined and mconfig.to_type and mform.to_type is defined %}
 {{ form_widget(mform.from)}} 
 {% endif %}
-{% if mconfig.to_type is defined and mconfig.to_type %}
 {{ form_widget(mform.to_type)}} 
 {% endif %}
-{% if mconfig.to_field is defined and mconfig.to_field %}
+{% if mconfig.to_field is defined and mconfig.to_field and mform.to is defined %}
 {{ form_widget(mform.to)}} 
 {% endif %}
 {{ form_row(mform.body)}} 
 {{ form_row(mform.message_type)}} 
-{% if mconfig.expire_field is defined and mconfig.expire_field %}
+{% if mconfig.expire_field is defined and mconfig.expire_field and mform.expire_at is defined %}
 {{ form_row(mform.expire_at)}} 
 {% endif %}
 {% if mconfig.submit is defined %}
