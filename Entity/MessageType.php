@@ -684,8 +684,8 @@ class MessageType
 
     public function getFirstState()
     {
-        if (!$this->base_type)
+        if (!$bt = $this->getBaseType())
             return null;
-        return ExternalEntityConfig::getBaseTypes()[$this->base_type]['states'][0];
+        return ExternalEntityConfig::getBaseTypes()[$bt]['states'][0];
     }
 }
