@@ -10,7 +10,6 @@ class ForwardOnErrorSubject
     use CommonFunctions;
 
     protected $container;
-    protected $router;
 
     public function __construct($container, $options = array())
     {
@@ -40,14 +39,7 @@ class ForwardOnErrorSubject
         foreach ($receivers as $receiver) {
             $this->sendMail($message, $receiver, $options);
         }
+        // Message is handled, put in the archive
+        $message->setState('ARCHIVED');
     }
-
-    public function getRouter()
-    {
-        if (!$this->router) {
-            $this->router = $this->container->get('router');
-        }
-        return $this->router;
-    }
-
 }

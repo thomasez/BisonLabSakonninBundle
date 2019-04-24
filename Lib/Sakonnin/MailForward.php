@@ -20,5 +20,7 @@ class MailForward
         foreach ($receivers as $receiver) {
             $this->sendMail($message, $receiver, $options);
         }
+        // Message is handled, put in the archive
+        $message->setState('ARCHIVED');
     }
 }

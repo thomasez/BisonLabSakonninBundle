@@ -21,5 +21,7 @@ class SmsForward
         foreach ($receivers as $receiver) {
             $this->sendSms($message, $receiver, $options);
         }
+        // Message is handled, put in the archive
+        $message->setState('ARCHIVED');
     }
 }
