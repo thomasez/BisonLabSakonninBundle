@@ -260,7 +260,11 @@ class MessageType
      */
     public function getBaseType()
     {
-        return $this->base_type;
+        if ($this->base_type)
+            return $this->base_type;
+        if ($this->getParent())
+            return $this->getParent()->getBaseType();
+        return null;
     }
 
     /**
