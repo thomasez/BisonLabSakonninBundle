@@ -1,30 +1,7 @@
 <script type="text/javascript">
-jQuery(document).ready(function() {
-    $( "#uploadfile" ).dialog({
-      autoOpen: false,
-      height: 300,
-      width: 500,
-      modal: true
-    });
-});
 
 function uploadFile() {
-    $( "#uploadfile" ).dialog("open");
-{#
-https://stackoverflow.com/questions/4552503/opening-jquery-ui-dialog-in-mouseposition
-#}
-    $("#uploadFile").dialog(
-        "option", 
-        {
-            position: 
-            {
-                my: 'left', 
-                at: 'right', 
-                of: event
-            }
-        }
-    );
-    return false;
+    $( "#uploadfile" ).modal();
 }
 
 function submitFileForm() {
@@ -41,7 +18,7 @@ function submitFileForm() {
         contentType: false,
         processData: false,
       }).done( function( cont, textStatus, xhr ) {
-            $( "#uploadfile" ).dialog("close");
+            $( "#uploadfile" ).modal("hide");
             msg = xhr.responseText + "\n";
             alert(msg);
             parent.location.reload();
@@ -55,17 +32,29 @@ function submitFileForm() {
 
 </script>
 {% set title = "Add File" %}
-<div id="uploadfile" title="{{ title }}">
-{% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true}) %}
-<form id="uploadfileform" method="POST" action="{{ path('file_new', { 'access': 'ajax' }) }}" enctype="multipart/form-data" onSubmit="return submitFileForm();">
-{% if sfconfig.context is defined %}
-<input id="system" type="hidden" name="file_context[system]" value="{{sfconfig.context.system}}">
-<input id="object_name" type="hidden" name="file_context[object_name]" value="{{sfconfig.context.object_name}}">
-<input id="external_id" type="hidden" name="file_context[external_id]" value="{{sfconfig.context.external_id}}">
-{% endif %}
-{{ form_widget(sfform.file)}} 
-{{ form_row(sfform.description)}}
-{{ form_row(sfform.file_type)}} 
-{{ form_end(sfform) }}
-</form>
+
+<div class="modal fade" id="uploadfile" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{ title }}</h4>
+        </div>
+        <div class="modal-body">
+        {% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true}) %}
+        <form id="uploadfileform" method="POST" action="{{ path('file_new', { 'access': 'ajax' }) }}" enctype="multipart/form-data" onSubmit="return submitFileForm();">
+        {% if sfconfig.context is defined %}
+        <input id="system" type="hidden" name="file_context[system]" value="{{sfconfig.context.system}}">
+        <input id="object_name" type="hidden" name="file_context[object_name]" value="{{sfconfig.context.object_name}}">
+        <input id="external_id" type="hidden" name="file_context[external_id]" value="{{sfconfig.context.external_id}}">
+        {% endif %}
+        {{ form_widget(sfform.file)}} 
+        {{ form_row(sfform.description)}}
+        {{ form_row(sfform.file_type)}} 
+        {{ form_end(sfform) }}
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

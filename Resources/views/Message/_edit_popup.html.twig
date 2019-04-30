@@ -5,12 +5,7 @@ function grabEditMessageForm(message_id) {
     url = orgurl.replace("0", message_id);
     $.get(url, function( data ) {
         $( "#editmessage" ).html(data);
-        $( "#editmessage" ).dialog({
-          autoOpen: true,
-          height: 500,
-          width: 500,
-          modal: true
-        });
+        $( "#editmessagebox" ).modal();
         $( "#editMessageForm" ).submit(function( event ) {
             event.preventDefault();
             submitEditMessageForm(message_id);
@@ -34,7 +29,7 @@ function submitEditMessageForm(message_id) {
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            $( "#editmessage").dialog("close");
+            $( "#editmessagebox").modal("hide");
 {% if reload_after_post is defined and reload_after_post %}
             parent.location.reload();
 {% endif %}
@@ -46,5 +41,27 @@ function submitEditMessageForm(message_id) {
     return false;
 }
 </script>
-<div id="editmessage">
+<div class="modal fade" id="editmessagebox" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+{% if title is defined %}
+          <h4 class="modal-title">{{ title }}</h4>
+{% else %}
+          <h4 class="modal-title">Edit</h4>
+{% endif %}
+      </div>
+      <div class="modal-body">
+            <div id="editmessage">
+            </div>
+      </div>
+<!-- Not sure I want it.
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+-->
+    </div>
+  </div>
 </div>
