@@ -201,6 +201,17 @@ class Messages
             return $form;
     }
 
+    public function getEditForm($message, $create_view = false)
+    {
+        $c = new MessageController();
+        $c->setContainer($this->container);
+        $form = $c->createEditForm($message);
+        if ($create_view)
+            return $form->createView();
+        else
+            return $form;
+    }
+
     public function getCreateDeleteForm($message, $create_view = false)
     {
         $c = new MessageController();

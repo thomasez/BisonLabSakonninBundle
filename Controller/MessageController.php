@@ -520,6 +520,24 @@ class MessageController extends CommonController
     }
 
     /**
+     * Creates an Edit form to create a Message entity.
+     *
+     * @param MessageType $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createEditForm(Message $message)
+    {
+        if ($message->getBaseType() == "CHECK") {
+            $form = $this->createForm(\BisonLab\SakonninBundle\Form\CheckType::class, $message);
+        } else {
+            $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $message);
+        }
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
+        return $form;
+    }
+
+    /**
      * Creates a form to delete a message entity.
      *
      * @param Message $message The message entity
