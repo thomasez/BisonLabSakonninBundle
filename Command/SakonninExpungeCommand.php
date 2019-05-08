@@ -74,9 +74,10 @@ EOT
             $m_query = $this->m_repo->createQueryBuilder('m')
                 ->where('m.message_type = :mt')
                 ->andWhere('date_diff(CURRENT_TIMESTAMP(), m.createdAt ) > :edays')
-                ->andWhere('m.in_reply_to is null')
+                ->andWhere('m.state not in (:states)')
                 ->setParameter('mt', $mt)
                 ->setParameter('edays', $edays)
+                ->setParameter('states', ['ARCHIVED'])
                 ->getQuery();
 
             $m_iterable = $m_query->iterate();
@@ -88,7 +89,6 @@ EOT
                 $i = $newest->getNewestInThread()->getCreatedAt()->diff(new \DateTime());
                 // drop if newer than the expunge.
                 if ($edays >= (int)$i->format('%a') ) continue;
-                
                 // I am kinda hoping cascade remove and orphanremoval will do
                 // the delete whole thread deed.
                 $output->writeln("Will Expunge " . $message->getSubject());
@@ -108,6 +108,8 @@ EOT
         $m_query = $this->m_repo->createQueryBuilder('m')
             ->where('m.expire_at is not null')
             ->andWhere('CURRENT_TIMESTAMP() > m.expire_at')
+            ->andWhere('m.state not in (:states)')
+            ->setParameter('states', ['ARCHIVED'])
             ->getQuery();
 
         $m_iterable = $m_query->iterate();
@@ -124,7 +126,7 @@ EOT
             
             // I am kinda hoping cascade remove and orphanremoval will do
             // the delete whole thread deed.
-            $output->writeln("Will Expunge " . $message->getSubject());
+            $output->writeln("Will Expunge from set date " . $message->getSubject());
             if ($this->doit == "yes" && $expire_method == "DELETE") {
                 $this->entityManager->remove($message);
             } elseif ($expire_method == "ARCHIVE") {
