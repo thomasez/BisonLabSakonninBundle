@@ -50,10 +50,16 @@ class Templates
     public function parse($template, $template_data = array(), $options = array())
     {
         $debug = isset($options['debug']) ? true : false;
+        // I have to have two ways to disable autoescape. Options kinda default
+        // but overriding with template_data. (Annoying, yes)
+        $autoescape = isset($options['no_autoescape']) ? false : true;
+        if (isset($template_data['no_autoescape']))
+            $autoescape = false;
         $sloader = new \Twig_Loader_Array(['message_template' => $template]);
         $loader = new \Twig_Loader_Chain(array($sloader));
         $twig = new \Twig_Environment($loader, array(
             'debug' => $debug, 
+            'autoescape' => $autoescape, 
             'strict_variables' => isset($options['strict_variables']),
         ));
         $bin2hex_filter = new \Twig_SimpleFilter('bin2hex', 'bin2hex');
@@ -66,7 +72,7 @@ class Templates
 
         // I wonder if this hack works..
         // (It does. And I like it.)
-        $template_data['configparser'] = $this;
+        $template_data['twigparser'] = $this;
 
         $parsed = $twig->render('message_template', $template_data);
         // First, just strip whitespaces.
