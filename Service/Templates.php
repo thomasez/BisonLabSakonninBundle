@@ -49,19 +49,23 @@ class Templates
 
     public function parse($template, $template_data = array(), $options = array())
     {
-        $debug = isset($options['debug']) ? true : false;
+        $twig_env_options = [];
+        $debug = false;
+        if (isset($options['debug'])) {
+            $twig_env_options['debug'] = true;
+            $debug = true;
+        }
+        if (isset($template_data['strict_variables']))
+            $twig_env_options['strict_variables'] = true;
         // I have to have two ways to disable autoescape. Options kinda default
         // but overriding with template_data. (Annoying, yes)
-        $autoescape = isset($options['no_autoescape']) ? false : true;
+        if (isset($options['no_autoescape']))
+            $twig_env_options['autoescape'] = false;
         if (isset($template_data['no_autoescape']))
-            $autoescape = false;
+            $twig_env_options['autoescape'] = false;
         $sloader = new \Twig_Loader_Array(['message_template' => $template]);
         $loader = new \Twig_Loader_Chain(array($sloader));
-        $twig = new \Twig_Environment($loader, array(
-            'debug' => $debug, 
-            'autoescape' => $autoescape, 
-            'strict_variables' => isset($options['strict_variables']),
-        ));
+        $twig = new \Twig_Environment($loader, $twig_env_options);
         $bin2hex_filter = new \Twig_SimpleFilter('bin2hex', 'bin2hex');
         $twig->addFilter($bin2hex_filter);
         $twig->addExtension(new \Twig_Extension_StringLoader());
