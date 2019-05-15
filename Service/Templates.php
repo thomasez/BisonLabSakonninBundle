@@ -76,7 +76,6 @@ class Templates
 
         $parsed = $twig->render('message_template', $template_data);
         // First, just strip whitespaces.
-        // First, just strip whitespaces.
         if (isset($options['strip_empty_lines'])) {
             // Not running per line means we have to strip away the newline and
             // linefeed aswell.
