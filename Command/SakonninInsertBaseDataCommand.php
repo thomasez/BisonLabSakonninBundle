@@ -29,10 +29,12 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
            'Manual' => array(
                 'parent' => 'Email',
                 'security_model' => 'PRIVATE',
+                'base_type' => 'MESSAGE',
                 'description' => "Emails sent by people to a user"
                 ),
            'Automated' => array(
                 'parent' => 'Email',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'description' => "Emails sent by a system to a user"
                 ),
@@ -41,17 +43,20 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 ),
            'PM' => array(
                 'parent' => 'Messages',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'description' => "Personal Message"
                 ),
            'Notification' => array(
                 'parent' => 'Messages',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'expunge_days' => 5,
                 'description' => "Notification"
                 ),
            'Broadcast' => array(
                 'parent' => 'Messages',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'forward_function' => 'broadcast',
                 'description' => "Send PM to everyone"
@@ -61,11 +66,13 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 ),
            'Front page logged in' => array(
                 'parent' => 'Announcements',
+                'base_type' => 'NOTE',
                 'security_model' => 'ALL_READ',
                 'description' => "Front page Announcement for logged in users"
                 ),
            'Front page not logged in' => array(
                 'parent' => 'Announcements',
+                'base_type' => 'NOTE',
                 'security_model' => 'ALL_READ',
                 'description' => "Front page Announcement for not yet0logged in users"
                 ),
@@ -74,6 +81,7 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 ),
            'Note' => array(
                 'parent' => 'Notes',
+                'base_type' => 'NOTE',
                 'security_model' => 'ALL_READ',
                 'description' => "Note everyone can read"
                 ),
@@ -116,6 +124,8 @@ EOT
                 $mt = new MessageType();
 
             $mt->setName($name);
+            if (isset($type['base_type']))
+                $mt->setBaseType($type['base_type']);
             if (isset($type['description']))
                 $mt->setDescription($type['description']);
             if (isset($type['callback_function']))
