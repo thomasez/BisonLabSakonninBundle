@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -79,7 +80,7 @@ class SakonninFileController extends CommonController
             $sf->storeFile($file, isset($data['file_context']) ? $data['file_context'] : array());
 
             if ($this->isRest($access)) {
-                return $this->returnRestData($request, "OK Done");
+                return new JsonResponse('OK Done', Response::HTTP_CREATED);
             }
             return $this->redirectToRoute('file_show', array('id' => $file->getId()));
         }

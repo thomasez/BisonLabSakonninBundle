@@ -12,7 +12,6 @@ function createCheck(formname = '') {
 
 function submitCheckForm(formname = '') {
 
-    formdata = $( "#createcheckform" + formname ).serialize();
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
@@ -48,7 +47,7 @@ function submitCheckForm(formname = '') {
     {% set context = null %}
 {% endif %}
 
-<div class="modal fade" id="createcheck{{formname}}" role="dialog">
+<div class="modal fade" id="createcheck{{ formname }}" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">

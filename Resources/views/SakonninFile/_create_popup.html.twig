@@ -1,11 +1,16 @@
+{% if sfconfig.formname is defined %}
+{% set formname = sfconfig.formname %}
+{% else %}
+{% set formname = "" %}
+{% endif %}
 <script type="text/javascript">
 
-function uploadFile() {
-    $( "#uploadfile" ).modal();
+function uploadFile(formname = '') {
+    $( "#uploadfile" + formname ).modal();
 }
 
-function submitFileForm() {
-    var formData = new FormData(document.querySelector('form#uploadfileform'));
+function submitFileForm(formname = '') {
+    var formData = new FormData(document.querySelector('form#uploadfileform' + formname));
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
@@ -13,15 +18,14 @@ function submitFileForm() {
         type: "POST",
         url: "{{ path('file_new', { 'access': 'ajax' }) }}",
         data: formData,
-        cache: false,
-        async: false,
-        contentType: false,
         processData: false,
+        contentType: false,
+        async: true,
       }).done( function( cont, textStatus, xhr ) {
-            $( "#uploadfile" ).modal("hide");
-            msg = xhr.responseText + "\n";
-            alert(msg);
+            $( "#uploadfile" + formname ).modal("hide");
+{% if sfconfig.reload_after_post is defined and sfconfig.reload_after_post %}
             parent.location.reload();
+{% endif %}
       }).fail(function(xhr, status, error) {
             errmsg = "File sending failed\n";
             errmsg = errmsg + xhr.responseText + "\n";
@@ -33,7 +37,7 @@ function submitFileForm() {
 </script>
 {% set title = "Add File" %}
 
-<div class="modal fade" id="uploadfile" role="dialog">
+<div class="modal fade" id="uploadfile{{ formname }}" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -42,8 +46,8 @@ function submitFileForm() {
           <h4 class="modal-title">{{ title }}</h4>
         </div>
         <div class="modal-body">
-        {% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true}) %}
-        <form id="uploadfileform" method="POST" action="{{ path('file_new', { 'access': 'ajax' }) }}" enctype="multipart/form-data" onSubmit="return submitFileForm();">
+        {% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true, 'formname': formname }) %}
+        <form id="uploadfileform{{ formname }}" method="POST" enctype="multipart/form-data" onSubmit="return submitFileForm('{{ formname }}');">
         {% if sfconfig.context is defined %}
         <input id="system" type="hidden" name="file_context[system]" value="{{sfconfig.context.system}}">
         <input id="object_name" type="hidden" name="file_context[object_name]" value="{{sfconfig.context.object_name}}">
@@ -52,7 +56,7 @@ function submitFileForm() {
         {{ form_widget(sfform.file)}} 
         {{ form_row(sfform.description)}}
         {{ form_row(sfform.file_type)}} 
-        {{ form_end(sfform) }}
+        {{ form_end(sfform)}}
         </form>
       </div>
     </div>
