@@ -3,38 +3,6 @@
 {% else %}
 {% set formname = "" %}
 {% endif %}
-<script type="text/javascript">
-
-function uploadFile(formname = '') {
-    $( "#uploadfile" + formname ).modal();
-}
-
-function submitFileForm(formname = '') {
-    var formData = new FormData(document.querySelector('form#uploadfileform' + formname));
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ path('file_new', { 'access': 'ajax' }) }}",
-        data: formData,
-        processData: false,
-        contentType: false,
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            $( "#uploadfile" + formname ).modal("hide");
-{% if sfconfig.reload_after_post is defined and sfconfig.reload_after_post %}
-            parent.location.reload();
-{% endif %}
-      }).fail(function(xhr, status, error) {
-            errmsg = "File sending failed\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-
-</script>
 {% set title = "Add File" %}
 
 <div class="modal fade" id="uploadfile{{ formname }}" role="dialog "tabindex='-1'>

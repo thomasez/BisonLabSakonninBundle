@@ -3,44 +3,13 @@
 {% else %}
 {% set formname = "" %}
 {% endif %}
-<script type="text/javascript">
-function createMessage(formname = '') {
-    $( "#createmessage" + formname ).modal();
-    return false;
-}
-
-function submitMessageForm(formname = '') {
-
-    formdata = $( "#createmessageform" + formname ).serialize();
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
-        data: $( "#createmessageform" + formname ).serialize(),
-        dataType: "text",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            $( "#createmessage" + formname).modal("hide");
-{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
-            parent.location.reload();
-{% endif %}
-      }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-</script>
 {% set title = "Message" %}
 {% if mconfig.title is defined %}
     {% set title = mconfig.title %}
 {% elseif mconfig.message_type is defined %}
     {% set title = mconfig.message_type %}
 {% endif %}
-<div class="modal fade" id="createmessage{{formname}}" role="dialog" tabindex='-1'>
+<div class="modal fade" id="createmessage{{formname}}" role="dialog" tabindex="-1">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -51,7 +20,13 @@ function submitMessageForm(formname = '') {
         <div class="modal-body">
 {% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true, 'formname': formname }) %}
 
-<form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm('{{ formname }}');">
+{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
+{% set reload = "true" %}
+{% else %}
+{% set reload = "false" %}
+{% endif %}
+
+<form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm('{{ formname }}', {{ reload }});">
 {% if mconfig.message_type is defined %}
 <input id="message_type" type="hidden" name="message_type" value="{{mconfig.message_type}}">
 {% endif %}

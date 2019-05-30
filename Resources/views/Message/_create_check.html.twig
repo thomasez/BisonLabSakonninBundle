@@ -3,37 +3,6 @@
 {% else %}
 {% set formname = "" %}
 {% endif %}
-<script type="text/javascript">
-
-function createCheck(formname = '') {
-    $( "#createcheck" + formname ).modal();
-    return false;
-}
-
-function submitCheckForm(formname = '') {
-
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
-        data: $( "#createcheckform" + formname ).serialize(),
-        dataType: "text",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            $( "#createcheck" + formname).modal("hide");
-{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
-            parent.location.reload();
-{% endif %}
-      }).fail(function(xhr, status, error) {
-            errmsg = "Check sending failed\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-</script>
 
 {% set title = "Check" %}
 {% if mconfig.title is defined %}
@@ -47,7 +16,7 @@ function submitCheckForm(formname = '') {
     {% set context = null %}
 {% endif %}
 
-<div class="modal fade" id="createcheck{{ formname }}" role="dialog" tabindex='-1'>
+<div class="modal fade" id="createcheck{{ formname }}" role="dialog" tabindex="-1">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
@@ -58,7 +27,12 @@ function submitCheckForm(formname = '') {
       <div class="modal-body">
         {% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': context, 'create_view': true, 'formname': formname }) %}
 
-        <form id="createcheckform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitCheckForm('{{ formname }}');">
+{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
+{% set reload = "true" %}
+{% else %}
+{% set reload = "false" %}
+{% endif %}
+        <form id="createcheckform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitCheckForm('{{ formname }}', {{ reload }});">
         {% if context is not null %}
             <input id="system" type="hidden" name="message_context[system]" value="{{context.system}}">
             <input id="object_name" type="hidden" name="message_context[object_name]" value="{{context.object_name}}">
