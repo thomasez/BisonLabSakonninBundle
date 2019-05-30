@@ -40,7 +40,7 @@ function submitMessageForm(formname = '') {
 {% elseif mconfig.message_type is defined %}
     {% set title = mconfig.message_type %}
 {% endif %}
-<div class="modal fade" id="createmessage{{formname}}" role="dialog">
+<div class="modal fade" id="createmessage{{formname}}" role="dialog" tabindex='-1'>
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
