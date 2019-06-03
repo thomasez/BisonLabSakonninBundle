@@ -1,17 +1,6 @@
 <script type="text/javascript">
-{# Not sure bootstrap modal works here.
-jQuery(document).ready(function() {
-    $( "#messagelogbox" ).dialog({
-      autoOpen: false,
-      height: 700,
-      width: 600,
-      modal: true
-    });
-});
-#}
 
 function openMessageLogBox(url) {
-    $( "#messagelogbox" ).module();
 {# There will be more options #}
 {% if context is defined %}
     url = "{{ path('message_context_search', {'access': 'ajax', 'system': context.system, 'object_name': context.object_name, 'external_id': context.external_id }) }}";
@@ -24,12 +13,13 @@ function openMessageLogBox(url) {
         null,
         'html'
     );
+    $( "#messagelogbox" ).modal();
     return false;
 }
 
 </script>
 
-<div class="modal fade" id="messagelogbox" role="dialog" tabindex='-1'>
+<div class="modal fade" id="messagelogbox" role="dialog" tabindex="-1">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
@@ -38,9 +28,6 @@ function openMessageLogBox(url) {
         <h4 class="modal-title">Messages</h4>
             <div id="messagelogcontent">
             </div>
-      </div>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
