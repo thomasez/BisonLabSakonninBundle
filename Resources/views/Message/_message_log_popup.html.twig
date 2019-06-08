@@ -1,6 +1,8 @@
 <script type="text/javascript">
 
 function openMessageLogBox(url) {
+    /* Just reset whatever was there */
+    $( "#messagelogcontent" ).html("");
 {# There will be more options #}
 {% if context is defined %}
     url = "{{ path('message_context_search', {'access': 'ajax', 'system': context.system, 'object_name': context.object_name, 'external_id': context.external_id }) }}";
