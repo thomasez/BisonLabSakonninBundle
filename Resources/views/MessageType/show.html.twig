@@ -75,10 +75,23 @@
                 <td>N/A - This is set on the types, not group.</td>
                 {% endif %}
             </tr>
+{% if entity.children | length > 0 %}
+            <tr>
+                <th>Children</th>
+                <td><ul>
+                {% for child in entity.children %}
+                    <li>{{ child.name }}</li>
+                {% endfor %}
+                </ul></td>
+            </tr>
+{% endif %}
         </tbody>
     </table>
 
         <ul class="record_actions">
+    <li>
+        <a  href="{{ path('messagetype') }}">Back to list</a>
+    </li>
     <li>
         <a  href="{{ path('messagetype_edit', { 'id': entity.id }) }}">
         <button>Edit</button>

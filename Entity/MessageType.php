@@ -152,7 +152,7 @@ class MessageType
      * one day.
      */
     /**
-     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="parent", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $children;
 

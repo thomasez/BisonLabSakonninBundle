@@ -499,13 +499,14 @@ class MessageController extends CommonController
                 'action' => $this->generateUrl('message_create'),
                 'method' => 'POST',
             ));
+            $form->add('submit', SubmitType::class, array('label' => 'Create'));
         } else {
             $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
                 'action' => $this->generateUrl('message_create'),
                 'method' => 'POST',
             ));
+            $form->add('submit', SubmitType::class, array('label' => 'Save'));
         }
-        $form->add('submit', SubmitType::class, array('label' => 'Send'));
         return $form;
     }
 

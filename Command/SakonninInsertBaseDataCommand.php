@@ -23,17 +23,17 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
     private $mt_cache = array();
 
     private $message_types = array(
-       'Email' => array(
+       'Emails' => array(
                 'description' => 'Emails'
                 ),
            'Manual' => array(
-                'parent' => 'Email',
+                'parent' => 'Emails',
                 'security_model' => 'PRIVATE',
                 'base_type' => 'MESSAGE',
                 'description' => "Emails sent by people to a user"
                 ),
            'Automated' => array(
-                'parent' => 'Email',
+                'parent' => 'Emails',
                 'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'description' => "Emails sent by a system to a user"
