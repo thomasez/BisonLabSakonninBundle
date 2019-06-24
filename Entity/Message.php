@@ -189,7 +189,7 @@ class Message
             $this->setMessageType($options['message_type']);
         }
         if (isset($options['in_reply_to']) && $options['in_reply_to'] instanceof \BisonLab\SakonninBundle\Entity\Message ) {
-            $this->setInReply($options['in_reply_to']);
+            $this->setInReplyTo($options['in_reply_to']);
         }
 
         $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
