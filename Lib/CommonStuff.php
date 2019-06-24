@@ -93,6 +93,16 @@ trait CommonStuff
         return $repo->findOneByName($name);
     }
 
+    public function getMessageTypes($criterias)
+    {
+        $em = $this->getDoctrineManager();
+        $repo = $em->getRepository('BisonLabSakonninBundle:MessageType');
+        if (isset($criterias['base_type'])) {
+            return $repo->findBy(['base_type' => $criterias['base_type']]);
+        }
+        return [];
+    }
+
     public function getDoctrineManager()
     {
         // This is a fallback. It may even handle the cases it's needed.

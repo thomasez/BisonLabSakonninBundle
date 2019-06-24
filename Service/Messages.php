@@ -299,6 +299,12 @@ class Messages
                 ->setParameter('states', $criterias['states']);
         }
 
+        if (isset($criterias['base_type'])) {
+            $types = $this->getMessageTypes(['base_type' => $criterias['base_type']]);
+            $query->andWhere("m.message_type in (:message_types)")
+                ->setParameter('message_types', $types);
+        }
+
         if (isset($criterias['message_type'])) {
             $mt = $this->getMessageType($criterias['message_type']);
             $query->andWhere("m.message_type = :message_type")
