@@ -27,11 +27,12 @@ class MessageType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")));
         $type_choices = array();
         if (!$options['data']->getMessageType()) {
-            $builder->add('message_type', EntityType::class,
+            // Default require subject.
+            $builder
+            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('message_type', EntityType::class,
                 array(
                     'label' => 'Type',
                     'placeholder' => 'Choose a Type',
@@ -44,6 +45,11 @@ class MessageType extends AbstractType
                         },
                 ));
         } else {
+            if ($options['data']->getMessageType()->getBaseType() == "NOTE")
+                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
+            else
+                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")));
+
             if (count($options['data']->getMessageType()->getChildren()) > 0) {
                 $type_choices = $options['data']->getMessageType()->getChildren();
             } else { 

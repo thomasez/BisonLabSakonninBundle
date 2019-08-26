@@ -71,6 +71,7 @@ class CheckType extends AbstractType
             }
         }
         $builder
+            ->add('state', HiddenType::class)
             ->add('expire_at', DateType::class, array(
                 'label' => "Expire at",
                 'required' => false,

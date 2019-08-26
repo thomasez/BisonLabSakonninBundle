@@ -201,6 +201,17 @@ class Messages
             return $form;
     }
 
+    public function getEditForm($message, $create_view = false)
+    {
+        $c = new MessageController();
+        $c->setContainer($this->container);
+        $form = $c->createEditForm($message);
+        if ($create_view)
+            return $form->createView();
+        else
+            return $form;
+    }
+
     public function getCreateDeleteForm($message, $create_view = false)
     {
         $c = new MessageController();
@@ -286,6 +297,12 @@ class Messages
         if (isset($criterias['states'])) {
             $query->andWhere("m.state in (:states)")
                 ->setParameter('states', $criterias['states']);
+        }
+
+        if (isset($criterias['base_type'])) {
+            $types = $this->getMessageTypes(['base_type' => $criterias['base_type']]);
+            $query->andWhere("m.message_type in (:message_types)")
+                ->setParameter('message_types', $types);
         }
 
         if (isset($criterias['message_type'])) {

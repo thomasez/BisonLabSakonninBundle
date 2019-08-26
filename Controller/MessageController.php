@@ -459,6 +459,13 @@ class MessageController extends CommonController
     public function newAction(Request $request, $access)
     {
         $message = new Message();
+        if ($message_type = $request->get('message_type')) {
+            $em = $this->getDoctrineManager();
+            $message->setMessageType(
+                $em->getRepository('BisonLabSakonninBundle:MessageType')
+                    ->find($message_type)
+            );
+        }
         $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType',
             $message);
         $form->handleRequest($request);
@@ -491,13 +498,14 @@ class MessageController extends CommonController
                 'action' => $this->generateUrl('message_create'),
                 'method' => 'POST',
             ));
+            $form->add('submit', SubmitType::class, array('label' => 'Create'));
         } else {
             $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
                 'action' => $this->generateUrl('message_create'),
                 'method' => 'POST',
             ));
+            $form->add('submit', SubmitType::class, array('label' => 'Save'));
         }
-        $form->add('submit', SubmitType::class, array('label' => 'Send'));
         return $form;
     }
 
@@ -507,6 +515,24 @@ class MessageController extends CommonController
             'action' => $this->generateUrl('pm_create'),
             'method' => 'POST',
         ));
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
+        return $form;
+    }
+
+    /**
+     * Creates an Edit form to create a Message entity.
+     *
+     * @param MessageType $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createEditForm(Message $message)
+    {
+        if ($message->getBaseType() == "CHECK") {
+            $form = $this->createForm(\BisonLab\SakonninBundle\Form\CheckType::class, $message);
+        } else {
+            $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $message);
+        }
         $form->add('submit', SubmitType::class, array('label' => 'Send'));
         return $form;
     }

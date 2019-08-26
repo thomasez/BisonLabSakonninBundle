@@ -23,16 +23,18 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
     private $mt_cache = array();
 
     private $message_types = array(
-       'Email' => array(
+       'Emails' => array(
                 'description' => 'Emails'
                 ),
            'Manual' => array(
-                'parent' => 'Email',
+                'parent' => 'Emails',
                 'security_model' => 'PRIVATE',
+                'base_type' => 'MESSAGE',
                 'description' => "Emails sent by people to a user"
                 ),
            'Automated' => array(
-                'parent' => 'Email',
+                'parent' => 'Emails',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'description' => "Emails sent by a system to a user"
                 ),
@@ -41,17 +43,20 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 ),
            'PM' => array(
                 'parent' => 'Messages',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'description' => "Personal Message"
                 ),
            'Notification' => array(
                 'parent' => 'Messages',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'expunge_days' => 5,
                 'description' => "Notification"
                 ),
            'Broadcast' => array(
                 'parent' => 'Messages',
+                'base_type' => 'MESSAGE',
                 'security_model' => 'PRIVATE',
                 'forward_function' => 'broadcast',
                 'description' => "Send PM to everyone"
@@ -61,11 +66,13 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 ),
            'Front page logged in' => array(
                 'parent' => 'Announcements',
+                'base_type' => 'NOTE',
                 'security_model' => 'ALL_READ',
                 'description' => "Front page Announcement for logged in users"
                 ),
            'Front page not logged in' => array(
                 'parent' => 'Announcements',
+                'base_type' => 'NOTE',
                 'security_model' => 'ALL_READ',
                 'description' => "Front page Announcement for not yet0logged in users"
                 ),
@@ -74,6 +81,7 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
                 ),
            'Note' => array(
                 'parent' => 'Notes',
+                'base_type' => 'NOTE',
                 'security_model' => 'ALL_READ',
                 'description' => "Note everyone can read"
                 ),
@@ -116,16 +124,20 @@ EOT
                 $mt = new MessageType();
 
             $mt->setName($name);
+            if (isset($type['base_type']))
+                $mt->setBaseType($type['base_type']);
             if (isset($type['description']))
                 $mt->setDescription($type['description']);
             if (isset($type['callback_function']))
                 $mt->setCallbackFunction($type['callback_function']);
-            if (isset($type['security_model']))
-                $mt->setSecurityModel($type['security_model']);
+            $mt->setSecurityModel($type['security_model'] ?? "PRIVATE");
             if (isset($type['forward_function']))
                 $mt->setForwardFunction($type['forward_function']);
             if (isset($type['expunge_days']))
                 $mt->setExpungeDays($type['expunge_days']);
+
+            $mt->setExpungeMethod($type['expunge_method'] ?? "DELETE");
+            $mt->setExpireMethod($type['expire_method'] ?? "DELETE");
             $this->entityManager->persist($mt);
             if ($parent) {
                 $output->writeln("Setting parent " 

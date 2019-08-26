@@ -60,3 +60,7 @@ parameters:
         UNKNOWN:
             chooseable: true
             thumbnailable: false
+        # Will result in a guess based on file type.
+        AUTO:
+            chooseable: true
+            thumbnailable: false

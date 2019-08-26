@@ -59,7 +59,7 @@ class Files
         $encoding = finfo_file($finfo, $file->getRealPath());
         $file->setEncoding($encoding);
 
-        if (!$file->getFileType()) {
+        if (!$file->getFileType() || $file->getFileType() == "AUTO") {
             /*
              *  Gotta guess. I'll keep it here as with the content type above.
              *  This is the way to store/add files, so it should work out

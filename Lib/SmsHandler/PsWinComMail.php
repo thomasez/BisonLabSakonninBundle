@@ -43,11 +43,6 @@ EOMSG;
         // Make it one.
 		if (!is_array($receivers))
             $receivers = array($receivers);
-
-        // Handle "special" chars. Like & and "
-//        $message = htmlentities($message);
-        $message = preg_replace('/&/', '&amp;', $message);
-        $message = preg_replace('/"/', '&quot;', $message);
 		
         foreach ($receivers as $number) {
             if (strlen((string)$number) == $this->national_number_lenght) $number = $this->default_country_prefix . $number;

@@ -1,1 +1,154 @@
 <script src="{{ asset('bundles/bisonlabsakonnin/js/jquery.ez-plus.js') }}"></script>
+<script type="text/javascript">
+function createMessage(formname = '') {
+    $( "#createmessage" + formname ).modal();
+    return false;
+}
+
+function submitMessageForm(formname = '', reload_after_post = false) {
+
+    formdata = $( "#createmessageform" + formname ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
+        data: $( "#createmessageform" + formname ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $( "#createmessage" + formname).modal("hide");
+            if (reload_after_post) {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function createCheck(formname = '') {
+    $( "#createcheck" + formname ).modal();
+    return false;
+}
+
+function submitCheckForm(formname = '', reload_after_post = false) {
+
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
+        data: $( "#createcheckform" + formname ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $( "#createcheck" + formname).modal("hide");
+            if (reload_after_post) {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Check sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabEditMessageForm(message_id, title = "Edit", reload_after_post = false) {
+    orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", message_id);
+    $.get(url, function( data ) {
+        $( "#editMessageModalBody" ).html(data);
+        $( "#editMessageModalTitle" ).html(title);
+        $( "#editMessageModal" ).modal();
+        $( "#editMessageForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitEditMessageForm(message_id, reload_after_post);
+        });
+    });
+    return false;
+}
+
+function submitEditMessageForm(message_id, reload_after_post) {
+
+    orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", message_id);
+    formdata = $( "#editMessageForm" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: formdata,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $( "#editMessageModal").modal("hide");
+            if (reload_after_post) {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function uploadFile(formname = '') {
+    $( "#uploadfile" + formname ).modal();
+}
+
+function submitFileForm(formname = '', reload_after_post = false) {
+    var formData = new FormData(document.querySelector('form#uploadfileform' + formname));
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('file_new', { 'access': 'ajax' }) }}",
+        data: formData,
+        processData: false,
+        contentType: false,
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $( "#uploadfile" + formname ).modal("hide");
+            if (reload_after_post) {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "File sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+</script>
+
+<div class="modal fade" id="editMessageModal" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="editMessageModalTitle"></h4>
+      </div>
+      <div class="modal-body">
+            <div id="editMessageModalBody">
+            </div>
+      </div>
+<!-- Not sure I want it.
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+-->
+    </div>
+  </div>
+</div>

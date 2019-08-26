@@ -1,15 +1,8 @@
 <script type="text/javascript">
-jQuery(document).ready(function() {
-    $( "#messagelogbox" ).dialog({
-      autoOpen: false,
-      height: 700,
-      width: 600,
-      modal: true
-    });
-});
 
 function openMessageLogBox(url) {
-    $( "#messagelogbox" ).dialog("open");
+    /* Just reset whatever was there */
+    $( "#messagelogcontent" ).html("");
 {# There will be more options #}
 {% if context is defined %}
     url = "{{ path('message_context_search', {'access': 'ajax', 'system': context.system, 'object_name': context.object_name, 'external_id': context.external_id }) }}";
@@ -22,12 +15,22 @@ function openMessageLogBox(url) {
         null,
         'html'
     );
+    $( "#messagelogbox" ).modal();
     return false;
 }
 
 </script>
 
-<div id="messagelogbox">
-<div id="messagelogcontent">
-</div>
+<div class="modal fade" id="messagelogbox" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Messages</h4>
+            <div id="messagelogcontent">
+            </div>
+      </div>
+    </div>
+  </div>
 </div>

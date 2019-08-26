@@ -3,72 +3,54 @@
 {% else %}
 {% set formname = "" %}
 {% endif %}
-<script type="text/javascript">
-jQuery(document).ready(function() {
-    $( "#createcheck{{formname}}" ).dialog({
-      autoOpen: false,
-      height: 190,
-      width: 300,
-      modal: true
-    });
-});
 
-function createCheck(formname = '') {
-    $( "#createcheck" + formname ).dialog("open");
-    return false;
-}
-
-function submitCheckForm(formname = '') {
-
-    formdata = $( "#createcheckform" + formname ).serialize();
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
-        data: $( "#createcheckform" + formname ).serialize(),
-        dataType: "text",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            $( "#createcheck" + formname).dialog("close");
-{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
-            parent.location.reload();
-{% endif %}
-      }).fail(function(xhr, status, error) {
-            errmsg = "Check sending failed\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-</script>
 {% set title = "Check" %}
 {% if mconfig.title is defined %}
     {% set title = mconfig.title %}
 {% elseif mconfig.message_type is defined %}
     {% set title = mconfig.message_type %}
 {% endif %}
-<div id="createcheck{{formname}}" title="{{ title }}">
-
-{% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true, 'formname': formname }) %}
-
-<form id="createcheckform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitCheckForm('{{ formname }}');">
 {% if mconfig.context is defined %}
-<input id="system" type="hidden" name="message_context[system]" value="{{mconfig.context.system}}">
-<input id="object_name" type="hidden" name="message_context[object_name]" value="{{mconfig.context.object_name}}">
-<input id="external_id" type="hidden" name="message_context[external_id]" value="{{mconfig.context.external_id}}">
-{% endif %}
-{{ form_row(mform.body)}} 
-{{ form_row(mform.message_type)}} 
-{% if mconfig.expire_field is defined and mconfig.expire_field %}
-{{ form_row(mform.expire_at)}} 
-{% endif %}
-{% if mconfig.submit is defined %}
-<input type="submit" name="submit" value="{{ mconfig.submit }}">
+    {% set context = mconfig.context %}
 {% else %}
-{{ form_widget(mform.submit)}} 
+    {% set context = null %}
 {% endif %}
-{{ form_widget(mform._token)}} 
-</form>
+
+<div class="modal fade" id="createcheck{{ formname }}" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{ title }}</h4>
+      </div>
+      <div class="modal-body">
+        {% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': context, 'create_view': true, 'formname': formname }) %}
+
+{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
+{% set reload = "true" %}
+{% else %}
+{% set reload = "false" %}
+{% endif %}
+        <form id="createcheckform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitCheckForm('{{ formname }}', {{ reload }});">
+        {% if context is not null %}
+            <input id="system" type="hidden" name="message_context[system]" value="{{context.system}}">
+            <input id="object_name" type="hidden" name="message_context[object_name]" value="{{context.object_name}}">
+            <input id="external_id" type="hidden" name="message_context[external_id]" value="{{context.external_id}}">
+        {% endif %}
+        {{ form_row(mform.body)}}
+        {{ form_row(mform.message_type)}}
+        {% if mconfig.expire_field is defined and mconfig.expire_field %}
+            {{ form_row(mform.expire_at)}}
+        {% endif %}
+        {% if mconfig.submit is defined %}
+            <input type="submit" name="submit" value="{{ mconfig.submit }}">
+        {% else %}
+            {{ form_widget(mform.submit)}}
+        {% endif %}
+        {{ form_widget(mform._token)}} 
+        </form>
+    </div>
+  </div>
+ </div>
 </div>

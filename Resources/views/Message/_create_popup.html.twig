@@ -3,76 +3,51 @@
 {% else %}
 {% set formname = "" %}
 {% endif %}
-<script type="text/javascript">
-jQuery(document).ready(function() {
-    $( "#createmessage{{formname}}" ).dialog({
-      autoOpen: false,
-      height: 500,
-      width: 500,
-      modal: true
-    });
-});
-
-function createMessage(formname = '') {
-    $( "#createmessage" + formname ).dialog("open");
-    return false;
-}
-
-function submitMessageForm(formname = '') {
-
-    formdata = $( "#createmessageform" + formname ).serialize();
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
-        data: $( "#createmessageform" + formname ).serialize(),
-        dataType: "text",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            $( "#createmessage" + formname).dialog("close");
-{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
-            parent.location.reload();
-{% endif %}
-      }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-</script>
 {% set title = "Message" %}
 {% if mconfig.title is defined %}
     {% set title = mconfig.title %}
 {% elseif mconfig.message_type is defined %}
     {% set title = mconfig.message_type %}
 {% endif %}
-<div id="createmessage{{formname}}" title="{{ title }}">
-
+<div class="modal fade" id="createmessage{{formname}}" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{ title }}</h4>
+        </div>
+        <div class="modal-body">
 {% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true, 'formname': formname }) %}
 
-<form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm('{{ formname }}');">
+{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
+{% set reload = "true" %}
+{% else %}
+{% set reload = "false" %}
+{% endif %}
+
+<form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm('{{ formname }}', {{ reload }});">
 {% if mconfig.message_type is defined %}
 <input id="message_type" type="hidden" name="message_type" value="{{mconfig.message_type}}">
 {% endif %}
-{% if mconfig.context is defined %}
+{% if mconfig.context is defined and mconfig.context is not null %}
 <input id="system" type="hidden" name="message_context[system]" value="{{mconfig.context.system}}">
 <input id="object_name" type="hidden" name="message_context[object_name]" value="{{mconfig.context.object_name}}">
 <input id="external_id" type="hidden" name="message_context[external_id]" value="{{mconfig.context.external_id}}">
 {% endif %}
 {{ form_row(mform.subject)}} 
-{% if mconfig.from_field is defined and mconfig.from_field %}
+{% if mconfig.from_field is defined and mconfig.from_field and mform.from is defined %}
 {{ form_widget(mform.from)}} 
 {% endif %}
+{% if mconfig.to_type is defined and mconfig.to_type and mform.to_type is defined %}
 {{ form_widget(mform.to_type)}} 
-{% if mconfig.to_field is defined and mconfig.to_field %}
+{% endif %}
+{% if mconfig.to_field is defined and mconfig.to_field and mform.to is defined %}
 {{ form_widget(mform.to)}} 
 {% endif %}
 {{ form_row(mform.body)}} 
 {{ form_row(mform.message_type)}} 
-{% if mconfig.expire_field is defined and mconfig.expire_field %}
+{% if mconfig.expire_field is defined and mconfig.expire_field and mform.expire_at is defined %}
 {{ form_row(mform.expire_at)}} 
 {% endif %}
 {% if mconfig.submit is defined %}
@@ -82,4 +57,13 @@ function submitMessageForm(formname = '') {
 {% endif %}
 {{ form_widget(mform._token)}} 
 </form>
-</div>
+
+        </div>
+<!-- Not sure I want it.
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+-->
+      </div>
+    </div>
+  </div>

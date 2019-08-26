@@ -152,7 +152,7 @@ class MessageType
      * one day.
      */
     /**
-     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="parent", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $children;
 
@@ -260,7 +260,11 @@ class MessageType
      */
     public function getBaseType()
     {
-        return $this->base_type;
+        if ($this->base_type)
+            return $this->base_type;
+        if ($this->getParent())
+            return $this->getParent()->getBaseType();
+        return null;
     }
 
     /**
@@ -680,8 +684,8 @@ class MessageType
 
     public function getFirstState()
     {
-        if (!$this->base_type)
+        if (!$bt = $this->getBaseType())
             return null;
-        return ExternalEntityConfig::getBaseTypes()[$this->base_type]['states'][0];
+        return ExternalEntityConfig::getBaseTypes()[$bt]['states'][0];
     }
 }
