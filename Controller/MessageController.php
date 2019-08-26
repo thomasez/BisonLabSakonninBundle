@@ -459,13 +459,13 @@ class MessageController extends CommonController
     public function newAction(Request $request, $access)
     {
         $message = new Message();
-        $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
+        $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType',
+            $message);
         $form->handleRequest($request);
 
         // Should or should not use the service createmessage here?
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrineManager();
-            $message->setFromType('INTERNAL');
             $em->persist($message);
             $em->flush($message);
 
@@ -480,7 +480,7 @@ class MessageController extends CommonController
     /**
      * Creates a form to create a Message entity.
      *
-     * @param MessageType $entity The entity
+     * @param Message $message The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
