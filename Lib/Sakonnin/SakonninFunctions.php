@@ -64,6 +64,12 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'attribute_spec' => null,
             'needs_attributes' => false,
         ),
+        'smsmail' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\SmsMail',
+            'description' => "Send message as SMS and mail",
+            'attribute_spec' => null,
+            'needs_attributes' => false,
+        ),
         'pmsmsmailcopy' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\PmSmsMailCopy',
             'description' => "Send message as PM, SMS and mail",
