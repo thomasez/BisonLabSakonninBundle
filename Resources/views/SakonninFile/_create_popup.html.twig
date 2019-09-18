@@ -3,8 +3,13 @@
 {% else %}
 {% set formname = "" %}
 {% endif %}
-{% set title = "Add File" %}
+{% if sfconfig.reload_after_post is defined and sfconfig.reload_after_post %}
+{% set reload = "true" %}
+{% else %}
+{% set reload = "false" %}
+{% endif %}
 
+{% set title = "Add File" %}
 <div class="modal fade" id="uploadfile{{ formname }}" role="dialog" tabindex="-1">
     <div class="modal-dialog">
       <!-- Modal content-->
@@ -15,17 +20,16 @@
         </div>
         <div class="modal-body">
         {% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true, 'formname': formname }) %}
-        <form id="uploadfileform{{ formname }}" method="POST" enctype="multipart/form-data" onSubmit="return submitFileForm('{{ formname }}');">
-        {% if sfconfig.context is defined %}
-        <input id="system" type="hidden" name="file_context[system]" value="{{sfconfig.context.system}}">
-        <input id="object_name" type="hidden" name="file_context[object_name]" value="{{sfconfig.context.object_name}}">
-        <input id="external_id" type="hidden" name="file_context[external_id]" value="{{sfconfig.context.external_id}}">
-        {% endif %}
-        {{ form_widget(sfform.file)}} 
-        {{ form_row(sfform.description)}}
-        {{ form_row(sfform.file_type)}} 
-        {{ form_end(sfform)}}
-        </form>
+        <form id="uploadfileform{{ formname }}" method="POST" enctype="multipart/form-data" onSubmit="return submitFileForm('{{ formname }}', {{ reload }});">
+            {% if sfconfig.context is defined %}
+            <input id="system" type="hidden" name="file_context[system]" value="{{sfconfig.context.system}}">
+            <input id="object_name" type="hidden" name="file_context[object_name]" value="{{sfconfig.context.object_name}}">
+            <input id="external_id" type="hidden" name="file_context[external_id]" value="{{sfconfig.context.external_id}}">
+            {% endif %}
+            {{ form_widget(sfform.file)}}
+            {{ form_row(sfform.description)}}
+            {{ form_row(sfform.file_type)}}
+       {{ form_end(sfform)}}
       </div>
     </div>
   </div>

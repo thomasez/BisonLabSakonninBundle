@@ -3,12 +3,19 @@
 {% else %}
 {% set formname = "" %}
 {% endif %}
+{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
+{% set reload = "true" %}
+{% else %}
+{% set reload = "false" %}
+{% endif %}
+
 {% set title = "Message" %}
 {% if mconfig.title is defined %}
     {% set title = mconfig.title %}
 {% elseif mconfig.message_type is defined %}
     {% set title = mconfig.message_type %}
 {% endif %}
+
 <div class="modal fade" id="createmessage{{formname}}" role="dialog" tabindex="-1">
     <div class="modal-dialog">
       <!-- Modal content-->
@@ -19,12 +26,6 @@
         </div>
         <div class="modal-body">
 {% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true, 'formname': formname }) %}
-
-{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
-{% set reload = "true" %}
-{% else %}
-{% set reload = "false" %}
-{% endif %}
 
 <form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm('{{ formname }}', {{ reload }});">
 {% if mconfig.message_type is defined %}
