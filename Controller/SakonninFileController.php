@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
@@ -69,6 +70,19 @@ class SakonninFileController extends CommonController
      */
     public function newAction(Request $request, $access)
     {
+        /*
+         * OK, this annoys me. Somehow I should get a better message than
+         * "The file "" does not exist" - exception when the file I attempt to
+         * upload is bigger than max file size in php.ini.
+         *
+         * But I have not found out how it's handled by Symfony/Vich.
+         * (But I can use functions from UploadedFile, it's still a hack.)
+         */
+        if (isset($_SERVER['CONTENT_LENGTH']) 
+                && $_SERVER['CONTENT_LENGTH'] > UploadedFile::getMaxFilesize()) {
+            return new Response( 'The file is probably too big for the system to handle. Either reduce size or configure the web server to handle bigger files', 400);
+        }
+
         $file = new SakonninFile();
         $form = $this->createCreateForm($file);
         $data = $request->request->all();
