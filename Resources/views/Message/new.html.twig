@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% if message.messagetype is not null %}
+    <h1>{{ message.messagetype.name }}</h1>
+{% else %}
     <h1>Write a message</h1>
+{% endif %}
 
     {{ form_start(form) }}
         {{ form_widget(form) }}

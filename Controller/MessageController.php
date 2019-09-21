@@ -481,7 +481,7 @@ class MessageController extends CommonController
         }
 
         return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
-            array('entity' => $message, 'form'   => $form->createView()));
+            array('message' => $message, 'form'   => $form->createView()));
     }
 
     /**

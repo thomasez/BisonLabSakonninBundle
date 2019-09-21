@@ -76,6 +76,8 @@ class MessageType extends AbstractType
                     ));
             }
         }
+/*
+ * This should be set automagically or be ignored.
         if ($options['data']->getToType()) {
             $builder
             ->add('to_type', HiddenType::class, array('required' => false));
@@ -84,6 +86,7 @@ class MessageType extends AbstractType
                 ->add('to_type', ChoiceType::class,
                     array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()));
         }
+ */
         if ($options['data']->getTo()) {
             $builder
             ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false));
