@@ -106,7 +106,9 @@ function uploadFile(formname = '') {
 }
 
 function submitFileForm(formname = '', reload_after_post = false) {
+
     var formData = new FormData(document.querySelector('form#uploadfileform' + formname));
+
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");

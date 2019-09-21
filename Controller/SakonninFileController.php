@@ -70,6 +70,7 @@ class SakonninFileController extends CommonController
      */
     public function newAction(Request $request, $access)
     {
+        $max_filesize = UploadedFile::getMaxFilesize();
         /*
          * OK, this annoys me. Somehow I should get a better message than
          * "The file "" does not exist" - exception when the file I attempt to
@@ -79,7 +80,7 @@ class SakonninFileController extends CommonController
          * (But I can use functions from UploadedFile, it's still a hack.)
          */
         if (isset($_SERVER['CONTENT_LENGTH']) 
-                && $_SERVER['CONTENT_LENGTH'] > UploadedFile::getMaxFilesize()) {
+                && $_SERVER['CONTENT_LENGTH'] > $max_filesize) {
             return new Response( 'The file is probably too big for the system to handle. Either reduce size or configure the web server to handle bigger files', 400);
         }
 
@@ -107,7 +108,10 @@ class SakonninFileController extends CommonController
         }
 
         return $this->render('BisonLabSakonninBundle:SakonninFile:new.html.twig',
-            array('file' => $file, 'form' => $form->createView()
+            array(
+                'max_filesize' => $max_filesize,
+                'file' => $file,
+                'form' => $form->createView()
         ));
     }
 
