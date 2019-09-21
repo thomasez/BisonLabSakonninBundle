@@ -72,7 +72,7 @@ class Message
      *
      * @ORM\Column(name="from_type", type="string", length=40, nullable=false)
      */
-    private $from_type;
+    private $from_type = "NONE";
 
     /**
      * @var string
@@ -86,7 +86,7 @@ class Message
      *
      * @ORM\Column(name="to_type", type="string", length=40, nullable=true)
      */
-    private $to_type;
+    private $to_type = "NONE";
 
     /**
      * @var string
