@@ -108,6 +108,7 @@ function uploadFile(formname = '') {
 function submitFileForm(formname = '', reload_after_post = false) {
 
     var formData = new FormData(document.querySelector('form#uploadfileform' + formname));
+    max_filesize = {{ sakonnin_files.getmaxfilesize }};
 
     $.ajax({
         beforeSend: function(req) {

@@ -6,6 +6,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType as FileFormType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 use BisonLab\SakonninBundle\Entity\SakonninFileContext;
@@ -221,6 +222,11 @@ class Files
         $filename = $path . "/" . $sfile->getStoredAs();
         // Not entirely sure this is a good idea. Supposed to be binary safe.
         return file_get_contents($filename);
+    }
+
+    public function getMaxFilesize()
+    {
+        return UploadedFile::getMaxFilesize();
     }
 
     public function getThumbnailFilename(SakonninFile $sfile, $x, $y)
