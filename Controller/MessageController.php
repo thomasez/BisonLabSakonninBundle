@@ -51,6 +51,10 @@ class MessageController extends CommonController
         $messages = [];
         if (!empty($criterias))
             $messages = $sm->getMessages($criterias);
+        
+        if ('DESC' == $request->get('sort')) {
+            $messages = array_reverse($messages);
+        }
 
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
