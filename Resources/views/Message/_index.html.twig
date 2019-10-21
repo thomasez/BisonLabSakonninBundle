@@ -1,50 +1,29 @@
-
 {% if entities is not defined and data is defined %}
 {% set entities = data %}
 {% endif %}
+
 {% if entities | length == 0 %}
 <p>You've got zilch.</p>
 {% else %}
-    {% set formcount = 0 %}
-    {% for entity in entities if is_granted('show', entity) %}
-      {% set formcount = formcount + 1 %}
-      {% if entity.from and entity.from == app.user.id %}
-          {% set me = true %}
-      {% else %}
-          {% set me = false %}
-      {% endif %}
-      <table style="border-spacing: 10px;" id="message_list">
-        <tbody>
-        {% if not entity.inreplyto %}
-        <tr>
-            {% if entity.messagetype == "PM" %}
-            {% set pm = true %}
-            <th valign="top">PM</th>
-            {% else %}
-            {% set pm = false %}
+{% for message in entities if is_granted('show', message) %}
+  <hr>
+  <div class="row">
+      <div class="col-sm-5">
+        <table class="messageTable">
+          <tr>
             <th valign="top">Subject:</th>
-            {% endif %}
             <td valign="top">
-              <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
+              {{ message.subject }}
             </td>
-            <td rowspan="5">
-            {% if entity.contenttype == 'text/html' %}
-            {{ entity.body | raw }}
-            {% else %}
-            <pre>
-            {{ entity.body }}
-            </pre>
-            {% endif %}
-            </td>
-        </tr>
-        <tr>
-{% if entity.from %}
+          </tr>
+          <tr>
+{% if message.from %}
             <th valign="top">From:</th>
-            <td valign="top">{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
+            <td valign="top">{% if message.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(message.from) }}{% else %}{{ message.from }}{% endif %}</td>
             <td>
-{% elseif entity.createdby %}
+{% elseif message.createdby %}
             <th valign="top">From:</th>
-            <td valign="top">{{ entity.createdby }}</td>
+            <td valign="top">{{ message.createdby }}</td>
             <td>
 {% else %}
         <td>
@@ -55,50 +34,56 @@
         </td>
 {% endif %}
         </tr>
-{% if entity.to %}
+{% if message.to %}
         <tr>
             <th valign="top">To:</th>
-            <td valign="top">{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
+            <td valign="top">{% if message.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(message.to) }}{% else %}{{ message.to }}{% endif %}</td>
         </tr>
 {% endif %}
         <tr>
             <th valign="top">Time:</th>
-            <td valign="top">{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td valign="top">{% if message.createdAt %}{{ message.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
-{% if pm and not me %}
-        <tr>
-        <td>
-<a href="#" onClick="openReply({{ formcount }});">Reply</a>
-<div class="pm_reply" id="createreply_{{ formcount }}" title="Reply">
- {# Gotta remember to add some way to send "in_reply_to" here. 
- {% set pmform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
- #}
- {% set rpform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
- <form id="createpmform_{{ formcount }}" method="POST" action="{{ path('pm_create', { 'access': 'ajax', 'in_reply_to': entity.messageid }) }}" onSubmit="return submitPmMessageForm('createpmform_{{ formcount }}', '{{ entity.messageid }}');">
-  <input type="hidden" name="to_userid" value="{{entity.from}}">
-  <input type="hidden" name="message_type" id="pmmessage_type" value="PM">
-  <input type="textarea" name="body">
-  <input type="submit" value="Send">
-  {{ form_row(rpform._token)}} 
- </form>
-</div>
-        </td>
-        </tr>
+  </table>
+  </div>
+
+{% if message.basetype == 'CHECK' %}
+  <div class="col-sm-1">
+    <label class="messageSwitch">
+      <input type="checkbox" id="todocheck_{{ message.id }}" onChange="return false;" {% if message.state == "CHECKED" %}checked{% endif %}/>
+      <span class="messageSlider round" title="Todo"></span>
+    </label>
+  </div>
+  <div class="col-sm-5 messageText">
 {% else %}
+  <div class="col-sm-6 messageText">
 {% endif %}
-{% if entity.replies  and entity.replies is not empty %}
-        <tr>
-        Replies:
-        <td valign="top">
-         {% for reply in entity.replies %}
-            {% include 'BisonLabSakonninBundle:Message:_show.html.twig' with { 'entity': reply }  %}
-         {% endfor %}
-        </td>
-        </tr>
+{# Pretty dangerous #}
+{# TODO: Add markdown #}
+{% if message.contenttype == 'text/html' %}
+{{ message.body | raw }}
+{% else %}
+<pre class="messageText">
+{{ message.body }}
+</pre>
 {% endif %}
-        {% endif %}
-        </tbody>
-    </table>
-    <hr>
-    {% endfor %}
+
+  </div>
+  <div class="col-sm-1" align="left">
+{% if is_granted('edit', message) %}
+    <a href="#" onClick="return grabEditMessageForm({{ message.id }});"><span class="messageEditGlyph"></span></a>
+    {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+    <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
+    {{ form_start(mdelform) }}
+    {{ form_rest(mdelform) }}
+    <button type="submit" class="btn btn-link">
+    <span class="glyphicon glyphicon-trash"></span>
+    </button>
+    </form>
+{% endif %}
+ </div>
+
+</div>
+{% endfor %}
+
 {% endif %}

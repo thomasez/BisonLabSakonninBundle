@@ -90,6 +90,7 @@ function submitEditMessageForm(message_id, reload_after_post) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             $( "#editMessageModal").modal("hide");
+            $( "#messagelogbox").modal("hide");
             if (reload_after_post) {
                 parent.location.reload();
             }

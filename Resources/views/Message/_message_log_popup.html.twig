@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-function openMessageLogBox(url) {
+function openMessageLogBox(url, title = null) {
     /* Just reset whatever was there */
     $( "#messagelogcontent" ).html("");
 {# There will be more options #}
@@ -15,6 +15,11 @@ function openMessageLogBox(url) {
         null,
         'html'
     );
+    if (title) {
+        $( "#messagelogtitle" ).html(title);
+    } else {
+        $( "#messagelogtitle" ).html("Messages");
+    }
     $( "#messagelogbox" ).modal();
     return false;
 }
@@ -27,7 +32,7 @@ function openMessageLogBox(url) {
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Messages</h4>
+        <h4 class="modal-title" id="messagelogtitle"></h4>
             <div id="messagelogcontent">
             </div>
       </div>

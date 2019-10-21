@@ -32,9 +32,37 @@ class MessageController extends CommonController
      * don't like this. Using just "/" which would be logical makes the
      * routecomponent match every GET below this one.
      * Another option is to put this one as the last one.
-     * @Route("/me", * name="message", methods={"GET"})
+     * @Route("/list", name="messages_list", methods={"GET"})
      */
-    public function indexAction(Request $request, $access)
+    public function listAction(Request $request, $access)
+    {
+        $this->denyAccessUnlessGranted('index', new Message());
+        $sm = $this->container->get('sakonnin.messages');
+        
+        // Gotta add criterias then.
+        $criterias = [];
+        if ($message_types = $request->get('message_types')) {
+            $criterias['message_types'] = $message_types;
+        }
+        if ($states = $request->get('states')) {
+            $criterias['states'] = $states;
+        }
+
+        $messages = [];
+        if (!empty($criterias))
+            $messages = $sm->getMessages($criterias);
+
+        if ($this->isRest($access)) {
+            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
+        }
+        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+            array('entities' => $messages));
+    }
+    /**
+     * So wrong path name.
+     * @Route("/me", name="message", methods={"GET"})
+     */
+    public function myMessagesAction(Request $request, $access)
     {
         $sm = $this->container->get('sakonnin.messages');
         // Todo: paging or just show the last 20
