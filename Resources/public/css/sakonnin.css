@@ -10,30 +10,6 @@
     padding-left: 10px;
 }
 
-.messageRemoveGlyph:after {
-    font-size: 15px;
-    margin-left: 10px;
-    color: red;
-    font-family: 'Glyphicons Halflings';
-    content: "\e088";
-}
-
-.messageEditGlyph:after {
-    font-size: 15px;
-    margin-left: 10px;
-    color: black;
-    font-family: 'Glyphicons Halflings';
-    content: "\270f";
-}
-
-.messageArchiveGlyph:after {
-    font-size: 15px;
-    margin-left: 10px;
-    color: black;
-    font-family: 'Glyphicons Halflings';
-    content: "\e202";
-}
-
 /* The switch - the box around the slider */
 .messageSwitch {
   position: relative;
