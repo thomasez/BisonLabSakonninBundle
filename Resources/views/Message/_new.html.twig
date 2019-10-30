@@ -1,19 +1,19 @@
-{{ form_start(edit_form, { 'attr': {'id':'editMessageForm', 'onSubmit': 'return submitEditMessage();'}}) }}
-    {{ form_widget(edit_form) }}
-    <input type="submit" value="Save" />
-{{ form_end(edit_form) }}
+{{ form_start(form, { 'attr': {'id':'createMessageForm', 'onSubmit': 'return submitCreateMessage();'}}) }}
+    {{ form_widget(form) }}
+    <input type="submit" value="Create" />
+{{ form_end(form) }}
 
 <script>
 
-function submitEditMessage() {
-    editMessageData = $( "#editMessageForm" ).serialize();
+function submitCreateMessage() {
+    createMessageData = $( "#createMessageForm" ).serialize();
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
         url: "{{ action }}",
-        data: editMessageData,
+        data: createMessageData,
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
@@ -23,7 +23,7 @@ function submitEditMessage() {
         return;
 {% endif %}
       }).fail(function(xhr, status, error) {
-         errmsg = "Failed editing message\n";
+         errmsg = "Failed createing message\n";
          errmsg = errmsg + xhr.responseText + "\n";
          alert(errmsg);
     });
@@ -31,4 +31,3 @@ function submitEditMessage() {
 }
 
 </script>
-

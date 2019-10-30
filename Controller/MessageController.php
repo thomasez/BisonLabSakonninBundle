@@ -208,8 +208,14 @@ class MessageController extends CommonController
     public function editAction(Request $request, $access, Message $message)
     {
         $this->denyAccessUnlessGranted('edit', $message);
+        $action = $this->generateUrl('message_edit', array(
+            'id' => $message->getId(),
+            'reload_after_post' => $request->get('reload_after_post'),
+            'access' => $access
+            ));
         $editForm = $this
-            ->createForm('BisonLab\SakonninBundle\Form\MessageType', $message);
+            ->createForm('BisonLab\SakonninBundle\Form\MessageType', $message, 
+                ['action' => $action]);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted()) {
@@ -221,18 +227,19 @@ class MessageController extends CommonController
                 }
                 return $this->redirectToRoute('message_show',
                     array('access' => $access, 'id' => $message->getId()));
-           } else {
+           } elseif ($this->isRest($access)) {
                 $errors = $this->handleFormErrors($editForm);
                 return new JsonResponse(array("status" => "ERROR",
                     'errors' => $errors), 422);
             }
         }
-
         if ($this->isRest($access)) {
             return $this
                     ->render('BisonLabSakonninBundle:Message:_edit.html.twig',
                 array(
                     'message' => $message,
+                    'reload_after_post' => $request->get('reload_after_post'),
+                    'action' => $action,
                     'edit_form' => $editForm->createView(),
             ));
         }
@@ -240,6 +247,8 @@ class MessageController extends CommonController
         return $this->render('BisonLabSakonninBundle:Message:edit.html.twig',
             array(
                 'message' => $message,
+                'reload_after_post' => $request->get('reload_after_post'),
+                'action' => $action,
                 'edit_form' => $editForm->createView(),
                 'delete_form' => $deleteForm->createView(),
         ));
@@ -500,20 +509,46 @@ class MessageController extends CommonController
         }
         $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType',
             $message);
+        $action = $this->generateUrl('message_new', array(
+            'reload_after_post' => $request->get('reload_after_post'),
+            'access' => $access
+            ));
         $form->handleRequest($request);
 
-        // Should or should not use the service createmessage here?
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrineManager();
-            $em->persist($message);
-            $em->flush($message);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $em = $this->getDoctrineManager();
+                $em->persist($message);
+                $em->flush($message);
 
-            return $this->redirectToRoute('message_show',
-                array('access' => $access, 'id' => $message->getId()));
+                if ($this->isRest($access)) {
+                    return new JsonResponse(array("status" => "OK", 200));
+                }
+                return $this->redirectToRoute('message_show',
+                    array('access' => $access, 'id' => $message->getId()));
+           } elseif ($this->isRest($access)) {
+                $errors = $this->handleFormErrors($form);
+                return new JsonResponse(array("status" => "ERROR",
+                    'errors' => $errors), 422);
+            }
         }
-
+        if ($this->isRest($access)) {
+            return $this
+                    ->render('BisonLabSakonninBundle:Message:_new.html.twig',
+                array(
+                    'message' => $message,
+                    'reload_after_post' => $request->get('reload_after_post'),
+                    'action' => $action,
+                    'form' => $form->createView(),
+            ));
+        }
         return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
-            array('message' => $message, 'form'   => $form->createView()));
+            array(
+                'message' => $message,
+                'reload_after_post' => $request->get('reload_after_post'),
+                'action' => $action,
+                'form' => $form->createView(),
+        ));
     }
 
     /**
