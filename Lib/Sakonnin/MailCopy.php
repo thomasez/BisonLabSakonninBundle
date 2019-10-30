@@ -17,7 +17,7 @@ class MailCopy
         $message = $options['message'];
         $receivers = $message->getReceivers();
 
-        $options['provide_link'] = true;
+        $options['provide_link'] = false;
         foreach ($receivers as $receiver) {
             if ($email = $this->extractEmailFromReceiver($receiver))
                 $this->sendMail($message, $email, $options);
