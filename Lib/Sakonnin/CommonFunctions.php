@@ -45,7 +45,7 @@ trait CommonFunctions
         // address
 
         $body = '';
-        if (isset($options['provide_link'])) {
+        if (isset($options['provide_link']) && $options['provide_link']) {
             $router = $this->getRouter();
             $url = $router->generate('message_show', array('id' => $message->getId()), true);
             $body .= "Link to this message: " . $url  . "\n\n";
