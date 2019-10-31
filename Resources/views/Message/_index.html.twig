@@ -6,6 +6,7 @@
 <p>You've got zilch.</p>
 {% else %}
 {% for message in entities if is_granted('show', message) %}
+<div id="sakonninmessage_{{ message.id}}">
   <hr>
   <div class="row">
       <div class="col-sm-5">
@@ -69,9 +70,9 @@
 {% endif %}
 
   </div>
-  <div class="col-sm-1" align="left">
+  <div class="col-sm-1" align="right">
 {% if is_granted('edit', message) %}
-    <a href="#" onClick="return grabEditMessageForm({{ message.id }});"><span class="messageEditGlyph"></span></a>
+    <a href="#" onClick="return grabEditMessageForm({{ message.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
     <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
     {{ form_start(mdelform) }}
@@ -80,8 +81,14 @@
     <span class="glyphicon glyphicon-trash"></span>
     </button>
     </form>
+    {# I'll only do this if it's archived. Other states makes no sense, at least with this glyph (I use glyphicon-save-file for archiving) #}
+    {% if message.state == "ARCHIVED" and message.basetype == "NOTE" %}
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, '{{ message.firststate }}', true);"><span class="glyphicon glyphicon-open-file"></span></a>
+    {% endif %}
 {% endif %}
  </div>
+
+</div>
 
 </div>
 {% endfor %}

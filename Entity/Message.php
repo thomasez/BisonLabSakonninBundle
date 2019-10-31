@@ -692,11 +692,16 @@ class Message
             return null;
     }
 
-    public function setFirstState()
+    public function getFirstState()
     {
         if ($mt = $this->getMessageType())
-            $this->setState($mt->getFirstState());
-        else
-            $this->setState("UNREAD");
+            return $mt->getFirstState();
+        return "UNREAD";            
+    }
+
+    public function setFirstState()
+    {
+        $this->setState($this->getFirstState());
+        return $this;
     }
 }

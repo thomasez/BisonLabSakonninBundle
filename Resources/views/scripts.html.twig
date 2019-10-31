@@ -134,6 +134,29 @@ function submitFileForm(formname = '', reload_after_post = false) {
     return false;
 }
 
+function setStateOnMessage(message_id, state, hide = false) {
+    cheat_url = "{{ path('message_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
+    c_url = cheat_url.replace("0", message_id);
+    url = c_url.replace("NONE", state);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "POST",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (hide || state == "ARCHIVED" || state == "READ" ) {
+                $('#sakonninmessage_' + message_id).hide();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed changing state\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 </script>
 
 <div class="modal fade" id="editMessageModal" role="dialog" tabindex="-1">
