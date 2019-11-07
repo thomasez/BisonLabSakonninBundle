@@ -382,7 +382,7 @@ class MessageController extends CommonController
     /**
      * Creates a new Message
      *
-     * @Route("/", name="message_create", methods={"POST"})
+     * @Route("/create", name="message_create", methods={"POST"})
      */
     public function createAction(Request $request, $access)
     {
