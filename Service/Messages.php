@@ -334,6 +334,10 @@ class Messages
                 ->setParameter('message_type', $mt);
         }
 
+        if (!isset($criterias['with_replies'])) {
+            $query->andWhere("m.in_reply_to is null");
+        }
+
         if (isset($criterias['not_message_group'])) {
             $mg = $this->getMessageType($criterias['not_message_group']);
             $types = $mg->getChildren();
