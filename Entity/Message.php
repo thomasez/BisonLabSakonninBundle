@@ -51,6 +51,8 @@ class Message
 
     /**
      * @ORM\OneToMany(targetEntity="Message", mappedBy="in_reply_to", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * Ordering by createdat does not work. "Unrecognized field".
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $replies;
 
