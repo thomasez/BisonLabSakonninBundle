@@ -43,22 +43,31 @@
 {% endif %}
         <tr>
             <th valign="top">Time:</th>
-            <td valign="top">{% if message.createdAt %}{{ message.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td valign="top">{% if message.createdAt %}{{ message.createdAt|date('Y-m-d H:i') }}{% endif %}</td>
         </tr>
   </table>
   </div>
 
-{% if message.basetype == 'CHECK' %}
-  <div class="col-sm-1">
-    <label class="messageSwitch">
-      <input type="checkbox" id="todocheck_{{ message.id }}" onChange="return false;" {% if message.state == "CHECKED" %}checked{% endif %}/>
-      <span class="messageSlider round" title="Todo"></span>
-    </label>
-  </div>
-  <div class="col-sm-5 messageText">
-{% else %}
-  <div class="col-sm-6 messageText">
-{% endif %}
+  <div class="col-sm-6 ">
+  {% if message.basetype == 'CHECK' %}
+    {# OK, are we checked or not? #}
+    {% set checked = false %}
+    {% set last_reply = message.replies | last %}
+
+    {% if last_reply %}
+        {% if last_reply.state == "CHECKED" %}
+            {% set checked = true %}
+        {% else %}
+            {% set checked = false %}
+        {% endif %}
+    {% endif %}
+    {% if checked %}
+      <span class="glyphicon glyphicon-check" title="Checked"></span> <em>{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}</em>
+    {% else %}
+      <span class="glyphicon glyphicon-unchecked" title="Unchecked"></span>
+    {% endif %}
+    <br>
+  {% endif %}
 {# Pretty dangerous #}
 {# TODO: Add markdown #}
 {% if message.contenttype == 'text/html' %}
@@ -81,9 +90,9 @@
     <span class="glyphicon glyphicon-trash"></span>
     </button>
     </form>
-    {# I'll only do this if it's archived. Other states makes no sense, at least with this glyph (I use glyphicon-save-file for archiving) #}
-    {% if message.state == "ARCHIVED" and message.basetype == "NOTE" %}
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, '{{ message.firststate }}', true);"><span class="glyphicon glyphicon-open-file"></span></a>
+    {# The option to de-archive a message. Not really sure it makes sense to have at all. #}
+    {% if message.state == "ARCHIVED" %}
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, '{{ message.firststate }}', true);" title="De-archive"><span class="glyphicon glyphicon-open-file"></span></a>
     {% endif %}
 {% endif %}
  </div>
