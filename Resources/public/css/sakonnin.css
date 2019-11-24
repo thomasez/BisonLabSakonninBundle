@@ -35,16 +35,17 @@
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
+  border: 1px solid #cccccc;
 }
 
 .messageSlider:before {
   position: absolute;
   content: "";
-  height: 19px;
-  width: 20px;
+  height: 18px;
+  width: 19px;
   left: 2px;
-  top: 2px;
-  bottom: 2px;
+  top: 1px;
+  bottom: 1px;
   background-color: red;
   -webkit-transition: .4s;
   transition: .4s;
