@@ -1,8 +1,17 @@
 
-.messageText
+/* 
+ * Notes can have postit colour
+ */
+.noteText
 {
     background-color: #fffaad;
     border-color: #fffaad;
+}
+
+.messageText
+{
+    background-color: lightgrey;
+    border-color: lightgrey;
 }
 
 .messageTable td
@@ -11,21 +20,21 @@
 }
 
 /* The switch - the box around the slider */
-.messageSwitch {
+.checkSwitch {
   position: relative;
   display: inline-block;
   width: 40px;
   height: 22px;
 }
 /* Hide default HTML checkbox */
-.messageSwitch input {
+.checkSwitch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
 /* The slider */
-.messageSlider {
+.checkSlider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -38,7 +47,7 @@
   border: 1px solid #cccccc;
 }
 
-.messageSlider:before {
+.checkSlider:before {
   position: absolute;
   content: "";
   height: 18px;
@@ -51,11 +60,11 @@
   transition: .4s;
 }
 
-input:focus + .messageSlider {
+input:focus + .checkSlider {
   box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .messageSlider:before {
+input:checked + .checkSlider:before {
   -webkit-transform: translateX(16px);
   -ms-transform: translateX(16px);
   transform: translateX(16px);
@@ -63,10 +72,10 @@ input:checked + .messageSlider:before {
 }
 
 /* Rounded sliders */
-.messageSlider.round {
+.checkSlider.round {
   border-radius: 34px;
 }
 
-.messageSlider.round:before {
+.checkSlider.round:before {
   border-radius: 50%;
 }
