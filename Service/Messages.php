@@ -229,7 +229,7 @@ class Messages
     public function getMessagesForContext($criterias)
     {
         if (!isset($criterias['context'])) {
-            $criterias['context'] = [ 
+            $criterias['context'] = [
                 'system' => $criterias['system'],
                 'object_name' => $criterias['object_name'],
                 'external_id' => $criterias['external_id'],
@@ -354,11 +354,11 @@ class Messages
         return $query->getQuery()->getResult();
     }
 
-    public function contextHasMessages($context)
+    public function contextHasMessages($context, $with_contexts = false)
     {
         $em = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:MessageContext');
-        return $repo->contextHasMessages($context);
+        return $repo->contextHasMessages($context, $with_contexts);
     }
 
     /*

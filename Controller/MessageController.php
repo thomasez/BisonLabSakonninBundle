@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
+use BisonLab\SakonninBundle\Entity\MessageContext;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -549,6 +550,58 @@ class MessageController extends CommonController
                 'action' => $action,
                 'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * Adding a context to an existing message.
+     *
+     * @Route("/{id}/add_context", name="message_add_context", methods={"POST"})
+     */
+    public function addContextAction(Request $request, $access, Message $message)
+    {
+        $this->denyAccessUnlessGranted('edit', $message);
+
+        if (!$system = $request->get('system'))
+            throw new \InvalidArgumentException("No system given");
+        if (!$object_name = $request->get('object_name'))
+            throw new \InvalidArgumentException("No object name given");
+        if (!$external_id = $request->get('external_id'))
+            throw new \InvalidArgumentException("No external id given");
+
+        $context = new MessageContext();
+        $context->setSystem($system);
+        $context->setObjectName($object_name);
+        $context->setExternalId($external_id);
+        $context->setOwner($message);
+        $em = $this->getDoctrineManager();
+        $em->persist($context);
+        $em->flush($context);
+
+        if ($this->isRest($access))
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
+        else
+            return $this->redirect($request->headers->get('referer'));
+    }
+
+    /**
+     * Remove just the context
+     *
+     * @Route("/{id}/remove_context", name="message_remove_context", methods={"POST", "DELETE"})
+     */
+    public function removeContextAction(Request $request, $access, MessageContext $message_context)
+    {
+        $this->denyAccessUnlessGranted('edit', $message_context->getOwner());
+
+        $em = $this->getDoctrineManager();
+        $em->remove($message_context);
+        $em->flush();
+
+        if ($this->isRest($access))
+            return new JsonResponse(array("status" => "DELETED"),
+                Response::HTTP_OK);
+        else
+            return $this->redirect($request->headers->get('referer'));
     }
 
     /**
