@@ -51,8 +51,7 @@ class Messages
             }
 
             // This does not fail properly when there is something missing.
-            if (isset($context_data)
-                && isset($context_data['system'])
+            if (isset($context_data['system'])
                 && isset($context_data['object_name'])
                 && isset($context_data['external_id'])) {
 
