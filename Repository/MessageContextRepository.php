@@ -28,13 +28,14 @@ class MessageContextRepository extends ContextBaseRepository
               ->andWhere('mc.external_id = :external_id')
               ->setParameter("system", $context_data['system'])
               ->setParameter("object_name", $context_data['object_name'])
-              ->setParameter("external_id", $context_data['external_id'])
-              ->setMaxResults(1);
+              ->setParameter("external_id", $context_data['external_id']);
 
-        $message_contexts = $qb2->getQuery()->getResult();
-        if ($with_contexts)
-            return $message_contexts;
-        else
+        if ($with_contexts) {
+            return $qb2->getQuery()->getResult();
+        } else {
+            $qb2->setMaxResults(1);
+            $message_contexts = $qb2->getQuery()->getResult();
             return !empty($message_contexts);
+        }
     }
 }
