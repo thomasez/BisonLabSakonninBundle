@@ -81,19 +81,33 @@
   </div>
   <div class="col-sm-1" align="right">
 {% if is_granted('edit', message) %}
-    <a href="#" onClick="return grabEditMessageForm({{ message.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
+    <div class="dropdown">
+      <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+      <span></span>
+      </button>
+    <ul class="dropdown-menu dropdown-menu-right">
+    <li>
+         <a href="#" onClick='return grabEditMessageForm({{ message.id }});'>Edit</a>
+    </li>
+<div class="hidden">
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
     <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
     {{ form_start(mdelform) }}
     {{ form_rest(mdelform) }}
-    <button type="submit" class="btn btn-link">
-    <span class="glyphicon glyphicon-trash"></span>
-    </button>
+    <input id="delarchived_{{ message.id }}" type="submit">
     </form>
+</div>
+    <li>
+        <a href="#" onClick='return $("#delarchived_{{ message.id }}").click();'>Delete</a>
+    </li>
     {# The option to de-archive a message. Not really sure it makes sense to have at all. #}
     {% if message.state == "ARCHIVED" %}
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, '{{ message.firststate }}', true);" title="De-archive"><span class="glyphicon glyphicon-open-file"></span></a>
+    <li>
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, '{{ message.firststate }}', true);">Unarchive</a>
+    </li>
     {% endif %}
+    </ul>
+  </div>
 {% endif %}
  </div>
 
