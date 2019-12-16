@@ -56,12 +56,13 @@ class Functions
         return $choices;
     }
     
-    /* The issue not really decided yet is "When to fire forward functions and
+    /*
+     * The issue not really decided yet is "When to fire forward functions and
      * when to fire callbacks?". One thing we do know, is that a new message
      * is forwarded and a reply triggers a callback.  
      * But what about a reply on a reply?
      */
-    public function dispatchMessageFunctions(Message $message)
+    public function dispatchMessageFunctions(Message $message, $options)
     {
         $messagetype = $message->getMessageType();
         $function = null;
@@ -94,13 +95,11 @@ class Functions
 
         $class = new $config['class']($this->container);
         // Add more if you need to.
-        $options = array(
-            'user'       => $user,
-            'message'    => $message,
-            'attributes' => $attributes,
-            'function'   => $function,
-            'config'     => $config,
-        );
+        $options['user']       = $user;
+        $options['message']    = $message;
+        $options['attributes'] = $attributes;
+        $options['function']   = $function;
+        $options['config']     = $config;
         return $class->execute($options);
     }
 

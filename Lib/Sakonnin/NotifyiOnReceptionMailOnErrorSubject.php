@@ -57,7 +57,8 @@ class NotifyiOnReceptionMailOnErrorSubject
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendMail($message, $receiver, $options);
+            if ($email = $this->extractEmailFromReceiver($receiver))
+                $this->sendMail($message, $email, $options);
         }
     }
 

@@ -19,36 +19,37 @@ trait CommonFunctions
         $this->container = $container;
     }
 
-    public function sendMail($message, $receiver, $options = array())
+    public function sendMail($message, $mailto, $options = array())
     {
         $sm = $this->container->get('sakonnin.messages');
-        // Just a pure user object?
-        if ($receiver instanceof \FOS\UserBundle\Model\User) {
-            $receiver = $sm->getEmailFromUser($receiver);
-        // In case of userid
-        } elseif (is_numeric($receiver)) {
-            // Gotta find email address user.
-            $userManager = $this->container->get('fos_user.user_manager');
-            if (!$user = $userManager->findUserBy(array('id'=>$receiver)))
-                return false;
-            $receiver = $sm->getEmailFromUser($user);
-        // In case of not something resembling a mail address, we're guessing
-        // username.
-        } elseif (!preg_match("/\w+@\w+/", $receiver)) {
-            // Gotta find username.
-            $userManager = $this->container->get('fos_user.user_manager');
-            if (!$user = $userManager->findUserBy(array('username'=>$receiver)))
-                return false;
-            $receiver = $sm->getEmailFromUser($user);
+        /*
+         * This is odd, why not just have the receiver address in the message
+         * before it's sent to this function?
+         * I had my reasons, but the To property works aswell.
+         */
+        if (empty($mailto)) {
+            $mailto = $message->getTo();
         }
-        // OK, we're hoping we've filtered enough and are stuck with an email
-        // address
 
         $body = '';
         if (isset($options['provide_link']) && $options['provide_link']) {
             $router = $this->getRouter();
-            $url = $router->generate('message_show', array('id' => $message->getId()), true);
+            $url = $router->generate('message_show',
+                array('id' => $message->getId()), true);
             $body .= "Link to this message: " . $url  . "\n\n";
+        }
+
+        $attachment = null;
+        if (isset($options['attach_from_path'])) {
+            $filename = $options['attach_filename'] ?? basename($options['attach_from_path']);
+            $attachment = \Swift_Attachment::fromPath($options['attach_from_path'])->setFilename($filename);
+        }
+        if (isset($options['attach_content'])) {
+            $filename = $options['attach_filename'] ?? "Attachment";
+            $attachment = new \Swift_Attachment($options['attach_content'], $filename);
+        }
+        if ($attachment && isset($options['attach_content_type'])) {
+            $attachment->setContentType($options['attach_content_type']);
         }
 
         $body .= $message->getBody();
@@ -57,15 +58,22 @@ trait CommonFunctions
             $message->setFrom($from);
             $message->setFromType('EMAIL');
         }
-        $message->setTo($receiver);
+        /*
+         * Let's handle attachments aswell.
+         */
+
         $message->setToType('EMAIL');
         $mail = \Swift_Message::newInstance()
         ->setSubject($message->getSubject())
         ->setFrom($from)
-        ->setTo($receiver)
+        ->setTo($mailto)
         ->setBody($body,
             'text/plain'
-        ) ;
+        );
+
+        if ($attachment)
+            $mail->attach($attachment);
+
         $this->container->get('mailer')->send($mail);
         return true;
     }
@@ -137,11 +145,30 @@ trait CommonFunctions
     // This should be put in a trait later.
     public function extractEmailFromReceiver($receiver)
     {
+        $sm = $this->container->get('sakonnin.messages');
         if (is_object($receiver) && method_exists($receiver, "getEmail"))
             return $receiver->getEmail();
-        if (is_string($receiver))
+        if ($receiver instanceof \FOS\UserBundle\Model\User) {
+            return $sm->getEmailFromUser($receiver);
+        // In case of userid
+        } elseif (is_numeric($receiver)) {
+            // Gotta find email address user.
+            $userManager = $this->container->get('fos_user.user_manager');
+            if (!$user = $userManager->findUserBy(array('id' => $receiver)))
+                return null;
+            return $sm->getEmailFromUser($user);
+        // In case of not something resembling a mail address, we're guessing
+        // username.
+        } elseif (preg_match("/\w+@\w+/", $receiver)) {
+            // Let's assume this is the email address we're sending to. 
             return $receiver;
-        // But what to do now? :=)
+        } elseif (!preg_match("/\w+@\w+/", $receiver)) {
+            // Gotta find username.
+            $userManager = $this->container->get('fos_user.user_manager');
+            if (!$user = $userManager->findUserBy(array('username' => $receiver)))
+                return false;
+            $receiver = $sm->getEmailFromUser($user);
+        }
         return null;
     }
 

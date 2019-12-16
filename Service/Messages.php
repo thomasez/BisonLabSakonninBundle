@@ -127,7 +127,7 @@ class Messages
         // entry point for creating messages, so why should I bother?
         $message->setSender($this->getLoggedInUser());
         $dispatcher = $this->container->get('sakonnin.functions');
-        $dispatcher->dispatchMessageFunctions($message);
+        $dispatcher->dispatchMessageFunctions($message, $data);
 
         $em->flush();
         return $message;
