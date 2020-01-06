@@ -329,7 +329,7 @@ class MessageController extends CommonController
         $form = $sm->getCreatePmForm($data);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $message = $form->getData();
             $this->denyAccessUnlessGranted('create', $message);
             $em = $this->getDoctrineManager();
@@ -415,7 +415,7 @@ class MessageController extends CommonController
         $form = $sm->getCreateForm($data);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // Ok, it's valid. We'll send this to postMessage then.
             $message = $form->getData();
             $this->denyAccessUnlessGranted('create', $message);
