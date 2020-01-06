@@ -1,7 +1,7 @@
 services:
     _defaults: { public: true }
 
-    SakonninBundle\Command\:
+    BisonLab\SakonninBundle\Command\:
         resource: '../../Command/*'
         tags: ['console.command']
 
