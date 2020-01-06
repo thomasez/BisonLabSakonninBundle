@@ -1,6 +1,10 @@
 services:
     _defaults: { public: true }
 
+    SakonninBundle\Command\:
+        resource: '../../Command/*'
+        tags: ['console.command']
+
     sakonnin.messages:
         class: BisonLab\SakonninBundle\Service\Messages
         arguments: ['@service_container' ]
