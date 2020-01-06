@@ -68,7 +68,7 @@ class MessageTypeController extends Controller
             throw new \InvalidArgumentException('You must either check "This is a new group" to verify that you want a new group or choose a group in the drop down.');
         }
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrineManager();
             $em->persist($entity);
             $em->flush();
@@ -206,7 +206,7 @@ class MessageTypeController extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $em->flush();
             return $this->redirectToRoute('messagetype_show', array('id' => $entity->getId()));
         }
@@ -229,7 +229,7 @@ class MessageTypeController extends Controller
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrineManager();
             $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
 
