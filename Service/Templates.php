@@ -5,6 +5,14 @@ namespace BisonLab\SakonninBundle\Service;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Twig\Extension\StringLoaderExtension;
+use Twig\Loader\ArrayLoader;
+use Twig\TwigFilter;
+use Twig\Environment as TwigEnvironment;
+use Twig\Loader\ChainLoader;
+use Twig\Profiler\Profile as TwigProfile;
+use Twig\Extension\ProfilerExtension;
+use Twig\Profiler\Dumper\TextDumper;
 
 use BisonLab\SakonninBundle\Entity\SakonninTemplate;
 use BisonLab\SakonninBundle\Controller\SakonninTemplateController;
@@ -63,15 +71,15 @@ class Templates
             $twig_env_options['autoescape'] = false;
         if (isset($template_data['no_autoescape']))
             $twig_env_options['autoescape'] = false;
-        $sloader = new \Twig_Loader_Array(['message_template' => $template]);
-        $loader = new \Twig_Loader_Chain(array($sloader));
-        $twig = new \Twig_Environment($loader, $twig_env_options);
-        $bin2hex_filter = new \Twig_SimpleFilter('bin2hex', 'bin2hex');
+        $sloader = new ArrayLoader(['message_template' => $template]);
+        $loader = new ChainLoader(array($sloader));
+        $twig = new TwigEnvironment($loader, $twig_env_options);
+        $bin2hex_filter = new TwigFilter('bin2hex', 'bin2hex');
         $twig->addFilter($bin2hex_filter);
-        $twig->addExtension(new \Twig_Extension_StringLoader());
+        $twig->addExtension(new StringLoaderExtension());
         if ($debug) {
-            $profile = new \Twig_Profiler_Profile();
-            $twig->addExtension(new \Twig_Extension_Profiler($profile));
+            $profile = new TwigProfile();
+            $twig->addExtension(new ProfilerExtension($profile));
         }
 
         // I wonder if this hack works..
@@ -92,7 +100,7 @@ class Templates
             $parsed = preg_replace('/^[\r\n]{2,}/m', "\n", $parsed);
         }
         if ($debug) {
-            $dumper = new \Twig_Profiler_Dumper_Text();
+            $dumper = new TextDumper();
             $this->profiled = $dumper->dump($profile);
         }
         return $parsed;
