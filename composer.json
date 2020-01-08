@@ -19,9 +19,9 @@
     ],
     "require": {
         "bisonlab/common-bundle": "dev-master",
-        "symfony/framework-bundle": ">=3.4",
+        "symfony/framework-bundle": "^3.4 || ^4.0",
         "vich/uploader-bundle": "~1.4",
-        "imagine/imagine": "^0.7",
+        "imagine/imagine": "^1.2",
         "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
         "stof/doctrine-extensions-bundle": "^1.3"
     },
