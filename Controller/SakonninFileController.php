@@ -21,7 +21,7 @@ use BisonLab\SakonninBundle\Entity\SakonninFile;
 /**
  * SakonninFile controller.
  *
- * @Route("/{access}/sakonninfile", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
+ * @Route("/{access}/sakonnin_file", defaults={"access": "web"}, requirements={"access": "web|rest|ajax"})
  */
 class SakonninFileController extends CommonController
 {
@@ -40,9 +40,9 @@ class SakonninFileController extends CommonController
         $files = $sf->getFilesForLoggedIn();
 
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $files, array('html' =>'file:_index.html.twig'));
+            return $this->returnRestData($request, $files, array('html' =>'file/_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:SakonninFile:index.html.twig',
+        return $this->render('@BisonLabSakonnin/SakonninFile/index.html.twig',
             array('files' => $files));
     }
 
@@ -57,9 +57,9 @@ class SakonninFileController extends CommonController
         $sm = $this->container->get('sakonnin.files');
         $files = $messageType->getMessages(true);
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $files, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
+            return $this->returnRestData($request, $files, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:SakonninFile:index.html.twig',
+        return $this->render('@BisonLabSakonnin/SakonninFile/index.html.twig',
             array('entities' => $files));
     }
 
@@ -107,7 +107,7 @@ class SakonninFileController extends CommonController
                 $this->handleFormErrors($form));
         }
 
-        return $this->render('BisonLabSakonninBundle:SakonninFile:new.html.twig',
+        return $this->render('@BisonLabSakonnin/SakonninFile/new.html.twig',
             array(
                 'max_filesize' => $max_filesize,
                 'file' => $file,
@@ -124,7 +124,7 @@ class SakonninFileController extends CommonController
     {
         $deleteForm = $this->createDeleteForm($file);
 
-        return $this->render('BisonLabSakonninBundle:SakonninFile:show.html.twig',
+        return $this->render('@BisonLabSakonnin/SakonninFile/show.html.twig',
             array(
             'file' => $file,
             'delete_form' => $deleteForm->createView(),
@@ -167,7 +167,7 @@ class SakonninFileController extends CommonController
     {
         $sf = $this->container->get('sakonnin.files');
         if (is_numeric($id)) {
-            $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
+            $repo = $em->getRepository('@BisonLabSakonnin:SakonninFile');
             $file->find($id);
         } else {
             $sfile = $sf->getFiles(['fileid' => $id]);
@@ -199,7 +199,7 @@ class SakonninFileController extends CommonController
             return $this->redirectToRoute('file_edit', array('id' => $file->getId()));
         }
 
-        return $this->render('BisonLabSakonninBundle:SakonninFile:edit.html.twig',
+        return $this->render('@BisonLabSakonnin/SakonninFile/edit.html.twig',
             array(
             'file' => $file,
             'edit_form' => $editForm->createView(),

@@ -18,7 +18,7 @@ use BisonLab\SakonninBundle\Form\FunctionAttributeType;
 /**
  * MessageType controller.
  *
- * @Route("/messagetype")
+ * @Route("/sakonnin_messagetype")
  */
 class MessageTypeController extends Controller
 {
@@ -49,7 +49,7 @@ class MessageTypeController extends Controller
                 $entities = array_merge($entities, (array)$p->getChildren()->toArray());
         }
         return $this->render(
-            'BisonLabSakonninBundle:MessageType:index.html.twig',
+            '@BisonLabSakonnin/MessageType/index.html.twig',
             array('entities' => $entities));
     }
 
@@ -76,7 +76,7 @@ class MessageTypeController extends Controller
         }
 
         return $this->render(
-            'BisonLabSakonninBundle:MessageType:edit.html.twig', array(
+            '@BisonLabSakonnin/MessageType/edit.html.twig', array(
             'entity' => $entity,
             'form'   => $form->createView(),
         ));
@@ -114,7 +114,7 @@ class MessageTypeController extends Controller
         $form   = $this->createCreateForm($entity);
 
         return $this->render(
-            'BisonLabSakonninBundle:MessageType:edit.html.twig', array(
+            '@BisonLabSakonnin/MessageType/edit.html.twig', array(
             'entity' => $entity,
             'edit_form'   => $form->createView(),
         ));
@@ -138,7 +138,7 @@ class MessageTypeController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render(
-            'BisonLabSakonninBundle:MessageType:show.html.twig', array(
+            '@BisonLabSakonnin/MessageType/show.html.twig', array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
         ));
@@ -162,7 +162,7 @@ class MessageTypeController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render(
-            'BisonLabSakonninBundle:MessageType:edit.html.twig', array(
+            '@BisonLabSakonnin/MessageType/edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
@@ -212,7 +212,7 @@ class MessageTypeController extends Controller
         }
 
         return $this->render(
-            'BisonLabSakonninBundle:MessageType:edit.html.twig', array(
+            '@BisonLabSakonnin/MessageType/edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),

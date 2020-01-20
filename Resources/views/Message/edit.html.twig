@@ -2,7 +2,7 @@
 
 {% block body %}
     <h1>Message edit</h1>
-{% include 'BisonLabSakonninBundle:Message:_edit.html.twig' %}
+{% include '@BisonLabSakonnin/Message:_edit.html.twig' %}
 {% if delete_form %}
   {{ form_start(delete_form) }}
       <input type="submit" value="Delete">

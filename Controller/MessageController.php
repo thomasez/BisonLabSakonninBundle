@@ -21,7 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 /**
  * Message controller.
  *
- * @Route("/{access}/message", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
+ * @Route("/{access}/sakonnin_message", defaults={"access": "web"}, requirements={"access": "web|rest|ajax"})
  */
 class MessageController extends CommonController
 {
@@ -58,9 +58,9 @@ class MessageController extends CommonController
         }
 
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
+            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle/Message/_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/index.html.twig',
             array('entities' => $messages));
     }
     /**
@@ -82,9 +82,9 @@ class MessageController extends CommonController
         }
         */
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
+            return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/index.html.twig',
             array('entities' => $messages));
     }
 
@@ -107,9 +107,9 @@ class MessageController extends CommonController
         */
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages,
-                array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
+                array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/index.html.twig',
             array('entities' => $messages, 
                   'unread_starts_at' => $unread_starts_at));
     }
@@ -136,9 +136,9 @@ class MessageController extends CommonController
             $data = array('messages' => $messages,
                 'unread_starts_at' => $unread_starts_at);
             return $this->returnRestData($request, $data,
-                array('html' =>'BisonLabSakonninBundle:Message:_pm_index.html.twig'));
+                array('html' =>'@BisonLabSakonnin/Message/_pm_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/index.html.twig',
             array('entities' => $messages, 
                   'unread_starts_at' => $unread_starts_at));
     }
@@ -154,9 +154,9 @@ class MessageController extends CommonController
         $sm = $this->container->get('sakonnin.messages');
         $messages = $messageType->getMessages(true);
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_index.html.twig'));
+            return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:Message:index.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/index.html.twig',
             array('entities' => $messages));
     }
 
@@ -195,9 +195,9 @@ class MessageController extends CommonController
             $em->flush();
         }
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle:Message:_show.html.twig'));
+            return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_show.html.twig'));
         }
-        return $this->render('BisonLabSakonninBundle:Message:show.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/show.html.twig',
             array('entity' => $message));
     }
 
@@ -236,7 +236,7 @@ class MessageController extends CommonController
         }
         if ($this->isRest($access)) {
             return $this
-                    ->render('BisonLabSakonninBundle:Message:_edit.html.twig',
+                    ->render('@BisonLabSakonnin/Message/_edit.html.twig',
                 array(
                     'message' => $message,
                     'reload_after_post' => $request->get('reload_after_post'),
@@ -245,7 +245,7 @@ class MessageController extends CommonController
             ));
         }
         $deleteForm = $this->createDeleteForm($message);
-        return $this->render('BisonLabSakonninBundle:Message:edit.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/edit.html.twig',
             array(
                 'message' => $message,
                 'reload_after_post' => $request->get('reload_after_post'),
@@ -305,11 +305,11 @@ class MessageController extends CommonController
         // If it's REST, but HTML, we'll be returning HTML content, but not a
         // complete page.
         if ($this->isRest($access)) {
-            $conf['show_template'] = "BisonLabSakonninBundle:Message:_show.html.twig";
-            $conf['list_template'] = "BisonLabSakonninBundle:Message:_index.html.twig";
+            $conf['show_template'] = "@BisonLabSakonnin/Message/_show.html.twig";
+            $conf['list_template'] = "@BisonLabSakonnin/Message/_index.html.twig";
         } else {
-            $conf['show_template'] = "BisonLabSakonninBundle:Message:show.html.twig";
-            $conf['list_template'] = "BisonLabSakonninBundle:Message:index.html.twig";
+            $conf['show_template'] = "@BisonLabSakonnin/Message/show.html.twig";
+            $conf['list_template'] = "@BisonLabSakonnin/Message/index.html.twig";
         }
         return $this->contextGetAction(
             $request, $conf, $access, $system, $object_name, $external_id);
@@ -375,7 +375,7 @@ class MessageController extends CommonController
                 $this->handleFormErrors($form));
         }
 
-        return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/new.html.twig',
             array('entity' => $message, 'form'   => $form->createView()
             ));
     }
@@ -446,7 +446,7 @@ class MessageController extends CommonController
                 $this->handleFormErrors($form));
         }
 
-        return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/new.html.twig',
             array('entity' => $message, 'form'   => $form->createView()));
     }
 
@@ -535,7 +535,7 @@ class MessageController extends CommonController
         }
         if ($this->isRest($access)) {
             return $this
-                    ->render('BisonLabSakonninBundle:Message:_new.html.twig',
+                    ->render('@BisonLabSakonnin/Message/_new.html.twig',
                 array(
                     'message' => $message,
                     'reload_after_post' => $request->get('reload_after_post'),
@@ -543,7 +543,7 @@ class MessageController extends CommonController
                     'form' => $form->createView(),
             ));
         }
-        return $this->render('BisonLabSakonninBundle:Message:new.html.twig',
+        return $this->render('@BisonLabSakonnin/Message/new.html.twig',
             array(
                 'message' => $message,
                 'reload_after_post' => $request->get('reload_after_post'),

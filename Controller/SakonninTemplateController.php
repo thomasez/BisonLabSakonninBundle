@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Sakonnintemplate controller.
  *
- * @Route("sakonnintemplate")
+ * @Route("sakonnin_template")
  */
 class SakonninTemplateController extends Controller
 {
@@ -27,7 +27,7 @@ class SakonninTemplateController extends Controller
 
         $sakonninTemplates = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findAll();
 
-        return $this->render('BisonLabSakonninBundle:SakonninTemplate:index.html.twig',
+        return $this->render('@BisonLabSakonninBundle/SakonninTemplate/index.html.twig',
             array( 'sakonninTemplates' => $sakonninTemplates,));
     }
 
@@ -52,7 +52,7 @@ class SakonninTemplateController extends Controller
             return $this->redirectToRoute('sakonnintemplate_show', array('id' => $sakonninTemplate->getId()));
         }
 
-        return $this->render('BisonLabSakonninBundle:SakonninTemplate:new.html.twig',
+        return $this->render('@BisonLabSakonninBundle/SakonninTemplate/new.html.twig',
             array(
             'sakonninTemplate' => $sakonninTemplate,
             'form' => $form->createView(),
@@ -68,7 +68,7 @@ class SakonninTemplateController extends Controller
     {
         $deleteForm = $this->createDeleteForm($sakonninTemplate);
 
-        return $this->render('BisonLabSakonninBundle:SakonninTemplate:show.html.twig',
+        return $this->render('@BisonLabSakonninBundle/SakonninTemplate/show.html.twig',
             array(
             'sakonninTemplate' => $sakonninTemplate,
             'delete_form' => $deleteForm->createView(),
@@ -92,7 +92,7 @@ class SakonninTemplateController extends Controller
             return $this->redirectToRoute('sakonnintemplate_show', array('id' => $sakonninTemplate->getId()));
         }
 
-        return $this->render('BisonLabSakonninBundle:SakonninTemplate:edit.html.twig',
+        return $this->render('@BisonLabSakonninBundle/SakonninTemplate/edit.html.twig',
             array(
                 'sakonninTemplate' => $sakonninTemplate,
                 'edit_form' => $editForm->createView(),

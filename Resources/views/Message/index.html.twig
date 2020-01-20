@@ -1,7 +1,7 @@
-{% extends 'BisonLabSakonninBundle::base.html.twig' %}
+{% extends '@BisonLabSakonnin/base.html.twig' %}
 
 {% block body -%}
-{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' %}
+{% include '@BisonLabSakonnin/Message:_edit_popup.html.twig' %}
 <script>
 $(document).ready(function() {
     $('#message_list').DataTable( {
