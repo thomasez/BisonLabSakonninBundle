@@ -58,7 +58,7 @@ class MessageController extends CommonController
         }
 
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'BisonLabSakonninBundle/Message/_index.html.twig'));
+            return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
         return $this->render('@BisonLabSakonnin/Message/index.html.twig',
             array('entities' => $messages));
