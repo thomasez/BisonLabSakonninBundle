@@ -163,7 +163,7 @@ class MessageController extends CommonController
     /**
      * Finds and displays a Message entity.
      *
-     * @Route("/{id}", name="message_show", methods={"GET"})
+     * @Route("/{id}", name="message_show", methods={"GET"}, requirements={"id"="\d+"})
      */
     public function showAction(Request $request, $access, $id)
     {
@@ -453,7 +453,7 @@ class MessageController extends CommonController
     /**
      * Deletes a message entity.
      *
-     * @Route("/{id}", name="message_delete", methods={"DELETE"})
+     * @Route("/{id}", name="message_delete", methods={"DELETE"}, requirements={"id"="\d+"})
      */
     public function deleteAction(Request $request, $access, Message $message)
     {
@@ -476,7 +476,7 @@ class MessageController extends CommonController
     /**
      * Check for unread messages
      *
-     * @Route("/check_unread/", name="check_unread", methods={"GET"})
+     * @Route("/check_unread", name="check_unread", methods={"GET"})
      */
     public function checkUnreadAction(Request $request, $access)
     {
@@ -496,7 +496,7 @@ class MessageController extends CommonController
     /**
      * Creates a new person entity.
      *
-     * @Route("/new/", name="message_new", methods={"GET", "POST"})
+     * @Route("/new", name="message_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {

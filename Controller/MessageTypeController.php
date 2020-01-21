@@ -123,7 +123,7 @@ class MessageTypeController extends Controller
     /**
      * Finds and displays a MessageType entity.
      *
-     * @Route("/{id}", name="messagetype_show", methods={"GET"})
+     * @Route("/{id}", name="messagetype_show", methods={"GET"}, requirements={"id"="\d+"})
      */
     public function showAction($id)
     {

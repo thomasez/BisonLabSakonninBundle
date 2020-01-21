@@ -62,7 +62,7 @@ class SakonninTemplateController extends Controller
     /**
      * Finds and displays a sakonninTemplate entity.
      *
-     * @Route("/{id}", name="sakonnintemplate_show", methods={"GET"})
+     * @Route("/{id}", name="sakonnintemplate_show", methods={"GET"}, requirements={"id"="\d+"})
      */
     public function showAction(SakonninTemplate $sakonninTemplate)
     {
