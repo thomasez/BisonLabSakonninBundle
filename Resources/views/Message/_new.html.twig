@@ -1,5 +1,47 @@
 {{ form_start(form, { 'attr': {'id':'createMessageForm', 'onSubmit': 'return submitCreateMessage();'}}) }}
+{% if elements is not null %}
+  {% if "subject" in elements %}
+    {{ form_row(form.subject) }}
+  {% else %}
+    {{ form_widget(form.subject, { 'attr': {'class': 'hidden'}}) }}
+  {% endif %}
+  {% if "state" in elements %}
+    {{ form_row(form.state) }}
+  {% else %}
+    {{ form_widget(form.state, { 'attr': {'class': 'hidden'}}) }}
+  {% endif %}
+  {% if "expire_at" in elements %}
+    {{ form_row(form.expire_at) }}
+  {% else %}
+    {{ form_widget(form.expire_at, { 'attr': {'class': 'hidden'}}) }}
+  {% endif %}
+  {% if "state" in elements %}
+    {{ form_row(form.state) }}
+  {% else %}
+    {{ form_widget(form.state, { 'attr': {'class': 'hidden'}}) }}
+  {% endif %}
+  {% if "message_type" in elements %}
+    {{ form_row(form.message_type) }}
+  {% else %}
+    {{ form_widget(form.message_type, { 'attr': {'class': 'hidden'}}) }}
+  {% endif %}
+  {% if "body" in elements %}
+    {{ form_row(form.body) }}
+  {% else %}
+    {{ form_widget(form.body, { 'attr': {'class': 'hidden'}}) }}
+  {% endif %}
+{{ form_rest(form) }}
+{% else %}
+    {# You want it all #}
     {{ form_widget(form) }}
+{% endif %}
+
+{% if context is not null %}
+    <input type="hidden" name="message_context[system]" value="{{ context.system }}">
+    <input type="hidden" name="message_context[object_name]" value="{{ context.object_name }}">
+    <input type="hidden" name="message_context[external_id]" value="{{ context.external_id }}">
+{% endif %}
+
     <input type="submit" value="Create" />
 {{ form_end(form) }}
 
@@ -20,7 +62,7 @@ function submitCreateMessage() {
 {% if reload_after_post %}
          parent.location.reload();
 {% else %}
-        return;
+        return false;
 {% endif %}
       }).fail(function(xhr, status, error) {
          errmsg = "Failed createing message\n";
