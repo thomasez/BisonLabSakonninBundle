@@ -118,7 +118,7 @@ class SakonninFileController extends CommonController
     /**
      * Finds and displays a file entity.
      *
-     * @Route("/{id}", name="file_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="file_show", methods={"GET"}, requirements={"id"="(\d+|\w{13})"})
      */
     public function showAction(Request $request, SakonninFile $file, $access)
     {
