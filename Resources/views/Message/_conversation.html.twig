@@ -6,7 +6,8 @@
 <p>You've got zilch.</p>
 {% else %}
     {% set formcount = 0 %}
-    {% for entity in entities if is_granted('show', entity) %}
+    {% for entity in entities %}
+     {% if is_granted('show', entity) %}
       {% set formcount = formcount + 1 %}
       {% if entity.from and entity.from == app.user.id %}
           {% set me = true %}
@@ -100,5 +101,6 @@
         </tbody>
     </table>
     <hr>
-    {% endfor %}
+   {% endif %}
+  {% endfor %}
 {% endif %}

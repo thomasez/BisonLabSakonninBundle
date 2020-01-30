@@ -30,8 +30,8 @@ $(document).ready(function() {
 {% if entities is not defined and data is defined %}
 {% set entities = data %}
 {% endif %}
-        {% for entity in entities if  is_granted('show', entity) %}
-            {% if not entity.inreplyto %}
+        {% for entity in entities %}
+          {% if is_granted('show', entity) and not entity.inreplyto %}
             <tr>
                 <td>{{ entity.subject }}
                 {% if entity.replies %}
@@ -59,7 +59,7 @@ $(document).ready(function() {
                 </ul>
                 </td>
             </tr>
-            {% endif %}
+          {% endif %}
         {% endfor %}
         </tbody>
     </table>

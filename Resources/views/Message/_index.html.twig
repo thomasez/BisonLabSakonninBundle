@@ -5,7 +5,8 @@
 {% if entities | length == 0 %}
 <p>You've got zilch.</p>
 {% else %}
-{% for message in entities if is_granted('show', message) %}
+{% for message in entities %}
+ {% if is_granted('show', message) %}
 <div id="sakonninmessage_{{ message.id}}">
   <hr>
   <div class="row">
@@ -114,6 +115,7 @@
 </div>
 
 </div>
+{% endif %}
 {% endfor %}
 
 {% endif %}

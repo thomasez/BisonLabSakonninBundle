@@ -7,21 +7,22 @@
 {% set entities = data.messages %}
 {% set unread_starts_at = data.unread_starts_at %}
 {% endif %}
-    {% set formcount = 0 %}
-    {% for entity in entities if is_granted('show', entity)%}
-        {% if entity.id == unread_starts_at %}
+  {% set formcount = 0 %}
+  {% for entity in entities %}
+    {% if is_granted('show', entity)%}
+      {% if entity.id == unread_starts_at %}
         <div id="unread_starts">
         <tr><td><strong>Unread messages:</td></tr>
         </div>
-        {% endif %}
+      {% endif %}
         
-        {% set formcount = formcount + 1 %}
-        {% if entity.from and entity.from == app.user.id %}
-            {% set me = true %}
-        {% else %}
-            {% set me = false %}
-        {% endif %}
-        <tr>
+      {% set formcount = formcount + 1 %}
+      {% if entity.from and entity.from == app.user.id %}
+          {% set me = true %}
+      {% else %}
+          {% set me = false %}
+      {% endif %}
+      <tr>
      {% if not entity.inreplyto %}
         {% if me %}
         <td>&nbsp;</td>
@@ -88,7 +89,8 @@
         </ul>
 {% endif %}
     {% endif %}
-    {% endfor %}
+   {% endif %}
+  {% endfor %}
     </tbody>
 </table>
 <div id="ends_here">

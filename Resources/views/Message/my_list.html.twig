@@ -19,7 +19,8 @@ $(document).ready(function() {
             </tr>
         </thead>
         <tbody>
-        {% for entity in entities if is_granted('show', entity) %}
+        {% for entity in entities %}
+          {% if is_granted('show', entity) %}
             <tr>
                 <td>{{ entity.subject }}
                 {% if entity.replies %}
@@ -42,6 +43,7 @@ $(document).ready(function() {
                 </ul>
                 </td>
             </tr>
+          {% endif %}
         {% endfor %}
         </tbody>
     </table>

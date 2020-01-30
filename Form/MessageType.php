@@ -29,9 +29,8 @@ class MessageType extends AbstractType
     {
         $type_choices = array();
         if (!$options['data']->getMessageType()) {
-            // Default require subject.
             $builder
-            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")))
+            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")))
             ->add('message_type', EntityType::class,
                 array(
                     'label' => 'Type',
@@ -48,7 +47,7 @@ class MessageType extends AbstractType
             if ($options['data']->getMessageType()->getBaseType() == "NOTE")
                 $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
             else
-                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")));
+                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
 
             if (count($options['data']->getMessageType()->getChildren()) > 0) {
                 $type_choices = $options['data']->getMessageType()->getChildren();
