@@ -2,11 +2,15 @@
 
 namespace BisonLab\SakonninBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 
 /**
@@ -14,21 +18,22 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
-class SakonninImportMessageTypesCommand extends ContainerAwareCommand
+class SakonninImportMessageTypesCommand extends Command
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
+    protected static $defaultName = 'sakonnin:messagetype:load';
 
     private $verbose = true;
     private $mt_cache = array();
 
     protected function configure()
     {
-        $this->setDefinition(array(
-                new InputOption('delimiter', '', InputOption::VALUE_REQUIRED, 'Field delimiter, defaults to ; semicolon'),
-                new InputOption('file', '', InputOption::VALUE_REQUIRED, 'Need a file')
-                ))
-                ->setDescription('Import message types.')
-                ->setHelp(<<<EOT
+        $this
+            ->setDescription('Import message types.')
+            ->addOption('delimiter', '', InputOption::VALUE_REQUIRED, 'Field delimiter, defaults to ; semicolon')
+            ->addOption('file', '', InputOption::VALUE_REQUIRED, 'Need a file')
+            ->setHelp(<<<EOT
 This command reads a CVS and import the lines as message types.
 
 Format:
@@ -40,21 +45,28 @@ Options: --file=<filename> --delimiter=','
 Default delimiter is comma (,)
 EOT
             );
+    }
 
-        $this->setName('sakonnin:messagetype:load');
+    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $params)
+    {
+        $this->entityManager = $entityManager;
+        $this->params = $params;
+        parent::__construct();
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         parent::initialize($input, $output);
 
-        $this->filename      = $input->getOption('file');
+        $this->filename  = $input->getOption('file');
         $this->delimiter = $input->getOption('delimiter') ? $input->getOption('delimiter') : ',';
 
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
+        $io = new SymfonyStyle($input, $output);
 
         if (!$this->filename)
         {
@@ -75,9 +87,8 @@ EOT
          if ($bom != b"\xEF\xBB\xBF") 
          rewind($handle);
 
-        $this->entityManager = $this->getDoctrineManager();
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-        $this->mt_repo    = $this->entityManager
+        $this->mt_repo = $this->entityManager
                 ->getRepository('BisonLabSakonninBundle:MessageType');
 
         while (($data = fgetcsv($handle, 1000, $this->delimiter)) !== FALSE) {

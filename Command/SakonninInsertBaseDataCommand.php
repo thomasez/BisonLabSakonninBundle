@@ -2,11 +2,15 @@
 
 namespace BisonLab\SakonninBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 
 /**
@@ -15,9 +19,11 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
-class SakonninInsertBaseDataCommand extends ContainerAwareCommand
+class SakonninInsertBaseDataCommand extends Command
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
+    protected static $defaultName = 'sakonnin:insert-basedata';
 
     private $verbose = true;
     private $mt_cache = array();
@@ -89,14 +95,21 @@ class SakonninInsertBaseDataCommand extends ContainerAwareCommand
 
     protected function configure()
     {
-        $this->setDescription('Inserts or updates the data we need for a working Sakonnin.')
-                ->setHelp(<<<EOT
+        $this
+            ->setDescription('Inserts or updates the data we need for a working Sakonnin.')
+            ->setHelp(<<<EOT
 Inserts or updates the data we need for a working Sakonnin.
 
 You could call this "Load fixtures" as well. It's for preparing the system for use.
 EOT
             );
-        $this->setName('sakonnin:insert-basedata');
+    }
+
+    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $params)
+    {
+        $this->entityManager = $entityManager;
+        $this->params = $params;
+        parent::__construct();
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -106,9 +119,9 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->entityManager = $this->getDoctrineManager();
+        $io = new SymfonyStyle($input, $output);
 
-        $this->mt_repo    = $this->entityManager
+        $this->mt_repo = $this->entityManager
                 ->getRepository('BisonLabSakonninBundle:MessageType');
 
         foreach ($this->message_types as $name => $type) {

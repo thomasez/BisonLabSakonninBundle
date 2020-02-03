@@ -2,17 +2,18 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
-use BisonLab\SakonninBundle\Entity\SakonninTemplate;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+use BisonLab\SakonninBundle\Entity\SakonninTemplate;
 
 /**
  * Sakonnintemplate controller.
  *
  * @Route("sakonnin_template")
  */
-class SakonninTemplateController extends Controller
+class SakonninTemplateController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 

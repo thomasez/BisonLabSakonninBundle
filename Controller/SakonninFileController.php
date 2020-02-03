@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,23 +43,6 @@ class SakonninFileController extends CommonController
         }
         return $this->render('@BisonLabSakonnin/SakonninFile/index.html.twig',
             array('files' => $files));
-    }
-
-    /**
-     * Lists all Message entities of a certain type.
-     * Warning: This can be *a lot* of files.
-     *
-     * @Route("/filetype/{id}", name="file_filetype", methods={"GET"})
-     */
-    public function listByTypeAction(Request $request, $access, FileType $fileType)
-    {
-        $sm = $this->container->get('sakonnin.files');
-        $files = $messageType->getMessages(true);
-        if ($this->isRest($access)) {
-            return $this->returnRestData($request, $files, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
-        }
-        return $this->render('@BisonLabSakonnin/SakonninFile/index.html.twig',
-            array('entities' => $files));
     }
 
     /**
