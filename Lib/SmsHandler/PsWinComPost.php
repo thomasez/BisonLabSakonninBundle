@@ -29,6 +29,8 @@ class PsWinComPost
         $this->smsfrom  = $options['smsfrom'];
         $this->mailfrom = $options['mailfrom'];
         $this->mailto   = $options['mailto'];
+        $this->sms_server_host = $options['sms_server_host'] ?? null;
+        $this->sms_server_port = $options['sms_server_port'] ?? null;
         $this->default_country_prefix   = $options['default_country_prefix'];
         $this->national_number_lenght   = $options['national_number_lenght'];
     }
@@ -56,6 +58,50 @@ class PsWinComPost
         $message['message_type'] = $data['messaage_type'] ?? "SMS";
         $sm->postMessage($message);
 
+        return true;
+    }
+
+    public function send($message, $receivers, $options = array())
+    {
+        $msg = <<<EOMSG
+<?xml version="1.0"?>
+<SESSION>
+<CLIENT>$this->username</CLIENT>
+<PW>$this->password</PW>
+<MSGLST>
+EOMSG;
+
+        // Make it one.
+		if (!is_array($receivers))
+            $receivers = array($receivers);
+		
+        foreach ($receivers as $number) {
+            if (strlen((string)$number) == $this->national_number_lenght) $number = $this->default_country_prefix . $number;
+            $msg .= <<<EOMSG
+<MSG>
+<TEXT>$message</TEXT>
+<RCV>$number</RCV>
+<SND>$this->smsfrom</SND>
+</MSG>
+EOMSG;
+        }
+		
+		$msg .="\n</MSGLST>\n</SESSION>";
+
+        /*
+         * This is insanely quick and dirty, but was used by the old system and
+         * it may have been for a reason. commets hints that curl was replaced
+         * with fsockopen and friends..
+         */
+        $pswincomsmsgateway = fsockopen ($this->sms_server_host, $this->sms_server_port, $errno, $errstr);
+        if (!$pswincomsmsgateway) {
+            error_log("SMS Gateway not responding, " . $errno . " " . $errstr);
+            return false;
+        }
+        fputs ($pswincomsmsgateway, $msg); 
+        while ( ($response = fgets($pswincomsmsgateway)) != false ) {
+              $response = trim($response);
+        }
         return true;
     }
 }

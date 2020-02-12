@@ -25,6 +25,10 @@ class SmsHandler
         'pswincom_mail' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComMail',
             'description' => "SMS via pswin.com old mailinterface",
+        ),
+        'pswincom_post' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComPost',
+            'description' => "SMS via pswin.com old webservice like thingie",
         )
     );
 
@@ -32,10 +36,6 @@ class SmsHandler
     // Thought about sending the request object, but no. The Controller
     // compiles as much data as possible and sends that.
     public $receivers = array(
-        'pswincom_web_xml' => array(
-            'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComWebXml',
-            'description' => "SMS via pswin.com old webservice like thingie",
-        ),
         'pswincom_post' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComPost',
             'description' => "SMS via pswin.com old webservice like thingie",
