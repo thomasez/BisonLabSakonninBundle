@@ -163,7 +163,7 @@ class MessageController extends CommonController
     /**
      * Finds and displays a Message entity.
      *
-     * @Route("/{id}", name="message_show", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="message_show", methods={"GET"}, requirements={"id"="(\d+|\w{13})"})
      */
     public function showAction(Request $request, $access, $id)
     {
@@ -453,7 +453,7 @@ class MessageController extends CommonController
     /**
      * Deletes a message entity.
      *
-     * @Route("/{id}", name="message_delete", methods={"DELETE"}, requirements={"id"="\d+"})
+     * @Route("/{id}", name="message_delete", methods={"DELETE"}, requirements={"id"="(\d+|\w{13})"})
      */
     public function deleteAction(Request $request, $access, Message $message)
     {
