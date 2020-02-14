@@ -27,7 +27,7 @@ class Messages
         $this->stemplates = $container->get('sakonnin.templates');
     }
 
-    public function postMessage($data, $context_data = array())
+    public function postMessage($data, $context_data = [])
     {
         $em = $this->getDoctrineManager();
         $message = null;
@@ -50,14 +50,28 @@ class Messages
                 throw new \InvalidArgumentException("No message type found or set.");
             }
 
-            // This does not fail properly when there is something missing.
-            if (isset($context_data['system'])
-                && isset($context_data['object_name'])
-                && isset($context_data['external_id'])) {
-
-                $message_context = new MessageContext($context_data);
-                $message->addContext($message_context);
-                $em->persist($message_context);
+            if (!empty($context_data)) {
+                /*
+                 * If only one context and it's not in it's own array (BC),
+                 * it has to become one.
+                 */
+                if (isset($context_data['system'])) {
+                    // NO messing with refrerences.. (future proof?)
+                    $c['system'] = $context_data['system'];
+                    $c['object_name'] = $context_data['object_name'];
+                    $c['external_id'] = $context_data['external_id'];
+                    $context_data = [$c];
+                }
+                foreach ($context_data as $context) {
+                    // TODO: Start getting rid of isset.
+                    if (isset($context['system'])
+                        && isset($context['object_name'])
+                        && isset($context['external_id'])) {
+                            $message_context = new MessageContext($context);
+                            $message->addContext($message_context);
+                            $em->persist($message_context);
+                    }
+                }
             }
 
             if (isset($data['in_reply_to'])) {
@@ -94,8 +108,17 @@ class Messages
             // Gotta be able to have multiple receivers/to.
             if (preg_match("/,/", $message->getTo())) {
                 $toers = explode(",", $message->getTo());
+            } elseif (!empty($message->getTo())) {
+                $toers = [$message->getTo()];
             } else {
-                $toers = array($message->getTo());
+                /*
+                 * This is very half way. It takes for granted that the
+                 * external_id is a userid from within the system. Which is
+                 * kinda OK since this is the message type INTERNAL :=)
+                 */
+                foreach ($message->getContexts() as $context) {
+                    $toers[] = $context->getExternalId();
+                }
             }
             foreach ($toers as $toer) {
                 // In case of no userid, but username
