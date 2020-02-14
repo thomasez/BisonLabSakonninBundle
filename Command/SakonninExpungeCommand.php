@@ -2,11 +2,15 @@
 
 namespace BisonLab\SakonninBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 
 /**
@@ -14,43 +18,50 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
-class SakonninExpungeCommand extends ContainerAwareCommand
+class SakonninExpungeCommand extends Command
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
+    protected static $defaultName = 'sakonnin:expunge';
 
     private $verbose = true;
     private $mt_cache = array();
 
     protected function configure()
     {
-        $this->setDefinition(array(
-                new InputOption('doit', '', InputOption::VALUE_REQUIRED, 'And you have to set it with --doit=yes to make it happen')
-                ))
-                ->setDescription('Use the expunge days value in Message Type to delete older messages..')
-                ->setHelp(<<<EOT
+        $this
+            ->setDescription('Use the expunge days value in Message Type to delete older messages..')
+           ->addOption('doit', '', InputOption::VALUE_REQUIRED, 'And you have to set it with --doit=yes to make it happen')
+           ->setHelp(<<<EOT
 This is for cleaning up old messages based on the Expunge Days value on the Message Types and "Expire at" on messages if it's set.
 
 Option --doit=yes to enable real deletion. (Not just a message that it's supposed to delete.)
 EOT
             );
+    }
 
-        $this->setName('sakonnin:expunge');
+    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $params)
+    {
+        $this->entityManager = $entityManager;
+        $this->params = $params;
+        parent::__construct();
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         parent::initialize($input, $output);
-        $this->doit      = $input->getOption('doit');
+        $this->doit = $input->getOption('doit');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->entityManager = $this->getDoctrineManager();
+        $io = new SymfonyStyle($input, $output);
+
         // This is to make sure we don't end up with massige memory useage. 
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-        $this->mt_repo    = $this->entityManager
+        $this->mt_repo = $this->entityManager
                 ->getRepository('BisonLabSakonninBundle:MessageType');
-        $this->m_repo    = $this->entityManager
+        $this->m_repo  = $this->entityManager
                 ->getRepository('BisonLabSakonninBundle:Message');
 
         // First, Find the message types that has expunge.

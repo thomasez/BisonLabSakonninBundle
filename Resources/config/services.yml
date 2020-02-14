@@ -3,7 +3,15 @@ services:
 
     BisonLab\SakonninBundle\Command\:
         resource: '../../Command/*'
+        autowire: true
         tags: ['console.command']
+
+    BisonLab\SakonninBundle\Controller\:
+        resource: '../../Controller/*'
+        tags: ['controller.service_arguments']
+        # AbstractController still needs this!
+        calls: 
+            - [ setContainer, ['@service_container'] ]
 
     sakonnin.messages:
         class: BisonLab\SakonninBundle\Service\Messages

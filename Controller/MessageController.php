@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -503,25 +502,31 @@ class MessageController extends CommonController
         $message = new Message();
         if ($message_type = $request->get('message_type')) {
             $em = $this->getDoctrineManager();
-            $message->setMessageType(
-                $em->getRepository('BisonLabSakonninBundle:MessageType')
-                    ->find($message_type)
-            );
+            if (is_numeric($message_type)) {
+                $message->setMessageType(
+                    $em->getRepository('BisonLabSakonninBundle:MessageType')
+                        ->find($message_type)
+                );
+            } else {
+                $message->setMessageType(
+                    $em->getRepository('BisonLabSakonninBundle:MessageType')
+                        ->findOneByName($message_type)
+                );
+            }
         }
+
         $form = $this->createForm('BisonLab\SakonninBundle\Form\MessageType',
             $message);
-        $action = $this->generateUrl('message_new', array(
-            'reload_after_post' => $request->get('reload_after_post'),
-            'access' => $access
-            ));
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $em = $this->getDoctrineManager();
-                $em->persist($message);
-                $em->flush($message);
-
+                $sm = $this->container->get('sakonnin.messages');
+                if ($context_data = $request->get('message_context')) {
+                    $message_context = new MessageContext($context_data);
+                    $message->addContext($message_context);
+                }
+                $sm->postMessage($message);
                 if ($this->isRest($access)) {
                     return new JsonResponse(array("status" => "OK", 200));
                 }
@@ -533,20 +538,28 @@ class MessageController extends CommonController
                     'errors' => $errors), 422);
             }
         }
+        $action = $this->generateUrl('message_new', array(
+            'reload_after_post' => $request->get('reload_after_post'),
+            'access' => $access
+            ));
         if ($this->isRest($access)) {
             return $this
                     ->render('@BisonLabSakonnin/Message/_new.html.twig',
                 array(
                     'message' => $message,
-                    'reload_after_post' => $request->get('reload_after_post'),
+                    'reload_after_post' => $request->get('reload_after_post') ?? true,
                     'action' => $action,
+                    'elements' => $request->get('elements') ?? null,
+                    'context' => $request->get('context') ?? null,
                     'form' => $form->createView(),
             ));
         }
         return $this->render('@BisonLabSakonnin/Message/new.html.twig',
             array(
                 'message' => $message,
-                'reload_after_post' => $request->get('reload_after_post'),
+                'reload_after_post' => $request->get('reload_after_post') ?? true,
+                'elements' => $request->get('elements') ?? null,
+                'context' => $request->get('context') ?? null,
                 'action' => $action,
                 'form' => $form->createView(),
         ));

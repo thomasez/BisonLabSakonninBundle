@@ -3,7 +3,6 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -11,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Form\MessageTypeType;
 use BisonLab\SakonninBundle\Form\FunctionAttributeType;
@@ -20,7 +20,7 @@ use BisonLab\SakonninBundle\Form\FunctionAttributeType;
  *
  * @Route("/sakonnin_messagetype")
  */
-class MessageTypeController extends Controller
+class MessageTypeController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
