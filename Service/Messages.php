@@ -106,6 +106,7 @@ class Messages
         // for now.
         if ($message->getToType() == "INTERNAL") {
             // Gotta be able to have multiple receivers/to.
+            $toers = [];
             if (preg_match("/,/", $message->getTo())) {
                 $toers = explode(",", $message->getTo());
             } elseif (!empty($message->getTo())) {
@@ -120,6 +121,8 @@ class Messages
                     $toers[] = $context->getExternalId();
                 }
             }
+            if (empty($toers))
+                return true;
             foreach ($toers as $toer) {
                 // In case of no userid, but username
                 // (Gotta consider some more automagic handling of all this.)
