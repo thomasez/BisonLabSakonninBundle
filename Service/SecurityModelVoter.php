@@ -90,8 +90,8 @@ class SecurityModelVoter extends Voter
      */
     private function _isAdmin($token)
     {
-        foreach ($token->getRoles() as $role) {
-            if (in_array($role->getRole(), ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'])) {
+        foreach ($token->getRoleNames() as $role) {
+            if (in_array($role, ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'])) {
                 return true;
             }
         }
