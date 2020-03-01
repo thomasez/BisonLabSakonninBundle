@@ -6,12 +6,20 @@
 {
     background-color: #fffaad;
     border-color: #fffaad;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 6px;
+    padding-bottom: 6px;
 }
 
 .messageText
 {
     background-color: lightgrey;
     border-color: lightgrey;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 6px;
+    padding-bottom: 6px;
 }
 
 .messageTable td
