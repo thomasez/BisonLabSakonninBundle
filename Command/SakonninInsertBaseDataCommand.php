@@ -158,13 +158,12 @@ EOT
                 $parent->addChild($mt);
                 $this->entityManager->persist($parent);
             }
-
             if ($mt)
                 $this->mt_cache[$mt->getName()] = $mt;
             $output->writeln("Created " . $mt->getName());
-
         }
         $this->entityManager->flush();
+        return 0;
     }
 
     private function _findMt($name)
