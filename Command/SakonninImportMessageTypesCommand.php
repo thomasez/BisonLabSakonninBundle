@@ -60,12 +60,10 @@ EOT
 
         $this->filename  = $input->getOption('file');
         $this->delimiter = $input->getOption('delimiter') ? $input->getOption('delimiter') : ',';
-
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $io = new SymfonyStyle($input, $output);
 
         if (!$this->filename)
@@ -121,13 +119,12 @@ EOT
                 $parent->addChild($mt);
                 $this->entityManager->persist($parent);
             }
-
             if ($mt)
                 $this->mt_cache[$mt->getName()] = $mt;
             $output->writeln("Created " . $mt->getName());
-
         }
         $this->entityManager->flush();
+        return 0;
     }
 
     private function _findMt($name) {
@@ -142,6 +139,4 @@ EOT
 
         return $this->mt_cache[$name];
     }
-
 }
-

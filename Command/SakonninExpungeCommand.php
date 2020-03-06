@@ -147,6 +147,7 @@ EOT
         if ($this->doit == "yes") {
             $this->entityManager->flush();
         }
+        return 0;
     }
 
     private function _findMt($name)
@@ -162,4 +163,3 @@ EOT
         return $this->mt_cache[$name];
     }
 }
-

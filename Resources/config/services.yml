@@ -46,9 +46,11 @@ services:
 
     sakonnin_messages:
         alias: sakonnin.messages
+        deprecated: ~
 
     sakonnin_functions:
         alias: sakonnin.functions
+        deprecated: ~
 
     # Should this be here at all? It's kinda optional.
     # Answer: No. Put it in your local app/config/services.yml if you are going
