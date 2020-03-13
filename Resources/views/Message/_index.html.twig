@@ -46,6 +46,12 @@
             <th valign="top">Time:</th>
             <td valign="top">{% if message.createdAt %}{{ message.createdAt|date('Y-m-d H:i') }}{% endif %}</td>
         </tr>
+          <tr>
+            <th valign="top">Type:</th>
+            <td valign="top">
+                <a href="#" title="{{ message.messagetype.description }}">{{ message.messagetype }}</a>
+            </td>
+          </tr>
   </table>
   </div>
 
