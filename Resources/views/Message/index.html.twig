@@ -44,7 +44,7 @@ $(document).ready(function() {
                 <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
                 <td>{{ entity.state }}</td>
                 <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.messageid }}</a></td>
-                <td>{{ entity.messagetype.parent }} - {{ entity.messagetype }}</td>
+                <td>{{ entity.messagetype.parent }} - {{ entity.messagetype }} ({{ entity.messagetype.description }})</td>
                 <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>
                 <ul>
