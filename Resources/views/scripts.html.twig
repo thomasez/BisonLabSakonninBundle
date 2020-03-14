@@ -30,6 +30,33 @@ function submitMessageForm(formname = '', reload_after_post = false) {
     return false;
 }
 
+function deleteMessage(message_id) {
+
+    orgurl = "{{ path('message_delete', {'id': 0, 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", message_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: $( "#deletemessageform_" + message_id ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if ( $("#sakonninmessage_" + message_id ).length > 0 ) {
+                $("#sakonninmessage_" + message_id ).remove();
+            } else {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message delete failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 function createCheck(formname = '') {
     $( "#createcheck" + formname ).modal();
     return false;
@@ -147,7 +174,7 @@ function setStateOnMessage(message_id, state, hide = false) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (hide || state == "ARCHIVED" || state == "READ" ) {
-                $('#sakonninmessage_' + message_id).hide();
+                $('#sakonninmessage_' + message_id).remove();
             }
       }).fail(function(xhr, status, error) {
             errmsg = "Failed changing state\n";
