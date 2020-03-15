@@ -276,43 +276,46 @@ class MessageController extends CommonController
     }
 
     /**
-     * Lists all Messages with that context.
+     * Lists all Messages with that context, filtered if requested.
      *
      * @Route("/search_context/system/{system}/object_name/{object_name}/external_id/{external_id}", name="message_context_search", methods={"GET"})
      */
     public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
     {
         // Search/Index - basically same same. For now at least.
-        /* But it has a very annoying drawback;
-         * It more or less does not work.
-         * The reason is simple: I have to be able to filter every entity on
-         * granted or not. And I can do that on two ways:
-         *
-         * Not use contextGetAction from the CommonBundle and make my own here
-         *   and filter every single entity.
-         * Rewrite contextGetAction to check every entity and filter.
-         *   Which means quite alot more calls and slower response.
-         * Add a better is_granted to twig and filter there.
-         *   is_granted in twog only supports a role check, not the symfony
-         *   security voter, which is quite odd. Someone else should have felt
-         *   this need aswell.
-         */
         $this->denyAccessUnlessGranted('index', new Message());
-        $context_conf = $this->container->getParameter('app.contexts');
-        $conf = $context_conf['BisonLabSakonninBundle']['Message'];
-        $conf['entity'] = "BisonLabSakonninBundle:Message";
+        $criterias = $request->get('criterias') ?? [];
+        $criterias['context'] = [
+            'system'      => $system,
+            'object_name' => $object_name,
+            'external_id' => $external_id,
+            ];
+        $sm = $this->container->get('sakonnin.messages');
+        $messages = [];
+        foreach ($sm->getMessagesForContext($criterias) as $m) {
+            if ($this->isGranted('show', $m))
+                $messages[] = $m;
+        }
 
         // If it's REST, but HTML, we'll be returning HTML content, but not a
         // complete page.
         if ($this->isRest($access)) {
-            $conf['show_template'] = "@BisonLabSakonnin/Message/_show.html.twig";
-            $conf['list_template'] = "@BisonLabSakonnin/Message/_index.html.twig";
+            if (count($messages) == 1) {
+                return $this->render('@BisonLabSakonnin/Message/_show.html.twig',
+                    array('entity' => $messages[0]));
+            } else {
+                return $this->render('@BisonLabSakonnin/Message/_index.html.twig',
+                    array('entities' => $messages));
+            }
         } else {
-            $conf['show_template'] = "@BisonLabSakonnin/Message/show.html.twig";
-            $conf['list_template'] = "@BisonLabSakonnin/Message/index.html.twig";
+            if (count($messages) == 1) {
+                return $this->render('@BisonLabSakonnin/Message/show.html.twig',
+                    array('entity' => $messages[0]));
+            } else {
+                return $this->render('@BisonLabSakonnin/Message/index.html.twig',
+                    array('entities' => $messages));
+            }
         }
-        return $this->contextGetAction(
-            $request, $conf, $access, $system, $object_name, $external_id);
     }
 
     /**
