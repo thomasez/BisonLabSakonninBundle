@@ -3,7 +3,7 @@
 {% block body -%}
     <h1>MessageType</h1>
 
-    <table class="record_properties">
+    <table class="sakonnin_properties">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -87,16 +87,13 @@
 {% endif %}
         </tbody>
     </table>
-
-        <ul class="record_actions">
+<ul class="sakonnin_actions">
     <li>
-        <a  href="{{ path('messagetype') }}">Back to list</a>
-    </li>
-    <li>
-        <a  href="{{ path('messagetype_edit', { 'id': entity.id }) }}">
-        <button>Edit</button>
-        </a>
+        <a class="btn btn-primary" href="{{ path('messagetype_edit', { 'id': entity.id }) }}">Edit</a>
     </li>
     <li>{{ form(delete_form) }}</li>
+    <li>
+        <a href="{{ path('messagetype') }}">Back to list</a>
+    </li>
 </ul>
 {% endblock %}

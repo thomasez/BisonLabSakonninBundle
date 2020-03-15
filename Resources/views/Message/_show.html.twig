@@ -1,8 +1,12 @@
-    <table class="record_properties">
+    <table class="sakonnin_properties">
         <tbody>
             <tr>
                 <th>Subject</th>
                 <td>{{ entity.subject }}</td>
+            </tr>
+            <tr>
+                <th>Body</th>
+                <td><pre>{{ entity.body }}</pre></td>
             </tr>
             {% if entity.inreplyto %}
             <tr>
@@ -12,6 +16,22 @@
                 </td>
             </tr>
             {% endif %}
+            {% if entity.replies | length > 0 %}
+            <tr>
+                <th>Replies</th>
+                <td>
+                {% for reply in entity.replies %}
+                  <a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a><br />
+                {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+        </table>
+<a href="#" onClick='$( "#sakonnin_messahe_show_{{ entity.id }}" ).show(); return false;'>More info</a>
+<div id="sakonnin_messahe_show_{{ entity.id }}" style="display: none;">
+    <table class="sakonnin_properties">
+        <tbody>
             <tr>
                 <th>Message ID</th>
                 <td>{{ entity.messageid }}</td>
@@ -20,6 +40,7 @@
                 <th>Message type</th>
                 <td>{{ entity.messagetype }} ({{ entity.messagetype.description }})</td>
             </tr>
+            {% if entity.fromtype != "NONE" %}
             <tr>
                 <th>From</th>
                 <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
@@ -28,6 +49,8 @@
                 <th>From address type</th>
                 <td>{{ entity.fromtype }}</td>
             </tr>
+            {% endif %}
+            {% if entity.totype != "NONE" %}
             <tr>
                 <th>To</th>
                 <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
@@ -36,6 +59,7 @@
                 <th>To address type</th>
                 <td>{{ entity.totype }}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th>State</th>
                 <td>{{ entity.state }}</td>
@@ -76,20 +100,6 @@
                 {% endfor %}
                 </td>
             </tr>
-                {% if entity.replies %}
-            <tr>
-                <th>Replies</th>
-                <td>
-                {% for reply in entity.replies %}
-                  <a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a><br />
-                {% endfor %}
-                </td>
-            </tr>
-                {% endif %}
-            <tr>
-                <th>Body</th>
-                <td><pre>{{ entity.body }}</pre></td>
-            </tr>
-
         </tbody>
     </table>
+</div>
