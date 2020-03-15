@@ -1,105 +1,112 @@
-    <table class="sakonnin_properties">
-        <tbody>
-            <tr>
-                <th>Subject</th>
-                <td>{{ entity.subject }}</td>
-            </tr>
-            <tr>
-                <th>Body</th>
-                <td><pre>{{ entity.body }}</pre></td>
-            </tr>
-            {% if entity.inreplyto %}
-            <tr>
-                <th>In Reply To</th>
-                <td>
-                  <a href="{{ path('message_show', { 'id': entity.inreplyto }) }}">{{ entity.inreplyto }}</a><br />
-                </td>
-            </tr>
-            {% endif %}
-            {% if entity.replies | length > 0 %}
-            <tr>
-                <th>Replies</th>
-                <td>
-                {% for reply in entity.replies %}
-                  <a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a><br />
-                {% endfor %}
-                </td>
-            </tr>
-            {% endif %}
-        </tbody>
-        </table>
-<a href="#" onClick='$( "#sakonnin_messahe_show_{{ entity.id }}" ).show(); return false;'>More info</a>
-<div id="sakonnin_messahe_show_{{ entity.id }}" style="display: none;">
-    <table class="sakonnin_properties">
-        <tbody>
-            <tr>
-                <th>Message ID</th>
-                <td>{{ entity.messageid }}</td>
-            </tr>
-            <tr>
-                <th>Message type</th>
-                <td>{{ entity.messagetype }} ({{ entity.messagetype.description }})</td>
-            </tr>
-            {% if entity.fromtype != "NONE" %}
-            <tr>
-                <th>From</th>
-                <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>From address type</th>
-                <td>{{ entity.fromtype }}</td>
-            </tr>
-            {% endif %}
-            {% if entity.totype != "NONE" %}
-            <tr>
-                <th>To</th>
-                <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>To address type</th>
-                <td>{{ entity.totype }}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <th>State</th>
-                <td>{{ entity.state }}</td>
-            </tr>
-            <tr>
-                <th>Content type</th>
-                <td>{{ entity.contenttype }}</td>
-            </tr>
-            <tr>
-                <th>Header</th>
-                <td>{{ entity.header }}</td>
-            </tr>
-            <tr>
-                <th>Createdat</th>
-                <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Updatedat</th>
-                <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Createdby</th>
-                <td>{{ entity.createdBy }}</td>
-            </tr>
-            <tr>
-                <th>Updatedby</th>
-                <td>{{ entity.updatedBy }}</td>
-            </tr>
-            <tr>
-                <th>Sources</th>
-                <td>
-                {% for context in entity.contexts %}
-                    {% if context.url matches '{^http}' %}
-                    <a href="{{ context.url }}">{{ context.system }} - {{ context.objectname }}</a><br />
-                    {% else %}
-                    <a href="{{app.request.baseurl}}{{ context.url }}">{{ context.system }} - {{ context.objectname }}</a><br />
-                    {% endif %}
-                {% endfor %}
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div id="sakonninmessage_{{ entity.id}}">
+  <div class="row">
+      <div class="col-sm-5">
+        <table class="messageTable">
+          <tr>
+            <th valign="top">Subject:</th>
+            <td valign="top">
+              {{ entity.subject }}
+            </td>
+          </tr>
+          <tr>
+{% if entity.from %}
+            <th valign="top">From:</th>
+            <td valign="top">{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
+            <td>
+{% elseif entity.createdby %}
+            <th valign="top">From:</th>
+            <td valign="top">{{ entity.createdby }}</td>
+            <td>
+{% else %}
+        <td>
+            &nbsp;
+        </td>
+        <td>
+            &nbsp;
+        </td>
+{% endif %}
+        </tr>
+{% if entity.to %}
+        <tr>
+            <th valign="top">To:</th>
+            <td valign="top">{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
+        </tr>
+{% endif %}
+        <tr>
+            <th valign="top">Time:</th>
+            <td valign="top">{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i') }}{% endif %}</td>
+        </tr>
+          <tr>
+            <th valign="top">Type:</th>
+            <td valign="top">
+                <a href="#" title="{{ entity.messagetype.description }}">{{ entity.messagetype }}</a>
+            </td>
+          </tr>
+  </table>
+  </div>
+
+  <div class="col-sm-6 ">
+  {% if entity.basetype == 'CHECK' %}
+    {# OK, are we checked or not? #}
+    {% set checked = false %}
+    {% set last_reply = entity.replies | last %}
+
+    {% if last_reply %}
+        {% if last_reply.state == "CHECKED" %}
+            {% set checked = true %}
+        {% else %}
+            {% set checked = false %}
+        {% endif %}
+    {% endif %}
+    {% if checked %}
+      <span class="glyphicon glyphicon-check" title="Checked"></span> <em>{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}</em>
+    {% else %}
+      <span class="glyphicon glyphicon-unchecked" title="Unchecked"></span>
+    {% endif %}
+    <br>
+  {% endif %}
+{# Pretty dangerous #}
+{# TODO: Add markdown #}
+{% if entity.contenttype == 'text/html' %}
+{{ entity.body | raw }}
+{% else %}
+<pre class="messageText">
+{{ entity.body }}
+</pre>
+{% endif %}
+
+  </div>
+  <div class="col-sm-1" align="right">
+{% if is_granted('edit', entity) %}
+    <div class="dropdown">
+      <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+      <span></span>
+      </button>
+    <ul class="dropdown-menu dropdown-menu-right">
+    <li>
+         <a href="#" onClick='return grabEditMessageForm({{ entity.id }});'>Edit</a>
+    </li>
+<div class="hidden">
+    {% set mdelform = sakonnin_messages.getCreateDeleteForm(entity, true) %}
+    <form method="POST" action="{{ path('message_delete', { 'id': entity.id, 'access': 'web' }) }}">
+    {{ form_start(mdelform) }}
+    {{ form_rest(mdelform) }}
+    <input id="delarchived_{{ entity.id }}" type="submit">
+    </form>
+</div>
+    <li>
+        <a href="#" onClick='return $("#delarchived_{{ entity.id }}").click();'>Delete</a>
+    </li>
+    {# The option to de-archive a entity. Not really sure it makes sense to have at all. #}
+    {% if entity.state == "ARCHIVED" %}
+    <li>
+        <a href="#" onClick="return setStateOnMessage({{ entity.id }}, '{{ entity.firststate }}', true);">Unarchive</a>
+    </li>
+    {% endif %}
+    </ul>
+  </div>
+{% endif %}
+ </div>
+
+</div>
 </div>
