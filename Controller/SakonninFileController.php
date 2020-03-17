@@ -147,6 +147,7 @@ class SakonninFileController extends CommonController
      */
     public function thumbnailAction(Request $request, $access, $id, $x, $y)
     {
+        $em = $this->getDoctrineManager();
         $sf = $this->container->get('sakonnin.files');
         if (is_numeric($id)) {
             $repo = $em->getRepository('@BisonLabSakonnin:SakonninFile');
