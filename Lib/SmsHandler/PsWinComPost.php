@@ -74,6 +74,11 @@ EOMSG;
         // Make it one.
 		if (!is_array($receivers))
             $receivers = array($receivers);
+
+        // First, they default to latin 1
+        $message = iconv("UTF-8", "ISO-8859-1", $message);
+        // Make the message xml-safe:
+        $message = htmlspecialchars($message, ENT_XML1, 'ISO-8859-1');
 		
         foreach ($receivers as $number) {
             if (strlen((string)$number) == $this->national_number_lenght) $number = $this->default_country_prefix . $number;
