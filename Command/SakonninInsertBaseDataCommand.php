@@ -8,8 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 
@@ -105,10 +103,10 @@ EOT
             );
     }
 
-    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $params)
+    public function __construct($container)
     {
-        $this->entityManager = $entityManager;
-        $this->params = $params;
+        $this->container = $container;
+        $this->entityManager = $this->getDoctrineManager();
         parent::__construct();
     }
 

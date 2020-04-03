@@ -16,6 +16,10 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('bisonlab_sakonnin');
+        // Keep compatibility with symfony/config < 4.2
+        if (!method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->root('bisonlab_sakonnin');
+        }
         return $treeBuilder;
     }
 }

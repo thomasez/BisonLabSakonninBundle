@@ -3,7 +3,7 @@ services:
 
     BisonLab\SakonninBundle\Command\:
         resource: '../../Command/*'
-        autowire: true
+        arguments: ['@service_container' ]
         tags: ['console.command']
 
     BisonLab\SakonninBundle\Controller\:
