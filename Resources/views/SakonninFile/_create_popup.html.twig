@@ -20,7 +20,7 @@
         </div>
         <div class="modal-body">
         {% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true, 'formname': formname }) %}
-        <form id="uploadfileform{{ formname }}" method="POST" enctype="multipart/form-data" onSubmit="return submitFileForm('{{ formname }}', {{ reload }});">
+        <form id="uploadfileform{{ formname }}" method="POST" enctype="multipart/form-data" onSubmit="return submitSakonninFileForm('{{ formname }}', {{ reload }});">
             {% if sfconfig.context is defined %}
             <input id="system{{formname}}" type="hidden" name="file_context[system]" value="{{sfconfig.context.system}}">
             <input id="object_name{{formname}}" type="hidden" name="file_context[object_name]" value="{{sfconfig.context.object_name}}">

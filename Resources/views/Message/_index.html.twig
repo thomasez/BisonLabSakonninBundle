@@ -7,7 +7,7 @@
 {% else %}
 {% for entity in entities %}
  {% if is_granted('show', entity) %}
-    {% include "BisonLabSakonninBundle:Message:_show.html.twig" %}
+    {% include "@BisonLabSakonnin/Message/_show.html.twig" %}
 <hr>
 {% endif %}
 {% endfor %}

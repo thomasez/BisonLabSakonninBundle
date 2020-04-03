@@ -1,8 +1,8 @@
 <script type="text/javascript">
 
-function openMessageLogBox(url, title = null) {
+function openSakonninMessageLogBox(url, title = null) {
     /* Just reset whatever was there */
-    $( "#messagelogcontent" ).html("");
+    $( "#sakonninMessageLogContent" ).html("");
 {# There will be more options #}
 {% if context is defined %}
     url = "{{ path('message_context_search', {'access': 'ajax', 'system': context.system, 'object_name': context.object_name, 'external_id': context.external_id }) }}";
@@ -10,31 +10,31 @@ function openMessageLogBox(url, title = null) {
     $.get(
         url, 
         function( data ) {
-            $( "#messagelogcontent" ).html(data);
+            $( "#sakonninMessageLogContent" ).html(data);
         },
         null,
         'html'
     );
     if (title) {
-        $( "#messagelogtitle" ).html(title);
+        $( "#sakonninMessageLogTitle" ).html(title);
     } else {
-        $( "#messagelogtitle" ).html("Messages");
+        $( "#sakonninMessageLogTitle" ).html("Messages");
     }
-    $( "#messagelogbox" ).modal();
+    $( "#sakonninMessageLogBox" ).modal();
     return false;
 }
 
 </script>
 
-<div class="modal fade" id="messagelogbox" role="dialog" tabindex="-1">
+<div class="modal fade" id="sakonninMessageLogBox" role="dialog" tabindex="-1">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title" id="messagelogtitle"></h4>
+        <h4 class="modal-title" id="sakonninMessageLogTitle"></h4>
       </div>
-    <div class="modal-body" id="messagelogcontent">
+    <div class="modal-body" id="sakonninMessageLogContent">
     </div>
     </div>
   </div>

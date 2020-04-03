@@ -27,7 +27,7 @@
         <div class="modal-body">
 {% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true, 'formname': formname }) %}
 
-<form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitMessageForm('{{ formname }}', {{ reload }});">
+<form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitSakonninMessageForm('{{ formname }}', {{ reload }});">
 {% if mconfig.message_type is defined %}
 <input id="{{ mform.message_type.vars.id ~ formname }}" type="hidden" name="message_type" value="{{mconfig.message_type}}">
 {% else %}

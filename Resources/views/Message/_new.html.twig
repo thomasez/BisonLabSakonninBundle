@@ -1,4 +1,4 @@
-{{ form_start(form, { 'attr': {'id':'createMessageForm', 'onSubmit': 'return submitCreateMessage();'}}) }}
+{{ form_start(form, { 'attr': {'id':'createMessageForm', 'onSubmit': 'return submitCreateSakonninMessage();'}}) }}
 {% if elements is not null %}
   {% if "subject" in elements %}
     {{ form_row(form.subject) }}

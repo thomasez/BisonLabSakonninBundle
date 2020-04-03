@@ -1,11 +1,11 @@
 <script src="{{ asset('bundles/bisonlabsakonnin/js/jquery.ez-plus.js') }}"></script>
 <script type="text/javascript">
-function createMessage(formname = '') {
+function createSakonninMessage(formname = '') {
     $( "#createmessage" + formname ).modal();
     return false;
 }
 
-function submitMessageForm(formname = '', reload_after_post = false) {
+function submitSakonninMessageForm(formname = '', reload_after_post = false) {
 
     formdata = $( "#createmessageform" + formname ).serialize();
     $.ajax({
@@ -30,7 +30,7 @@ function submitMessageForm(formname = '', reload_after_post = false) {
     return false;
 }
 
-function deleteMessage(message_id) {
+function deleteSakonninMessage(message_id) {
 
     orgurl = "{{ path('message_delete', {'id': 0, 'access': 'ajax' }) }}";
     url = orgurl.replace("0", message_id);
@@ -57,12 +57,12 @@ function deleteMessage(message_id) {
     return false;
 }
 
-function createCheck(formname = '') {
+function createSakonninCheck(formname = '') {
     $( "#createcheck" + formname ).modal();
     return false;
 }
 
-function submitCheckForm(formname = '', reload_after_post = false) {
+function submitSakonninCheckForm(formname = '', reload_after_post = false) {
 
     $.ajax({
         beforeSend: function(req) {
@@ -86,26 +86,26 @@ function submitCheckForm(formname = '', reload_after_post = false) {
     return false;
 }
 
-function grabEditMessageForm(message_id, title = "Edit", reload_after_post = false) {
+function grabEditSakonninMessageForm(message_id, title = "Edit", reload_after_post = false) {
     orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
     url = orgurl.replace("0", message_id);
     $.get(url, function( data ) {
-        $( "#editMessageModalBody" ).html(data);
-        $( "#editMessageModalTitle" ).html(title);
-        $( "#editMessageModal" ).modal();
-        $( "#editMessageForm" ).submit(function( event ) {
+        $( "#editSakonninMessageModalBody" ).html(data);
+        $( "#editSakonninMessageModalTitle" ).html(title);
+        $( "#editSakonninMessageModal" ).modal();
+        $( "#editSakonninMessageForm" ).submit(function( event ) {
             event.preventDefault();
-            submitEditMessageForm(message_id, reload_after_post);
+            submitEditSakonninMessageForm(message_id, reload_after_post);
         });
     });
     return false;
 }
 
-function submitEditMessageForm(message_id, reload_after_post) {
+function submitEditSakonninMessageForm(message_id, reload_after_post) {
 
     orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
     url = orgurl.replace("0", message_id);
-    formdata = $( "#editMessageForm" ).serialize();
+    formdata = $( "#editSakonninMessageForm" ).serialize();
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
@@ -116,8 +116,8 @@ function submitEditMessageForm(message_id, reload_after_post) {
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            $( "#editMessageModal").modal("hide");
-            $( "#messagelogbox").modal("hide");
+            $( "#editSakonninMessageModal").modal("hide");
+            $( "#sakonninMessageLogBox").modal("hide");
             if (reload_after_post) {
                 parent.location.reload();
             }
@@ -129,11 +129,11 @@ function submitEditMessageForm(message_id, reload_after_post) {
     return false;
 }
 
-function uploadFile(formname = '') {
+function uploadSakonninFile(formname = '') {
     $( "#uploadfile" + formname ).modal();
 }
 
-function submitFileForm(formname = '', reload_after_post = false) {
+function submitSakonninFileForm(formname = '', reload_after_post = false) {
 
     var formData = new FormData(document.querySelector('form#uploadfileform' + formname));
     max_filesize = {{ sakonnin_files.getmaxfilesize }};
@@ -161,7 +161,7 @@ function submitFileForm(formname = '', reload_after_post = false) {
     return false;
 }
 
-function setStateOnMessage(message_id, state, hide = false) {
+function setStateOnSakonninMessage(message_id, state, hide = false) {
     cheat_url = "{{ path('message_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
     c_url = cheat_url.replace("0", message_id);
     url = c_url.replace("NONE", state);
@@ -173,7 +173,7 @@ function setStateOnMessage(message_id, state, hide = false) {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            if (hide || state == "ARCHIVED" || state == "READ" ) {
+            if (hide || state == "DELETED" || state == "ARCHIVED" || state == "READ" ) {
                 $('#sakonninmessage_' + message_id).remove();
             }
       }).fail(function(xhr, status, error) {
@@ -186,23 +186,18 @@ function setStateOnMessage(message_id, state, hide = false) {
 
 </script>
 
-<div class="modal fade" id="editMessageModal" role="dialog" tabindex="-1">
+<div class="modal fade" id="editSakonninMessageModal" role="dialog" tabindex="-1">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" id="editMessageModalTitle"></h4>
+          <h4 class="modal-title" id="editSakonninMessageModalTitle"></h4>
       </div>
       <div class="modal-body">
-            <div id="editMessageModalBody">
+            <div id="editSakonninMessageModalBody">
             </div>
       </div>
-<!-- Not sure I want it.
-      <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
--->
     </div>
   </div>
 </div>

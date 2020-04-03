@@ -1,6 +1,6 @@
 <div id="sakonninmessage_{{ entity.id}}">
   <div class="row">
-      <div class="col-sm-5">
+      <div class="col-sm-4">
         <table class="messageTable">
           <tr>
             <th valign="top">Subject:</th>
@@ -70,40 +70,33 @@
 {% if entity.contenttype == 'text/html' %}
 {{ entity.body | raw }}
 {% else %}
-<pre class="messageText">
+<pre class="messageText" wrap>
 {{ entity.body }}
 </pre>
 {% endif %}
 
   </div>
-  <div class="col-sm-1" align="right">
+  <div class="col-sm-1">
 {% if is_granted('edit', entity) %}
-    <div class="dropdown">
-      <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
-      <span></span>
-      </button>
-    <ul class="dropdown-menu dropdown-menu-right">
-    <li>
-         <a href="#" onClick='return grabEditMessageForm({{ entity.id }});'>Edit</a>
-    </li>
-<div class="hidden">
+<div class="d-none">
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(entity, true) %}
-    <form method="POST" action="{{ path('message_delete', { 'id': entity.id, 'access': 'web' }) }}">
-    {{ form_start(mdelform) }}
+    <form id="deletemessageform_{{ entity.id }}" onSubmit="return deleteSakonninMessage({{ entity.id }});">
     {{ form_rest(mdelform) }}
     <input id="delarchived_{{ entity.id }}" type="submit">
     </form>
 </div>
-    <li>
-        <a href="#" onClick='return $("#delarchived_{{ entity.id }}").click();'>Delete</a>
-    </li>
-    {# The option to de-archive a entity. Not really sure it makes sense to have at all. #}
+    <div class="dropdown">
+      <button class="glyphicon glyphicon-menu-hamburger" type="button" data-toggle="dropdown">
+      <span></span>
+      </button>
+    <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" href="#" onClick='return grabEditMessageForm({{ entity.id }});'>Edit</a>
+        <a class="dropdown-item" href="#" onClick='return $("#delarchived_{{ entity.id }}").click();'>Delete</a>
+    {# The option to de-archive an entity. Not really sure it makes sense to have at all. #}
     {% if entity.state == "ARCHIVED" %}
-    <li>
-        <a href="#" onClick="return setStateOnMessage({{ entity.id }}, '{{ entity.firststate }}', true);">Unarchive</a>
-    </li>
+        <a class="dropdown-item" href="#" onClick="return setStateOnSakonninMessage({{ entity.id }}, '{{ entity.firststate }}', true);">Unarchive</a>
     {% endif %}
-    </ul>
+    </div>
   </div>
 {% endif %}
  </div>
