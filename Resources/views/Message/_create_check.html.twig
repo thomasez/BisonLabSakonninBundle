@@ -32,7 +32,7 @@
 {% else %}
 {% set reload = "false" %}
 {% endif %}
-        <form id="createcheckform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitCheckForm('{{ formname }}', {{ reload }});">
+        <form id="createcheckform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitSakonninCheckForm('{{ formname }}', {{ reload }});">
         {% if context is not null %}
             <input id="system{{formname}}" type="hidden" name="message_context[system]" value="{{context.system}}">
             <input id="object_name{{formname}}" type="hidden" name="message_context[object_name]" value="{{context.object_name}}">
