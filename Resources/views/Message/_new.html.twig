@@ -3,32 +3,32 @@
   {% if "subject" in elements %}
     {{ form_row(form.subject) }}
   {% else %}
-    {{ form_widget(form.subject, { 'attr': {'class': 'hidden'}}) }}
+    {{ form_widget(form.subject, { 'attr': {'class': 'd-none'}}) }}
   {% endif %}
   {% if "state" in elements %}
     {{ form_row(form.state) }}
   {% else %}
-    {{ form_widget(form.state, { 'attr': {'class': 'hidden'}}) }}
+    {{ form_widget(form.state, { 'attr': {'class': 'd-none'}}) }}
   {% endif %}
   {% if "expire_at" in elements %}
     {{ form_row(form.expire_at) }}
   {% else %}
-    {{ form_widget(form.expire_at, { 'attr': {'class': 'hidden'}}) }}
+    {{ form_widget(form.expire_at, { 'attr': {'class': 'd-none'}}) }}
   {% endif %}
   {% if "state" in elements %}
     {{ form_row(form.state) }}
   {% else %}
-    {{ form_widget(form.state, { 'attr': {'class': 'hidden'}}) }}
+    {{ form_widget(form.state, { 'attr': {'class': 'd-none'}}) }}
   {% endif %}
   {% if "message_type" in elements %}
     {{ form_row(form.message_type) }}
   {% else %}
-    {{ form_widget(form.message_type, { 'attr': {'class': 'hidden'}}) }}
+    {{ form_widget(form.message_type, { 'attr': {'class': 'd-none'}}) }}
   {% endif %}
   {% if "body" in elements %}
     {{ form_row(form.body) }}
   {% else %}
-    {{ form_widget(form.body, { 'attr': {'class': 'hidden'}}) }}
+    {{ form_widget(form.body, { 'attr': {'class': 'd-none'}}) }}
   {% endif %}
 {{ form_rest(form) }}
 {% else %}
