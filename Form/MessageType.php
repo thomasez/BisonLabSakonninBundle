@@ -75,17 +75,6 @@ class MessageType extends AbstractType
                     ));
             }
         }
-/*
- * This should be set automagically or be ignored.
-        if ($options['data']->getToType()) {
-            $builder
-            ->add('to_type', HiddenType::class, array('required' => false));
-        } else {
-            $builder
-                ->add('to_type', ChoiceType::class,
-                    array('choices' => ExternalEntityConfig::getAddressTypesAsChoices()));
-        }
- */
         if ($options['data']->getTo()) {
             $builder
             ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false));
@@ -110,7 +99,8 @@ class MessageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'edit' => false,
+            'full_edit' => false,
+            'with_expire' => false,
             'data_class' => 'BisonLab\SakonninBundle\Entity\Message'
         ));
     }

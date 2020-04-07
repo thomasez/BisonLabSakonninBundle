@@ -204,11 +204,6 @@ class Message
         return $this->message_id;
     }
 
-    public function getOrigDate()
-    {
-        return $this->createdat;
-    }
-
     /**
      * Get id
      *
@@ -617,7 +612,7 @@ class Message
             'subject' => $this->getSubject(),
             'from' => $this->getFrom(),
             'to' => $this->getTo(),
-            'createdat' => $this->getCreatedAt(),
+            'createdat' => serialize($this->getCreatedAt()),
             'in_reply_to' => $this->getInReplyTo() ? $this->getInReplyTo()->getMessageId() : null,
             'message_type' => (string)$this->getMessageType(),
             'body' => $this->getBody(),

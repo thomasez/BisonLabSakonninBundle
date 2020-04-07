@@ -1,34 +1,7 @@
-{{ form_start(edit_form, { 'attr': {'id':'editMessageForm', 'onSubmit': 'return submitEditMessage();'}}) }}
+{# Gonna be added to by the grab js function
+{{ form_start(edit_form, { 'attr': {'id':'editSakonninMessageForm', 'onSubmit': 'return submitEditSakonninMessage();'}}) }}
+ #}
+{{ form_start(edit_form, { 'attr': {'id':'editSakonninMessageForm'}}) }}
     {{ form_widget(edit_form) }}
     <input type="submit" value="Save" />
 {{ form_end(edit_form) }}
-
-<script>
-
-function submitEditMessage() {
-    editMessageData = $( "#editMessageForm" ).serialize();
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ action }}",
-        data: editMessageData,
-        dataType: "text",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-{% if reload_after_post %}
-         parent.location.reload();
-{% else %}
-        return;
-{% endif %}
-      }).fail(function(xhr, status, error) {
-         errmsg = "Failed editing message\n";
-         errmsg = errmsg + xhr.responseText + "\n";
-         alert(errmsg);
-    });
-    return false;
-}
-
-</script>
-

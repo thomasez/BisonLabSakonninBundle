@@ -211,11 +211,24 @@ class MessageController extends CommonController
         $action = $this->generateUrl('message_edit', array(
             'id' => $message->getId(),
             'reload_after_post' => $request->get('reload_after_post'),
+            'no_subject' => $request->get('no_subject'),
+            'with_expire' => $request->get('with_expire'),
+            'full_edit' => $request->get('full_edit'),
             'access' => $access
             ));
-        $editForm = $this
-            ->createForm('BisonLab\SakonninBundle\Form\MessageType', $message, 
-                ['action' => $action]);
+        if ($request->get('full_edit')) {
+            $editForm = $this
+               ->createForm('BisonLab\SakonninBundle\Form\MessageType', $message, [
+                    'action' => $action,
+                    ]);
+        } else {
+            $editForm = $this
+               ->createForm('BisonLab\SakonninBundle\Form\EditMessageType', $message, [
+                    'action' => $action,
+                    'with_expire' => $request->get('with_expire'),
+                    'no_subject' => $request->get('no_subject'),
+                    ]);
+        }
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted()) {
@@ -223,7 +236,10 @@ class MessageController extends CommonController
                 $this->getDoctrineManager()->flush();
 
                 if ($this->isRest($access)) {
-                    return new JsonResponse(array("status" => "OK", 200));
+                    return new JsonResponse([
+                        "status" => "OK",
+                        "message" => $message->__toArray()
+                        ], 200);
                 }
                 return $this->redirectToRoute('message_show',
                     array('access' => $access, 'id' => $message->getId()));
@@ -631,6 +647,12 @@ class MessageController extends CommonController
     {
         if ($message->getBaseType() == "CHECK") {
             $form = $this->createForm(\BisonLab\SakonninBundle\Form\CheckType::class, $message, array(
+                'action' => $this->generateUrl('message_create'),
+                'method' => 'POST',
+            ));
+            $form->add('submit', SubmitType::class, array('label' => 'Create'));
+        } elseif ($message->getBaseType() == "NOTE") {
+            $form = $this->createForm(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
                 'action' => $this->generateUrl('message_create'),
                 'method' => 'POST',
             ));

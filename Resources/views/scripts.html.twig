@@ -86,16 +86,22 @@ function submitSakonninCheckForm(formname = '', reload_after_post = false) {
     return false;
 }
 
-function grabEditSakonninMessageForm(message_id, title = "Edit", reload_after_post = false) {
+function grabEditSakonninMessageForm(message_id, options = {}) {
     orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
     url = orgurl.replace("0", message_id);
+    title = "Edit";
+    if (options['title']) {
+        title = options['title'];
+        delete options['title'];
+    }
+    url = url + "?" + jQuery.param( options );
     $.get(url, function( data ) {
         $( "#editSakonninMessageModalBody" ).html(data);
         $( "#editSakonninMessageModalTitle" ).html(title);
         $( "#editSakonninMessageModal" ).modal();
         $( "#editSakonninMessageForm" ).submit(function( event ) {
             event.preventDefault();
-            submitEditSakonninMessageForm(message_id, reload_after_post);
+            submitEditSakonninMessageForm(message_id, options['reload_after_post']);
         });
     });
     return false;
@@ -113,13 +119,19 @@ function submitEditSakonninMessageForm(message_id, reload_after_post) {
         type: "POST",
         url: url,
         data: formdata,
-        dataType: "text",
+        dataType: "json",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             $( "#editSakonninMessageModal").modal("hide");
             $( "#sakonninMessageLogBox").modal("hide");
             if (reload_after_post) {
                 parent.location.reload();
+            } else {
+                $( "#sakonninmessagesubject_" + message_id).text(cont.message.subject);
+                $( "#sakonninmessagebody_" + message_id).text(cont.message.body);
+                $( "#sakonninmessagefrom_" + message_id).text(cont.message.from);
+                $( "#sakonninmessageto_" + message_id).text(cont.message.to);
+                $( "#sakonninmessagemessagetype_" + message_id).text(cont.message.messagetype);
             }
       }).fail(function(xhr, status, error) {
             errmsg = "Message sending failed\n";
@@ -191,8 +203,8 @@ function setStateOnSakonninMessage(message_id, state, hide = false) {
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title" id="editSakonninMessageModalTitle"></h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" id="editSakonninMessageModalTitle"></h4>
       </div>
       <div class="modal-body">
             <div id="editSakonninMessageModalBody">

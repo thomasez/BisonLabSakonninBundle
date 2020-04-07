@@ -1,7 +1,6 @@
 {% extends '@BisonLabSakonnin/base.html.twig' %}
 
 {% block body -%}
-{% include '@BisonLabSakonnin/Message/_edit_popup.html.twig' %}
 <script>
 $(document).ready(function() {
     $('#message_list').DataTable( {
@@ -49,11 +48,11 @@ $(document).ready(function() {
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('message_show', { 'id': entity.id }) }}">show</a>
+                        <a href="{{ path('message_show', { 'id': entity.id }) }}">Show</a>
                     </li>
                     {% if is_granted('edit', entity) %}
                     <li>
-                        <a href="#" onClick='grabEditMessageForm({{ entity.id }});'>edit</a><br />
+                    <a href="#" onClick="return grabEditSakonninMessageForm({{ entity.id }});">Edit</a>
                     {% endif %}
                     </li>
                 </ul>
