@@ -90,7 +90,7 @@
       <span></span>
       </button>
     <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#" onClick='return grabEditMessageForm({{ entity.id }});'>Edit</a>
+        <a class="dropdown-item" href="#" onClick='return grabEditSakonninMessageForm({{ entity.id }});'>Edit</a>
         <a class="dropdown-item" href="#" onClick='return $("#delarchived_{{ entity.id }}").click();'>Delete</a>
     {# The option to de-archive an entity. Not really sure it makes sense to have at all. #}
     {% if entity.state == "ARCHIVED" %}
