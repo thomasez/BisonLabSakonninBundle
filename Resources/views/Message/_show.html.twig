@@ -42,6 +42,16 @@
                 <a href="#" title="{{ entity.messagetype.description }}">{{ entity.messagetype }}</a>
             </td>
           </tr>
+{% if entity.replies | length > 0 %}
+          <tr>
+            <th valign="top">Replies:</th>
+            <td valign="top">
+                {% for reply in entity.replies %}
+                  <a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a><br>
+                {% endfor %}
+            </td>
+          </tr>
+{% endif %}
   </table>
   </div>
 
