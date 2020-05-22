@@ -10,7 +10,6 @@ class NotifyOnErrorSubject
     use CommonFunctions;
 
     protected $container;
-    protected $router;
 
     public function __construct($container, $options = array())
     {
@@ -21,9 +20,6 @@ class NotifyOnErrorSubject
      * more future proof. */
     public function execute($options = array())
     {
-        $sm = $this->container->get('sakonnin.messages');
-        $um = $this->container->get('fos_user.user_manager');
-
         $message = $options['message'];
 
         // First, check subject, no error, return.
@@ -46,13 +42,4 @@ class NotifyOnErrorSubject
 
         return true;
     }
-
-    public function getRouter()
-    {
-        if (!$this->router) {
-            $this->router = $this->container->get('router');
-        }
-        return $this->router;
-    }
-
 }

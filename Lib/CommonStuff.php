@@ -19,24 +19,23 @@ trait CommonStuff
         return $this->container->get('security.token_storage')->getToken()->getUser();
     }
 
-    public function getUserFromUserId($id)
+    public function getUserFromUserId($userid)
     {
-        $userManager = $this->container->get('fos_user.user_manager');
-        return $userManager->findUserBy(array('id'=>$id));
+        $user_repo = $this->getUserRepository();
+        return $user_repo->find($userid);
     }
 
     public function getUserFromUserName($username)
     {
-        $userManager = $this->container->get('fos_user.user_manager');
-        return $userManager->findUserByUsername($username);
+        $user_repo = $this->getUserRepository();
+        return $user_repo->findOneBy(array('username' => $username));
     }
 
     public function getUserNameFromUserId($userid)
     {
         // It may just not be an ID.
         if (!is_numeric($userid)) return $userid;
-        $userManager = $this->container->get('fos_user.user_manager');
-        $user = $userManager->findUserBy(array('id' => $userid));
+        $user = $this->getUserFromUserId($userid);
         if (!$user) return $userid;
         return $user->getUserName();;
     }
@@ -47,13 +46,11 @@ trait CommonStuff
             $user = $this->getLoggedInUser();
         // It may just be an ID.
         if (is_numeric($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('id' => $user));
+            $user = $this->getUserFromUserId($user);
         }
         // Or string?
         if (is_string($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('username' => $user));
+            $user = $this->getUserFromUserName($user);
         }
 
         if (is_object($user) && method_exists($user, 'getEmail'))
@@ -68,13 +65,11 @@ trait CommonStuff
             $user = $this->getLoggedInUser();
         // It may just be an ID.
         if (is_numeric($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('id' => $user));
+            $user = $this->getUserFromUserId($user);
         }
         // Or string?
         if (is_string($user)) {
-            $userManager = $this->container->get('fos_user.user_manager');
-            $user = $userManager->findUserBy(array('username' => $user));
+            $user = $this->getUserFromUserName($user);
         }
 
         if (is_object($user) && method_exists($user, 'getMobilePhoneNumber'))
@@ -123,5 +118,27 @@ trait CommonStuff
             }
         }
         return $this->entityManager;
+    }
+
+    public function getUserEntityManager()
+    {
+        if (!isset($this->container))
+            $this->container = $this->getContainer();
+        if (!$this->user_em) {
+            $user_class = $this->container->getParameter('sakonnin.user')['class'];
+            $this->user_em = $this->container->get('doctrine')->getManagerForClass($user_class);
+        }
+        return $this->user_em;
+    }
+
+    public function getUserRepository()
+    {
+        if (!isset($this->container))
+            $this->container = $this->getContainer();
+        if (!$this->user_repository) {
+            $user_class = $this->container->getParameter('sakonnin.user')['class'];
+            $this->user_repository = $this->getUserEntityManager()->getRepository($user_class);
+        }
+        return $this->user_repository;
     }
 }

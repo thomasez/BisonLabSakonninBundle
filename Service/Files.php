@@ -20,10 +20,11 @@ class Files
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $container;
+    private $user_repository;
 
     public function __construct($container)
     {
-        $this->container         = $container;
+        $this->container = $container;
     }
 
     public function storeFile($data, $context_data = array())
@@ -153,7 +154,7 @@ class Files
 
     public function getFiles($criterias = array())
     {
-        $em = $this->getDoctrineManager();
+        $em   = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
 
         // There can be only one
@@ -202,7 +203,7 @@ class Files
 
     public function contextHasFiles($context)
     {
-        $em = $this->getDoctrineManager();
+        $em   = $this->getDoctrineManager();
         $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFileContext');
         return $repo->contextHasFiles($context);
     }

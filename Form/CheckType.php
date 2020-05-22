@@ -14,7 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use FOS\UserBundle\Form\Type\UsernameFormType;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 use BisonLab\SakonninBundle\Entity\Message;

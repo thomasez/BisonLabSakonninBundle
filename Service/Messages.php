@@ -20,6 +20,7 @@ class Messages
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $container;
+    private $user_repository;
 
     public function __construct($container)
     {

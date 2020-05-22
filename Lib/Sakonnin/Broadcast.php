@@ -18,9 +18,9 @@ class Broadcast
     public function execute($options = array())
     {
         $message = $options['message'];
-        $userManager = $this->container->get('fos_user.user_manager');
-        
-        foreach ($userManager->findUsers() as $receiver) {
+        $user_repo = $this->getUserRepository();
+
+        foreach ($user_repo->findAll() as $receiver) {
             if ($receiver->getEnabled())
                 $this->sendNotification($receiver, $message->getBody(),
                     array('message_type' => 'PM'));

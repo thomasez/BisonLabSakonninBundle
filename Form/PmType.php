@@ -12,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use FOS\UserBundle\Form\Type\UsernameFormType;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 
@@ -25,7 +24,7 @@ class PmType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => true))
+            ->add('to', TextType::class, array('label' => "To:", 'required' => true))
             // ->add('to', TextType::class, array('label' => "To:", 'required' => true, "attr" => array("size" => "40")))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
             ->add('body', TextareaType::class, array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))

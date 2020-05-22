@@ -84,15 +84,12 @@ trait CommonFunctions
         // Receiver should/could be userid, username or user object.
         if (!is_object($to)) {
             if (is_numeric($to)) {
-                // Gotta find user.
-                $userManager = $this->container->get('fos_user.user_manager');
-                if (!$to = $userManager->findUserBy(array('id' => $to)))
-                    return false;
+                $to = $this->getUserFromUserId($to);
             } else {
-                $userManager = $this->container->get('fos_user.user_manager');
-                if (!$to = $userManager->findUserBy(array('username' => $to)))
-                    return false;
+                $to = $this->getUserFromUserName($to);
             }
+            if (!$to)
+                return false;
         }
         $message = new Message();
         $em = $this->getDoctrineManager();
@@ -148,27 +145,14 @@ trait CommonFunctions
         $sm = $this->container->get('sakonnin.messages');
         if (is_object($receiver) && method_exists($receiver, "getEmail"))
             return $receiver->getEmail();
-        if ($receiver instanceof \FOS\UserBundle\Model\User) {
+        if ($receiver instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             return $sm->getEmailFromUser($receiver);
         // In case of userid
-        } elseif (is_numeric($receiver)) {
-            // Gotta find email address user.
-            $userManager = $this->container->get('fos_user.user_manager');
-            if (!$user = $userManager->findUserBy(array('id' => $receiver)))
-                return null;
-            return $sm->getEmailFromUser($user);
-        // In case of not something resembling a mail address, we're guessing
-        // username.
         } elseif (preg_match("/\w+@\w+/", $receiver)) {
             // Let's assume this is the email address we're sending to. 
             return $receiver;
-        } elseif (!preg_match("/\w+@\w+/", $receiver)) {
-            // Gotta find username.
-            $userManager = $this->container->get('fos_user.user_manager');
-            if (!$user = $userManager->findUserBy(array('username' => $receiver)))
-                return false;
-            $receiver = $sm->getEmailFromUser($user);
-        }
+        } else {
+            return $this->getEmailFromUser($receiver);
         return null;
     }
 

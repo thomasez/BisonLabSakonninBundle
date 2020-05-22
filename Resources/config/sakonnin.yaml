@@ -1,4 +1,22 @@
 parameters:
+    sakonnin.user:
+        class: BisonLabUserBundle:User
+        entity: \BisonLab\UserBundle\Entity\User
+
+    sakonnin.states:
+        # There are states for two types of messages. Those you send or
+        # receive and the others.
+        # 'SENDING', 'UNREAD', 'SENT', 'READ' are typical for the first.
+        # 'SHOW', 'HIDE' are not really the words I like, but they do express
+        # the purpose.
+        # "ARCHIVED" is for both.
+        # And last, "UNCHECKED" and "CHECKED" for check items.
+        # I guess I should consider the option to decide which states the
+        # different message types should be able to have. Either as a free
+        # array or from a pick list of these.
+        Message:
+            states: ['SHOW', 'HIDE', 'SENDING', 'UNREAD', 'SENT', 'READ', 'ARCHIVED', 'UNCHECKED', 'CHECKED']
+
     # Base message types.
     # States is the common order they are set. Default is the first one in the
     # list.
@@ -15,6 +33,7 @@ parameters:
             states: ['UNCHECKED', 'CHECKED']
             short: "Checkitem"
             description: "Check(list) item"
+
     sakonnin.address_types:
         # None at all. Notes uses createdBy and contexts.
         NONE:

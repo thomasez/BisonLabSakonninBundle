@@ -14,7 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use FOS\UserBundle\Form\Type\UsernameFormType;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 use BisonLab\SakonninBundle\Entity\Message;
@@ -77,7 +76,7 @@ class MessageType extends AbstractType
         }
         if ($options['data']->getTo()) {
             $builder
-            ->add('to', UsernameFormType::class, array('label' => "To:", 'required' => false));
+            ->add('to', TextType::class, array('label' => "To:", 'required' => false));
         } else {
             $builder
                 ->add('to', HiddenType::class, array('required' => false));

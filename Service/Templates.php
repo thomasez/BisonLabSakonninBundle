@@ -28,7 +28,7 @@ class Templates
 
     public function __construct($container)
     {
-        $this->container         = $container;
+        $this->container = $container;
     }
 
     public function getTemplate($name)

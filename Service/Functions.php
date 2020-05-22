@@ -13,13 +13,14 @@ class Functions
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $container;
+    private $user_repository;
 
     private $forward_functions;
     private $callback_functions;
 
     public function __construct($container, $Sakonnin_classes = array())
     {
-        $this->container         = $container;
+        $this->container = $container;
         foreach ($Sakonnin_classes as $class) {
             $sakonnin_object = new $class($container, array());
 
