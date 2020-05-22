@@ -18,8 +18,8 @@
         }
     ],
     "require": {
-        "bisonlab/common-bundle": "^3.4 || dev-master",
-        "symfony/framework-bundle": "^3.4 || ^4.0",
+        "bisonlab/common-bundle": "^3.4 || || ^4.4 || dev-master",
+        "symfony/framework-bundle": "^4.4 || ^5.0",
         "vich/uploader-bundle": "~1.4",
         "imagine/imagine": "^1.2",
         "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
