@@ -8,6 +8,7 @@ namespace BisonLab\SakonninBundle\Lib;
 trait CommonStuff 
 {
     private $entityManager;
+    private $userEm;
 
     public function getLoggedInUser()
     {
@@ -124,11 +125,11 @@ trait CommonStuff
     {
         if (!isset($this->container))
             $this->container = $this->getContainer();
-        if (!$this->user_em) {
+        if (!$this->userEm) {
             $user_class = $this->container->getParameter('sakonnin.user')['class'];
-            $this->user_em = $this->container->get('doctrine')->getManagerForClass($user_class);
+            $this->userEm = $this->container->get('doctrine')->getManagerForClass($user_class);
         }
-        return $this->user_em;
+        return $this->userEm;
     }
 
     public function getUserRepository()
