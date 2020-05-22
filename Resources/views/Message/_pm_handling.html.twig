@@ -17,7 +17,7 @@ function createPmMessage(type = "PM") {
         $( "#createpmform #body" ).focus();
       }
     });
-
+    $( "#createpmform #to" ).autocomplete("option", "appendTo", "#createpmform");
     return false;
 }
 
@@ -91,12 +91,14 @@ jQuery(document).ready(function() {
        {# Gotta remember to add some way to send "in_reply_to" here. #}
        {% set pmform = sakonnin_messages.getCreatePmForm({'create_view': true}) %}
        <form id="createpmform" method="POST" action="{{ path('pm_create', { 'access': 'ajax' }) }}" onSubmit="return submitPmMessageForm('createpmform', null);">
-        <input type="hidden" name="to_userid" id="to_userid">
-        <input type="hidden" name="message_type" id="pmmessage_type" value="PM">
-        {{ form_row(pmform.to)}} 
-        {{ form_row(pmform.body)}} 
-        {{ form_row(pmform.submit)}} 
-        {{ form_row(pmform._token)}} 
+        <fieldset>
+            <input type="hidden" name="to_userid" id="to_userid">
+            <input type="hidden" name="message_type" id="pmmessage_type" value="PM">
+            {{ form_row(pmform.to, {'attr': {'class': 'ui-front'}})}} 
+            {{ form_row(pmform.body, {'attr': {'rows': 5, 'cols': 30}})}} 
+            {{ form_row(pmform.submit)}} 
+            {{ form_row(pmform._token)}} 
+        </fieldset>
        </form>
       </div>
     </div>
