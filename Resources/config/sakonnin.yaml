@@ -3,6 +3,11 @@ parameters:
         class: BisonLabUserBundle:User
         entity: \BisonLab\UserBundle\Entity\User
 
+    sakonnin.function_factories:
+        - BisonLab\SakonninBundle\Lib\Sakonnin\SakonninFunctions
+
+    sakonnin.sms: []
+
     sakonnin.states:
         # There are states for two types of messages. Those you send or
         # receive and the others.
