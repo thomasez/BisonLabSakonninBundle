@@ -153,6 +153,7 @@ trait CommonFunctions
             return $receiver;
         } else {
             return $this->getEmailFromUser($receiver);
+        }
         return null;
     }
 
