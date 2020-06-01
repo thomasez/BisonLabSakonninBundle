@@ -58,27 +58,14 @@ class SakonninInsertBaseDataCommand extends Command
                 'expunge_days' => 5,
                 'description' => "Notification"
                 ),
-           'Broadcast' => array(
-                'parent' => 'Messages',
-                'base_type' => 'MESSAGE',
-                'security_model' => 'PRIVATE',
-                'forward_function' => 'broadcast',
-                'description' => "Send PM to everyone"
-                ),
        'Announcements' => array(
                 'description' => 'Announcements'
                 ),
-           'Front page logged in' => array(
+           'Wall' => array(
                 'parent' => 'Announcements',
                 'base_type' => 'NOTE',
                 'security_model' => 'ALL_READ',
-                'description' => "Front page Announcement for logged in users"
-                ),
-           'Front page not logged in' => array(
-                'parent' => 'Announcements',
-                'base_type' => 'NOTE',
-                'security_model' => 'ALL_READ',
-                'description' => "Front page Announcement for not yet0logged in users"
+                'description' => "The Wall"
                 ),
        'Notes' => array(
                 'description' => 'Notes'
