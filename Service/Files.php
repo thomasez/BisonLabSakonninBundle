@@ -198,6 +198,10 @@ class Files
         } else {
             $query->orderBy("f.createdAt", "ASC");
         }
+
+        if (isset($criterias['limit'])) {
+            $query->setMaxResults($criterias['limit']);
+        }
         return $query->getQuery()->getResult();
     }
 
