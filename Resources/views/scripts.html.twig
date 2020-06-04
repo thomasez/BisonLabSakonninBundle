@@ -204,7 +204,11 @@ function openSakonninImageModal(imageId) {
     var modalImg = document.getElementById("modalImageContent");
     var captionText = document.getElementById("modalImageCaption");
 
-    modalImg.src = img.src;
+    if ("original" in img.dataset) {
+        modalImg.src = img.dataset.original;
+    } else {
+        modalImg.src = img.src;
+    }
     captionText.innerHTML = img.alt;
     modal.style.display = "block";
 

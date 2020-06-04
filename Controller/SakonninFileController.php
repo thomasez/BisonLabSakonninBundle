@@ -150,8 +150,8 @@ class SakonninFileController extends CommonController
         $em = $this->getDoctrineManager();
         $sf = $this->container->get('sakonnin.files');
         if (is_numeric($id)) {
-            $repo = $em->getRepository('@BisonLabSakonnin:SakonninFile');
-            $file->find($id);
+            $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
+            $sfile = $repo->find($id);
         } else {
             $sfile = $sf->getFiles(['fileid' => $id]);
         }
