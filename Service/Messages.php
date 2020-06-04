@@ -377,6 +377,10 @@ class Messages
         } else {
             $query->orderBy("m.createdAt", "ASC");
         }
+
+        if (isset($criterias['limit'])) {
+            $query->setMaxResults($criterias['limit']);
+        }
         return $query->getQuery()->getResult();
     }
 
