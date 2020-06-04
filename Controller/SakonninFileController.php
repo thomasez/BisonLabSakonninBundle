@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -123,6 +124,7 @@ class SakonninFileController extends CommonController
         // TODO: Add access control.
         $path = $this->getFilePath();
         $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         return $response;
     }
@@ -137,6 +139,7 @@ class SakonninFileController extends CommonController
         // TODO: Add access control.
         $path = $this->getFilePath();
         $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         return $response;
     }
 
@@ -162,6 +165,7 @@ class SakonninFileController extends CommonController
         // Gotta get the thumbnail then.
         $thumbfile = $sf->getThumbnailFilename($sfile, $x, $y);
         $response = new BinaryFileResponse($thumbfile);
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         return $response;
     }
 
