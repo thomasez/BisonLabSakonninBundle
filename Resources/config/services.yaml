@@ -46,11 +46,17 @@ services:
 
     sakonnin_messages:
         alias: sakonnin.messages
-        deprecated: ~
+        deprecated:
+            package: 'bisonlab/sakonnin-bundle'
+            version: '4.0'
+            message: 'The "%alias_id%" alias is deprecated. Use sakonnin.messages'
 
     sakonnin_functions:
         alias: sakonnin.functions
-        deprecated: ~
+        deprecated:
+            package: 'bisonlab/sakonnin-bundle'
+            version: '4.0'
+            message: 'The "%alias_id%" alias is deprecated. Use sakonnin.functions'
 
     # Should this be here at all? It's kinda optional.
     # Answer: No. Put it in your local app/config/services.yml if you are going
