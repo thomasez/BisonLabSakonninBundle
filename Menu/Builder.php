@@ -27,9 +27,9 @@ class Builder implements ContainerAwareInterface
         // Gotta create routes to the message boxes.
         $router = $container->get('router');
         $read_new_route = $router->generate('message_unread', array('access' => 'ajax'));
-        $read_new_click = 'openMessageLogBox("' . $read_new_route . '")';
+        $read_new_click = 'openSakonninMessageLogBox("' . $read_new_route . '")';
         $message_log_route = $router->generate('message', array('access' => 'ajax'));
-        $message_log_click = 'openMessageLogBox("' . $message_log_route . '")';
+        $message_log_click = 'openSakonninMessageLogBox("' . $message_log_route . '")';
 
         $messagesmenu = $menu->addChild('Messages');
         $messagesmenu->setAttribute('id', 'message_menu');

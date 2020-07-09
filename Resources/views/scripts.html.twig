@@ -209,7 +209,12 @@ function openSakonninImageModal(imageId) {
     } else {
         modalImg.src = img.src;
     }
-    captionText.innerHTML = img.alt;
+
+    if ( img.alt.length > 0 ) {
+        captionText.innerHTML = img.alt;
+    } else {
+        captionText.innerHTML = img.title;
+    }
     modal.style.display = "block";
 
     // Get the <span> element that closes the modal
