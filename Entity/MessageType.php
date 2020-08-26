@@ -27,20 +27,21 @@ class MessageType
      */
     private static $security_models = array(
         // Maybe not the best word for it, but is User, Sender and Receiver.
-        'PRIVATE' => array('short' => 'Private', 'description' => 'User/Sender and receiver can read.'),
+        'PRIVATE' => array('label' => 'Private', 'description' => 'User/Sender and receiver can read.'),
+        'GROUP_RW' => array('label' => 'User group member', 'description' => 'Members of the group(s) the sender is in can read and write..'),
         // Everyone can read.
-        'ALL_READ' => array('short' => 'All read', 'description' => 'Everyone can read, admin can write.'),
+        'ALL_READ' => array('label' => 'All read', 'description' => 'Everyone can read, admin can write.'),
         // Everyone can read and write
-        'ALL_READWRITE' => array('short' => 'All read write', 'description' => 'Everyone can read and write.'),
+        'ALL_READWRITE' => array('label' => 'All read write', 'description' => 'Everyone can read and write.'),
         // Only Admins can read and write.
-        'ADMIN_ONLY' => array('short' => 'Admin only', 'description' => 'Only Admin can read and write.'),
-        'ADMIN_RW_USER_R' => array('short' => 'Admin read and write, object read', 'description' => 'Only Admin can write and the object (user) can read.'),
-        'ADMIN_RW_USER_RW' => array('short' => 'Admin, user read and write', 'description' => 'Admin and user can read and write')
+        'ADMIN_ONLY' => array('label' => 'Admin only', 'description' => 'Only Admin can read and write.'),
+        'ADMIN_RW_USER_R' => array('label' => 'Admin read and write, object read', 'description' => 'Only Admin can write and the object (user) can read.'),
+        'ADMIN_RW_USER_RW' => array('label' => 'Admin, user read and write', 'description' => 'Admin and user can read and write')
     );
 
     private static $expunge_methods = array(
-        'DELETE' => array('short' => 'Delete', 'description' => 'Message is deleted.'),
-        'ARCHIVE' => array('short' => 'Archive', 'description' => 'Message is marked as archived.'),
+        'DELETE' => array('label' => 'Delete', 'description' => 'Message is deleted.'),
+        'ARCHIVE' => array('label' => 'Archive', 'description' => 'Message is marked as archived.'),
     );
 
     /**
@@ -281,7 +282,7 @@ class MessageType
     {
         $bases = array();
         foreach (ExternalEntityConfig::getBaseTypes() as $name => $bt) {
-            $bases[$bt['short']] = $name;
+            $bases[$bt['label']] = $name;
         }
         return $bases;
     }
@@ -318,6 +319,17 @@ class MessageType
     }
 
     /**
+     * Get security_model
+     *
+     * @return string 
+     */
+    public function getSecurityModelLabel()
+    {
+        $model = $this->getSecurityModel();
+        return self::$security_models[$model]['label'] ?? '';
+    }
+
+    /**
      * Get security_models
      *
      * @return array 
@@ -333,7 +345,7 @@ class MessageType
     {
         $mods = array();
         foreach (self::$security_models as $name => $sm) {
-            $mods[$sm['short']] = $name;
+            $mods[$sm['label']] = $name;
         }
         return $mods;
     }
@@ -628,7 +640,7 @@ class MessageType
     {
         $mods = array();
         foreach (self::$expunge_methods as $name => $sm) {
-            $mods[$sm['short']] = $name;
+            $mods[$sm['label']] = $name;
         }
         return $mods;
     }

@@ -74,6 +74,9 @@ class SecurityModelVoter extends Voter
             case 'ADMIN_RW_USER_RW':
                 return $this->_isAdmin($token) || $this->_checkPrivate($attribute, $subject, $token);
                 break;
+            case 'GROUP_RW':
+                return $this->_hasGroup($attribute, $subject, $token);
+                break;
             case 'PRIVATE':
                 return $this->_checkPrivate($attribute, $subject, $token);
                 break;
@@ -129,27 +132,71 @@ class SecurityModelVoter extends Voter
 
         $user = $token->getUser();
 
-        if ($subject instanceof Message) {
-            if (('INTERNAL' == $subject->getFromType()) && 
-                ($subject->getFrom() == $user->getId() || $subject->getFrom() == $user->getUsername()))
-                    return true;
-            if (('INTERNAL' == $subject->getToType()) &&
-                ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
-                    return true;
-            // Then, how do I get the object the context is pointing at?
-            // Answer: "The ExternalRetriever" in my CommonBundle.
-            foreach ($subject->getContexts() as $context) {
-                if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
-                    // The question now is. How do I know that the object is
-                    // what I am looking for?
-                    // For now, I presume it's within the same application and
-                    // do a pure match.
-                    if ($object === $user)
-                        return true;
-                }
-            }
-        } else {
+        if (!$subject instanceof Message) {
             return true;
+        }
+
+        if (('INTERNAL' == $subject->getFromType()) && 
+            ($subject->getFrom() == $user->getId() || $subject->getFrom() == $user->getUsername()))
+                return true;
+        if (('INTERNAL' == $subject->getToType()) &&
+            ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
+                return true;
+        // Then, how do I get the object the context is pointing at?
+        // Answer: "The ExternalRetriever" in my CommonBundle.
+        foreach ($subject->getContexts() as $context) {
+            if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
+                // The question now is. How do I know that the object is
+                // what I am looking for?
+                // For now, I presume it's within the same application and
+                // do a pure match.
+               if ($object === $user)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * If User is ether sender, receiver og creator, check the group(s) it
+     * belongs to.
+     * This model does require that you actually use groups..=)
+     * Same issues as with _checkPrivate.
+     */
+    private function _hasGroup($atttribute, $subject, $token)
+    {
+        if ($subject instanceof MessageContext)
+            $subject = $subject->getMessage();
+
+        // Is this correct?
+        if (!$subject instanceof Message) {
+            return true;
+        }
+
+        $user = $token->getUser();
+        if (!method_exists($user, 'getGroupNames'))
+            return false;
+
+        if (('INTERNAL' == $subject->getFromType()) && 
+            ($subject->getFrom() == $user->getId() || $subject->getFrom() == $user->getUsername()))
+                return true;
+        if (('INTERNAL' == $subject->getToType()) &&
+            ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
+                return true;
+        // Then, how do I get the object the context is pointing at?
+        // Answer: "The ExternalRetriever" in my CommonBundle.
+        foreach ($subject->getContexts() as $context) {
+            if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
+                // The question now is. How do I know that the object is
+                // what I am looking for?
+                // For now, I presume it's within the same application and
+                // do a pure match.
+                if (!method_exists($object, 'getGroupNames'))
+                    return false;
+                
+                if (in_array($object->getGroupNames(), $user->getGroupNames()))
+                    return true;
+            }
         }
         return false;
     }

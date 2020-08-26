@@ -98,7 +98,6 @@ class MessageTypeController extends CommonController
         $this->_addFunctionsToForm($form);
 
         $form->add('create_group', CheckboxType::class, array('label' => "This is a new group.", 'mapped' => false, 'required' => false));
-        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -184,7 +183,6 @@ class MessageTypeController extends CommonController
         ));
         $this->_addFunctionsToForm($form);
 
-        $form->add('submit', SubmitType::class, array('label' => 'Update'));
         return $form;
     }
 
@@ -255,7 +253,6 @@ class MessageTypeController extends CommonController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('messagetype_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }

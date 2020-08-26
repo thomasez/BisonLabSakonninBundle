@@ -36,15 +36,15 @@ parameters:
     sakonnin.base_types:
         MESSAGE:
             states: ['UNREAD', 'READ']
-            short: "Message"
+            label: "Message"
             description: "Messages with to, from, subject and body"
         NOTE:
             states: ['UNREAD', 'READ']
-            short: "Note"
+            label: "Note"
             description: "Notes attached to a context (object)"
         CHECK:
             states: ['UNCHECKED', 'CHECKED']
-            short: "Checkitem"
+            label: "Checkitem"
             description: "Check(list) item"
 
     sakonnin.address_types:

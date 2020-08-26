@@ -110,7 +110,7 @@ function addTagFormDeleteLink($tagFormLi) {
         </li>
     {% endfor %}
     </ul>
-    <a href="#" id="add-another-callbackattribute">Add another attribute</a>
+    <a href="#" id="add-another-callbackattribute">Add attribute</a>
 </div>
     
 {{ form_row(edit_form.forward_function) }}
@@ -124,16 +124,20 @@ function addTagFormDeleteLink($tagFormLi) {
             {{ form_widget(attr) }}
         </li>
     {% endfor %}
-    <a href="#" id="add-another-forwardattribute">Add another attribute</a>
+    <a href="#" id="add-another-forwardattribute">Add attribute</a>
     </ul>
 </div>
 
     {{ form_row(edit_form._token) }}
-    {{ form_row(edit_form.submit) }}
+    <button type="submit" class="btn btn-primary">Save</button>
 </form>
 
 {% if delete_form is defined %}
-    {{ form(delete_form) }}
+    {{ form_start(delete_form) }}
+    {{ form_errors(delete_form) }}
+    {{ form_widget(delete_form) }}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    {{ form_end(delete_form) }}
 {% endif %}
-<button class="btn"><a href="{{ path('messagetype') }}">Cancel</a></button>
+<a class="btn btn-primary" href="{{ path('messagetype') }}">Cancel</a>
 {% endblock %}

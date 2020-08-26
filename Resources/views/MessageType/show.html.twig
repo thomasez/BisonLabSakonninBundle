@@ -27,7 +27,7 @@
             </tr>
             <tr>
                 <th>Security model</th>
-                <td>{{ entity.securitymodel }}</td>
+                <td>{{ entity.securitymodellabel }}</td>
             </tr>
 {% if entity.sakonnintemplate is not null %}
             <tr>
@@ -87,13 +87,11 @@
 {% endif %}
         </tbody>
     </table>
-<ul class="sakonnin_actions">
-    <li>
-        <a class="btn btn-primary" href="{{ path('messagetype_edit', { 'id': entity.id }) }}">Edit</a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-    <li>
-        <a href="{{ path('messagetype') }}">Back to list</a>
-    </li>
-</ul>
+    <a class="btn btn-primary" href="{{ path('messagetype_edit', { 'id': entity.id }) }}">Edit</a><br>
+    {{ form_start(delete_form) }}
+    {{ form_errors(delete_form) }}
+    {{ form_widget(delete_form) }}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    {{ form_end(delete_form) }}
+    <a class="btn btn-primary" href="{{ path('messagetype') }}">Back to list</a><br>
 {% endblock %}
