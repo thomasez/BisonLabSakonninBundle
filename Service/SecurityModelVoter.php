@@ -20,10 +20,12 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 class SecurityModelVoter extends Voter
 {
     private $external_retriever;
+    private $sakonnin_messages;
 
-    public function __construct($external_retriever)
+    public function __construct($external_retriever, $sakonnin_messages)
     {
-        $this->external_retriever         = $external_retriever;
+        $this->external_retriever = $external_retriever;
+        $this->sakonnin_messages  = $sakonnin_messages;
     }
 
     protected function supports($attribute, $subject)
@@ -177,14 +179,17 @@ class SecurityModelVoter extends Voter
         if (!method_exists($user, 'getGroupNames'))
             return false;
 
-        if (('INTERNAL' == $subject->getFromType()) && 
-            ($subject->getFrom() == $user->getId() || $subject->getFrom() == $user->getUsername()))
-                return true;
-        if (('INTERNAL' == $subject->getToType()) &&
-            ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
-                return true;
-        // Then, how do I get the object the context is pointing at?
-        // Answer: "The ExternalRetriever" in my CommonBundle.
+        if ('INTERNAL' == $subject->getFromType() && $from = $subject->getFrom()) {
+            if ($from_user = $this->sakonnin_messages->getUserFromUserName($from)) {
+                foreach($from_user->getGroupNames() as $gn) {
+                    if (in_array($gn, $user->getGroupNames()))
+                        return true;
+                }
+                
+                if (in_array($from_user->getGroupNames(), $user->getGroupNames()))
+                    return true;
+            }
+        }
         foreach ($subject->getContexts() as $context) {
             if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
                 // The question now is. How do I know that the object is
