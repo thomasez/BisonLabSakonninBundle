@@ -32,8 +32,8 @@ function submitSakonninMessageForm(formname = '', reload_after_post = false) {
 
 function deleteSakonninMessage(message_id) {
 
-    orgurl = "{{ path('message_delete', {'id': 0, 'access': 'ajax' }) }}";
-    url = orgurl.replace("0", message_id);
+    orgurl = "{{ path('message_delete', {'message_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
+    url = orgurl.replace("xxxxxxxxxxxxx", message_id);
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
@@ -87,8 +87,8 @@ function submitSakonninCheckForm(formname = '', reload_after_post = false) {
 }
 
 function grabEditSakonninMessageForm(message_id, options = {}) {
-    orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
-    url = orgurl.replace("0", message_id);
+    orgurl = "{{ path('message_edit', {'message_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
+    url = orgurl.replace("xxxxxxxxxxxxx", message_id);
     title = "Edit";
     if (options['title']) {
         title = options['title'];
@@ -109,8 +109,8 @@ function grabEditSakonninMessageForm(message_id, options = {}) {
 
 function submitEditSakonninMessageForm(message_id, reload_after_post) {
 
-    orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
-    url = orgurl.replace("0", message_id);
+    orgurl = "{{ path('message_edit', {'message_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
+    url = orgurl.replace("xxxxxxxxxxxxx", message_id);
     formdata = $( "#editSakonninMessageForm" ).serialize();
     $.ajax({
         beforeSend: function(req) {
@@ -174,8 +174,8 @@ function submitSakonninFileForm(formname = '', reload_after_post = false) {
 }
 
 function setStateOnSakonninMessage(message_id, state, hide = false) {
-    cheat_url = "{{ path('message_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
-    c_url = cheat_url.replace("0", message_id);
+    cheat_url = "{{ path('message_state', { 'message_id': 'xxxxxxxxxxxxx', 'state': 'NONE', 'access': 'ajax' }) }}";
+    c_url = orgurl.replace("xxxxxxxxxxxxx", message_id);
     url = c_url.replace("NONE", state);
     $.ajax({
         beforeSend: function(req) {

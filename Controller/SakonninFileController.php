@@ -34,7 +34,6 @@ class SakonninFileController extends CommonController
      */
     public function indexAction($access)
     {
-        $em = $this->getDoctrineManager();
         $sf = $this->container->get('sakonnin.files');
         // Todo: paging or just show the last 20
         $files = $sf->getFilesForLoggedIn();
@@ -80,7 +79,7 @@ class SakonninFileController extends CommonController
             if ($this->isRest($access)) {
                 return new JsonResponse('OK Done', Response::HTTP_CREATED);
             }
-            return $this->redirectToRoute('file_show', array('id' => $file->getId()));
+            return $this->redirectToRoute('file_show', array('file_id' => $file->getFileId()));
         }
 
         if ($this->isRest($access)) {
@@ -101,10 +100,11 @@ class SakonninFileController extends CommonController
     /**
      * Finds and displays a file entity.
      *
-     * @Route("/{id}", name="file_show", methods={"GET"}, requirements={"id"="(\d+|\w{13})"})
+     * @Route("/{file_id}", name="file_show", methods={"GET"}, requirements={"file_id"="\w{13}"})
      */
-    public function showAction(Request $request, SakonninFile $file, $access)
+    public function showAction(Request $request, $file_id, $access)
     {
+        $file = $this->_getFile($file_id);
         $deleteForm = $this->createDeleteForm($file);
 
         return $this->render('@BisonLabSakonnin/SakonninFile/show.html.twig',
@@ -117,10 +117,11 @@ class SakonninFileController extends CommonController
     /**
      * Download a file.
      *
-     * @Route("/{id}/download", name="file_download", methods={"GET"})
+     * @Route("/{file_id}/download", name="file_download", methods={"GET"})
      */
-    public function downloadAction(Request $request, SakonninFile $file, $access)
+    public function downloadAction(Request $request, $file_id, $access)
     {
+        $file = $this->_getFile($file_id);
         // TODO: Add access control.
         $path = $this->getFilePath();
         $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
@@ -132,10 +133,11 @@ class SakonninFileController extends CommonController
     /**
      * View a file.
      *
-     * @Route("/{id}/view", name="file_view", methods={"GET"})
+     * @Route("/{file_id}/view", name="file_view", methods={"GET"})
      */
-    public function viewAction(Request $request, SakonninFile $file, $access)
+    public function viewAction(Request $request, $file_id, $access)
     {
+        $file = $this->_getFile($file_id);
         // TODO: Add access control.
         $path = $this->getFilePath();
         $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
@@ -146,18 +148,13 @@ class SakonninFileController extends CommonController
     /**
      * Create/cache thumbnail.
      *
-     * @Route("/{id}/thumbnail/{x}/{y}", name="file_thumbnail", methods={"GET"})
+     * @Route("/{file_id}/thumbnail/{x}/{y}", name="file_thumbnail", methods={"GET"})
      */
-    public function thumbnailAction(Request $request, $access, $id, $x, $y)
+    public function thumbnailAction(Request $request, $access, $file_id, $x, $y)
     {
-        $em = $this->getDoctrineManager();
         $sf = $this->container->get('sakonnin.files');
-        if (is_numeric($id)) {
-            $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
-            $sfile = $repo->find($id);
-        } else {
-            $sfile = $sf->getFiles(['fileid' => $id]);
-        }
+
+        $file = $this->_getFile($file_id);
 
         if (!$sfile->getThumbnailable())
             $this->returnError($request, 'Not an image');
@@ -172,10 +169,11 @@ class SakonninFileController extends CommonController
     /**
      * Displays a form to edit an existing file entity.
      *
-     * @Route("/{id}/edit", name="file_edit", methods={"GET", "POST"})
+     * @Route("/{file_id}/edit", name="file_edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, SakonninFile $file, $access)
+    public function editAction(Request $request, $file_id, $access)
     {
+        $file = $this->_getFile($file_id);
         $deleteForm = $this->createDeleteForm($file);
         $editForm = $this->createForm('BisonLab\SakonninBundle\Form\SakonninFileType', $file);
         $editForm->handleRequest($request);
@@ -183,7 +181,7 @@ class SakonninFileController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrineManager()->flush();
 
-            return $this->redirectToRoute('file_edit', array('id' => $file->getId()));
+            return $this->redirectToRoute('file_edit', array('file_id' => $file->getFileId()));
         }
 
         return $this->render('@BisonLabSakonnin/SakonninFile/edit.html.twig',
@@ -197,10 +195,11 @@ class SakonninFileController extends CommonController
     /**
      * Deletes a file entity.
      *
-     * @Route("/{id}", name="file_delete", methods={"DELETE"})
+     * @Route("/{file_id}", name="file_delete", methods={"DELETE"})
      */
-    public function deleteAction(Request $request, SakonninFile $file, $access)
+    public function deleteAction(Request $request, $file_id, $access)
     {
+        $file = $this->_getFile($file_id);
         $form = $this->createDeleteForm($file);
         $form->handleRequest($request);
 
@@ -216,7 +215,7 @@ class SakonninFileController extends CommonController
     }
 
     /**
-     * Creates a form to create a Message entity.
+     * Creates a form to create a File entry.
      *
      * @param File $entity The entity
      *
@@ -247,7 +246,7 @@ class SakonninFileController extends CommonController
     public function createDeleteForm(SakonninFile $file)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('file_delete', array('id' => $file->getId())))
+            ->setAction($this->generateUrl('file_delete', array('file_id' => $file->getFileId())))
             ->setMethod('DELETE')
             ->getForm()
         ;
@@ -256,5 +255,13 @@ class SakonninFileController extends CommonController
     private function getFilePath()
     {
         return $this->container->getParameter('sakonnin.file_storage');
+    }
+
+    private function _getFile($fileid)
+    {
+        $sf = $this->container->get('sakonnin.files');
+        if (!$sfile = $sf->getFiles(['fileid' => $id]))
+            throw $this->createNotFoundException('File not found');
+        return $sfile;
     }
 }

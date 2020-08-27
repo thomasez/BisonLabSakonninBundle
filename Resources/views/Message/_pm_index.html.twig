@@ -30,7 +30,7 @@
 
         <td valign="top" colspan="2">
         {% if entity.subject %}
-              <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
+              <a href="{{ path('message_show', { 'message_id': entity.messageid }) }}">{{ entity.subject }}</a>
         {% endif %}
         <sub>
         {% if entity.from and entity.from != app.user.id %}

@@ -62,6 +62,7 @@ class MessageController extends CommonController
         return $this->render('@BisonLabSakonnin/Message/index.html.twig',
             array('entities' => $messages));
     }
+
     /**
      * So wrong path name.
      * @Route("/me", name="message", methods={"GET"})
@@ -71,15 +72,6 @@ class MessageController extends CommonController
         $sm = $this->container->get('sakonnin.messages');
         // Todo: paging or just show the last 20
         $messages = $sm->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
-        // Gotta set the messages as read.
-        /* No, not while listing the messages, only when viewving separately.
-        foreach ($messages as $message) {
-            if ($message->getState() == "UNREAD")
-                $message->setState('READ');
-            $em = $this->getDoctrineManager();
-            $em->flush();
-        }
-        */
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
@@ -126,7 +118,7 @@ class MessageController extends CommonController
         foreach ($messages as $message) {
             if ($message->getState() == "UNREAD") {
                 $message->setState('READ');
-                $unread_starts_at = $message->getId();
+                $unread_starts_at = $message->getMessageId();
             }
         }
         $em = $this->getDoctrineManager();
@@ -162,22 +154,18 @@ class MessageController extends CommonController
     /**
      * Finds and displays a Message entity.
      *
-     * @Route("/{id}", name="message_show", methods={"GET"}, requirements={"id"="(\d+|\w{13})"})
+     * @Route("/{message_id}", name="message_show", methods={"GET"}, requirements={"message_id"="\w{13}"})
      */
-    public function showAction(Request $request, $access, $id)
+    public function showAction(Request $request, $access, $message_id)
     {
         $em = $this->getDoctrineManager();
         // Hack. The contextGetAction in CommonBundle is not as smart as it
         // looks.
         $message = null;
-        if ($id instanceof Message) {
-            $message = $id;
-        } elseif (is_numeric($id)) {
-            $message = $em->getRepository('BisonLabSakonninBundle:Message')
-                    ->find($id);
+        if ($message_id instanceof Message) {
+            $message = $message_id;
         } else {
-            $message = $em->getRepository('BisonLabSakonninBundle:Message')
-                    ->findOneBy(array('message_id' => $id));
+            $message = $this->_getMessage($message_id);
         }
         if (!$message) {
             return $this->returnNotFound($request, 'Unable to find Message.');
@@ -203,13 +191,14 @@ class MessageController extends CommonController
     /**
      * Displays a form to edit an existing person entity.
      *
-     * @Route("/{id}/edit", name="message_edit", methods={"GET", "POST"})
+     * @Route("/{message_id}/edit", name="message_edit", methods={"GET", "POST"})
      */
-    public function editAction(Request $request, $access, Message $message)
+    public function editAction(Request $request, $access, $message_id)
     {
+        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
         $action = $this->generateUrl('message_edit', array(
-            'id' => $message->getId(),
+            'message_id' => $message->getMessageId(),
             'reload_after_post' => $request->get('reload_after_post'),
             'no_subject' => $request->get('no_subject'),
             'with_expire' => $request->get('with_expire'),
@@ -242,7 +231,7 @@ class MessageController extends CommonController
                         ], 200);
                 }
                 return $this->redirectToRoute('message_show',
-                    array('access' => $access, 'id' => $message->getId()));
+                    array('access' => $access, 'message_id' => $message->getMessageId()));
            } elseif ($this->isRest($access)) {
                 $errors = $this->handleFormErrors($editForm);
                 return new JsonResponse(array("status" => "ERROR",
@@ -273,10 +262,11 @@ class MessageController extends CommonController
     /**
      * Displays a form to edit an existing person entity.
      *
-     * @Route("/{id}/state/{state}", name="message_state", methods={"POST"})
+     * @Route("/{message_id}/state/{state}", name="message_state", methods={"POST"})
      */
-    public function stateAction(Request $request, $access, Message $message, $state)
+    public function stateAction(Request $request, $access, $message_id, $state)
     {
+        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
         $message->setState($state);
         $this->getDoctrineManager()->flush($message);
@@ -287,7 +277,7 @@ class MessageController extends CommonController
                 Response::HTTP_OK);
         }
         return $this->redirectToRoute('message_show',
-            array('access' => $access, 'id' => $message->getId()));
+            array('access' => $access, 'message_id' => $message->getMessageId()));
     }
 
     /**
@@ -383,7 +373,7 @@ class MessageController extends CommonController
                 return $this->returnRestData($request, "OK Done");
             }
             return $this->redirectToRoute('message_show',
-                array('access' => $access, 'id' => $message->getId()));
+                array('access' => $access, 'message_id' => $message->getMessageId()));
         }
 
         if ($this->isRest($access)) {
@@ -456,7 +446,7 @@ class MessageController extends CommonController
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
             return $this->redirectToRoute('message_show',
-                array('access' => $access, 'id' => $message->getId()));
+                array('access' => $access, 'message_id' => $message->getMessageId()));
         }
 
         if ($this->isRest($access)) {
@@ -471,10 +461,11 @@ class MessageController extends CommonController
     /**
      * Deletes a message entity.
      *
-     * @Route("/{id}", name="message_delete", methods={"DELETE"}, requirements={"id"="(\d+|\w{13})"})
+     * @Route("/{message_id}", name="message_delete", methods={"DELETE"}, requirements={"message_id"="\w{13}"})
      */
-    public function deleteAction(Request $request, $access, Message $message)
+    public function deleteAction(Request $request, $access, $message_id)
     {
+        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
         $form = $this->createDeleteForm($message);
         $form->handleRequest($request);
@@ -550,7 +541,7 @@ class MessageController extends CommonController
                     return new JsonResponse(array("status" => "OK", 200));
                 }
                 return $this->redirectToRoute('message_show',
-                    array('access' => $access, 'id' => $message->getId()));
+                    array('access' => $access, 'message_id' => $message->getMessageId()));
            } elseif ($this->isRest($access)) {
                 $errors = $this->handleFormErrors($form);
                 return new JsonResponse(array("status" => "ERROR",
@@ -587,10 +578,11 @@ class MessageController extends CommonController
     /**
      * Adding a context to an existing message.
      *
-     * @Route("/{id}/add_context", name="message_add_context", methods={"POST"})
+     * @Route("/{message_id}/add_context", name="message_add_context", methods={"POST"})
      */
-    public function addContextAction(Request $request, $access, Message $message)
+    public function addContextAction(Request $request, $access, $message_id)
     {
+        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
 
         if (!$system = $request->get('system'))
@@ -704,13 +696,22 @@ class MessageController extends CommonController
      */
     public function createDeleteForm(Message $message, $access = "ajax")
     {
-        $form_name = "message_delete_" . $message->getId();
+        $form_name = "message_delete_" . $message->getMessageId();
         return $this->get('form.factory')->createNamedBuilder($form_name,FormType::class)
             ->setAction($this->generateUrl('message_delete', array(
-                'id' => $message->getId(),
+                'message_id' => $message->getMessageId(),
                 'access' => $access)))
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    private function _getMessage($message_id)
+    {
+        $em = $this->getDoctrineManager();
+        if (!$message = $em->getRepository('BisonLabSakonninBundle:Message')
+                ->findOneBy(array('message_id' => $message_id)))
+            throw $this->createNotFoundException('Message not found');
+        return $message;
     }
 }

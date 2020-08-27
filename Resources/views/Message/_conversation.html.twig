@@ -26,7 +26,7 @@
             <th valign="top">Subject:</th>
             {% endif %}
             <td valign="top">
-              <a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.subject }}</a>
+              <a href="{{ path('message_show', { 'message_id': entity.messageid }) }}">{{ entity.subject }}</a>
             </td>
             <td rowspan="5">
             {% if entity.contenttype == 'text/html' %}

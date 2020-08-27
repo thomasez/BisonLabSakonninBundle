@@ -35,24 +35,24 @@ $(document).ready(function() {
                 <td>{{ entity.subject }}
                 {% if entity.replies %}
                 {% for reply in entity.replies %}
-                  <br />reply:<a href="{{ path('message_show', { 'id': reply.id }) }}">{{ reply.subject }}</a>
+                  <br />reply:<a href="{{ path('message_show', { 'message_id': reply.messageid }) }}">{{ reply.subject }}</a>
                 {% endfor %}
                 {% endif %}
                 </td>
                 <td>{% if entity.fromtype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.from) }}{% else %}{{ entity.from }}{% endif %}</td>
                 <td>{% if entity.totype == "INTERNAL" %}{{ sakonnin_messages.getusernamefromuserid(entity.to) }}{% else %}{{ entity.to }}{% endif %}</td>
                 <td>{{ entity.state }}</td>
-                <td><a href="{{ path('message_show', { 'id': entity.id }) }}">{{ entity.messageid }}</a></td>
+                <td><a href="{{ path('message_show', { 'message_id': entity.messageid }) }}">{{ entity.messageid }}</a></td>
                 <td>{{ entity.messagetype.parent }} - {{ entity.messagetype }} ({{ entity.messagetype.description }})</td>
                 <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('message_show', { 'id': entity.id }) }}">Show</a>
+                        <a href="{{ path('message_show', { 'message_id': entity.messageid }) }}">Show</a>
                     </li>
                     {% if is_granted('edit', entity) %}
                     <li>
-                    <a href="#" onClick="return grabEditSakonninMessageForm({{ entity.id }});">Edit</a>
+                    <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Edit</a>
                     {% endif %}
                     </li>
                 </ul>
