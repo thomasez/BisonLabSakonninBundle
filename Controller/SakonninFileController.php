@@ -36,13 +36,13 @@ class SakonninFileController extends CommonController
     {
         $sf = $this->container->get('sakonnin.files');
         // Todo: paging or just show the last 20
-        $files = $sf->getFilesForLoggedIn();
+        $sfiles = $sf->getFilesForLoggedIn();
 
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $files, array('html' =>'file/_index.html.twig'));
+            return $this->returnRestData($request, $sfiles, array('html' =>'file/_index.html.twig'));
         }
         return $this->render('@BisonLabSakonnin/SakonninFile/index.html.twig',
-            array('files' => $files));
+            array('files' => $sfiles));
     }
 
     /**
@@ -66,20 +66,20 @@ class SakonninFileController extends CommonController
             return new Response( 'The file is probably too big for the system to handle. Either reduce size or configure the web server to handle bigger files', 400);
         }
 
-        $file = new SakonninFile();
-        $form = $this->createCreateForm($file);
+        $sfile = new SakonninFile();
+        $form = $this->createCreateForm($sfile);
         $data = $request->request->all();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $sf = $this->container->get('sakonnin.files');
-            $sf->storeFile($file, isset($data['file_context']) ? $data['file_context'] : array());
+            $sf->storeFile($sfile, isset($data['file_context']) ? $data['file_context'] : array());
 
             if ($this->isRest($access)) {
                 return new JsonResponse('OK Done', Response::HTTP_CREATED);
             }
-            return $this->redirectToRoute('file_show', array('file_id' => $file->getFileId()));
+            return $this->redirectToRoute('file_show', array('file_id' => $sfile->getFileId()));
         }
 
         if ($this->isRest($access)) {
@@ -92,7 +92,7 @@ class SakonninFileController extends CommonController
         return $this->render('@BisonLabSakonnin/SakonninFile/new.html.twig',
             array(
                 'max_filesize' => $max_filesize,
-                'file' => $file,
+                'file' => $sfile,
                 'form' => $form->createView()
         ));
     }
@@ -104,12 +104,12 @@ class SakonninFileController extends CommonController
      */
     public function showAction(Request $request, $file_id, $access)
     {
-        $file = $this->_getFile($file_id);
-        $deleteForm = $this->createDeleteForm($file);
+        $sfile = $this->_getFile($file_id);
+        $deleteForm = $this->createDeleteForm($sfile);
 
         return $this->render('@BisonLabSakonnin/SakonninFile/show.html.twig',
             array(
-            'file' => $file,
+            'file' => $sfile,
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -121,12 +121,12 @@ class SakonninFileController extends CommonController
      */
     public function downloadAction(Request $request, $file_id, $access)
     {
-        $file = $this->_getFile($file_id);
+        $sfile = $this->_getFile($file_id);
         // TODO: Add access control.
         $path = $this->getFilePath();
-        $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
+        $response = new BinaryFileResponse($path . "/" . $sfile->getStoredAs());
         $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
-        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $sfile->getName());
         return $response;
     }
 
@@ -137,10 +137,10 @@ class SakonninFileController extends CommonController
      */
     public function viewAction(Request $request, $file_id, $access)
     {
-        $file = $this->_getFile($file_id);
+        $sfile = $this->_getFile($file_id);
         // TODO: Add access control.
         $path = $this->getFilePath();
-        $response = new BinaryFileResponse($path . "/" . $file->getStoredAs());
+        $response = new BinaryFileResponse($path . "/" . $sfile->getStoredAs());
         $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         return $response;
     }
@@ -154,7 +154,7 @@ class SakonninFileController extends CommonController
     {
         $sf = $this->container->get('sakonnin.files');
 
-        $file = $this->_getFile($file_id);
+        $sfile = $this->_getFile($file_id);
 
         if (!$sfile->getThumbnailable())
             $this->returnError($request, 'Not an image');
@@ -173,20 +173,42 @@ class SakonninFileController extends CommonController
      */
     public function editAction(Request $request, $file_id, $access)
     {
-        $file = $this->_getFile($file_id);
-        $deleteForm = $this->createDeleteForm($file);
-        $editForm = $this->createForm('BisonLab\SakonninBundle\Form\SakonninFileType', $file);
+        $sfile = $this->_getFile($file_id);
+        $deleteForm = $this->createDeleteForm($sfile);
+        $action = $this->generateUrl('file_edit', array(
+            'file_id' => $sfile->getFileId(),
+            'access' => $access
+            ));
+        $editForm = $this->createForm(
+            'BisonLab\SakonninBundle\Form\SakonninFileType',
+            $sfile,
+            ['action' => $action]
+            );
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrineManager()->flush();
+            if ($this->isRest($access)) {
+                return new JsonResponse([
+                    "status" => "OK",
+                    ], 200);
+            }
 
-            return $this->redirectToRoute('file_edit', array('file_id' => $file->getFileId()));
+            return $this->redirectToRoute('file_show', array('file_id' => $sfile->getFileId()));
+        }
+
+        if ($this->isRest($access)) {
+            return $this
+                    ->render('@BisonLabSakonnin/SakonninFile/_edit.html.twig',
+                array(
+                    'file' => $sfile,
+                    'edit_form' => $editForm->createView(),
+            ));
         }
 
         return $this->render('@BisonLabSakonnin/SakonninFile/edit.html.twig',
             array(
-            'file' => $file,
+            'file' => $sfile,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
@@ -199,13 +221,13 @@ class SakonninFileController extends CommonController
      */
     public function deleteAction(Request $request, $file_id, $access)
     {
-        $file = $this->_getFile($file_id);
-        $form = $this->createDeleteForm($file);
+        $sfile = $this->_getFile($file_id);
+        $form = $this->createDeleteForm($sfile);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrineManager();
-            $em->remove($file);
+            $em->remove($sfile);
             $em->flush();
             if ($back = $request->request->get('back'))
                 return $this->redirect($back);
@@ -239,14 +261,14 @@ class SakonninFileController extends CommonController
     /**
      * Creates a form to delete a file entity.
      *
-     * @param SakonninFile $file The file entity
+     * @param SakonninFile $sfile The file entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    public function createDeleteForm(SakonninFile $file)
+    public function createDeleteForm(SakonninFile $sfile)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('file_delete', array('file_id' => $file->getFileId())))
+            ->setAction($this->generateUrl('file_delete', array('file_id' => $sfile->getFileId())))
             ->setMethod('DELETE')
             ->getForm()
         ;
@@ -257,10 +279,10 @@ class SakonninFileController extends CommonController
         return $this->container->getParameter('sakonnin.file_storage');
     }
 
-    private function _getFile($fileid)
+    private function _getFile($file_id)
     {
         $sf = $this->container->get('sakonnin.files');
-        if (!$sfile = $sf->getFiles(['fileid' => $id]))
+        if (!$sfile = $sf->getFiles(['fileid' => $file_id]))
             throw $this->createNotFoundException('File not found');
         return $sfile;
     }

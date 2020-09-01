@@ -63,8 +63,7 @@ trait CommonFunctions
          */
 
         $message->setToType('EMAIL');
-        $mail = \Swift_Message::newInstance()
-        ->setSubject($message->getSubject())
+        $mail = (new \Swift_Message($message->getSubject()))
         ->setFrom($from)
         ->setTo($mailto)
         ->setBody($body,

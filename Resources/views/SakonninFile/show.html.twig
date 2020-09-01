@@ -26,13 +26,13 @@
 
     <ul>
         <li>
-            <a  href="{{ path('file_edit', { 'file_id': file.fileid }) }}">
-            <button>Edit</button>
+            <a href="{{ path('file_edit', { 'file_id': file.fileid }) }}">
+            <button class="btn-small btn-primary">Edit</button>
             </a>
         </li>
         <li>
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+            <button type="submit" class="btn-small btn-danger">Delete</button>
             {{ form_end(delete_form) }}
         </li>
     </ul>

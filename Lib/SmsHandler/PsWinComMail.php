@@ -57,8 +57,7 @@ EOMSG;
 		
 		$msg .="\n</MSGLST>\n</SESSION>";
 	
-        $mail = \Swift_Message::newInstance()
-        ->setSubject("SMS")
+        $mail = (new \Swift_Message("SMS"))
         ->setFrom($this->mailfrom)
         ->setTo($this->mailto)
         ->setBody($msg,
