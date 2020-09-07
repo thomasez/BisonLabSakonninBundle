@@ -483,6 +483,26 @@ class MessageController extends CommonController
     }
 
     /**
+     * Does stuff on a list of messages.
+     *
+     * @Route("/messages", name="message_messages", methods={"POST", "DELETE"})
+     */
+    public function messsagesAction(Request $request, $access)
+    {
+dump($request->getMethod());
+dump($request->request->get('state'));
+dump($request->request->get('message_list'));
+
+//        $this->denyAccessUnlessGranted('edit', $message);
+
+        if ($this->isRest($access))
+            return new JsonResponse(array("status" => "DONE"),
+                Response::HTTP_OK);
+        else
+            return $this->redirect($request->headers->get('referer'));
+    }
+
+    /**
      * Check for unread messages
      *
      * @Route("/check_unread", name="check_unread", methods={"GET"})

@@ -266,7 +266,8 @@ class Messages
 
     public function getMessagesForLoggedIn($criterias = array())
     {
-        $user = $this->getLoggedInUser();
+        if (!$user = $this->getLoggedInUser())
+            throw new \InvalidArgumentException("No such user");
         return $this->getMessagesForUser($user, $criterias);
     }
 

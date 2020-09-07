@@ -1,16 +1,6 @@
 {% extends '@BisonLabSakonnin/base.html.twig' %}
 
 {% block body -%}
-<script>
-$(document).ready(function() {
-    $('#message_list').DataTable( {
-        "pageLength": 200,
-        "order": [[ 6, "desc" ]],
-        "lengthMenu": [[ 50, 100, 200, 500 -1], [50, 100, 200, 500, "All"]]
-    } );
-} );
-</script>
-
     <h1>Messages</h1>
     <table id="message_list" class="table table-striped table-bordered table-sm">
         <thead>
@@ -22,7 +12,8 @@ $(document).ready(function() {
                 <th>Message Id</th>
                 <th>Message Type</th>
                 <th>Createdat</th>
-                <th>Actions</th>
+                <th class="no-sort">Actions</th>
+                <th class="no-sort selectcol"></th>
             </tr>
         </thead>
         <tbody>
@@ -55,14 +46,101 @@ $(document).ready(function() {
                     <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Edit</a>
                     {% endif %}
                     </li>
+<div class="d-none">
+    {% set mdelform = sakonnin_messages.getCreateDeleteForm(entity, true) %}
+    <form id="deletemessageform_{{ entity.id }}" onSubmit="return deleteSakonninMessage({{ entity.id }});">
+    {{ form_rest(mdelform) }}
+    <input id="delarchived_{{ entity.id }}" type="submit">
+    </form>
+</div>
+                    <li>
+                        <a href="#" onClick='return $("#delarchived_{{ entity.id }}").click();'>Delete</a>
+                    </li>
+                    {% endif %}
                 </ul>
                 </td>
+                <td class="message_list_select"> {{ entity.id }} </td>
             </tr>
           {% endif %}
         {% endfor %}
         </tbody>
     </table>
     <li>
-        <a href="{{ path('message_new') }}">Create a new message</a>
     </li>
-    {% endblock %}
+<div class="row">
+<div class="col-sm-3">
+    <a href="{{ path('message_new') }}">Create a new message</a>
+  </div>
+  <div class="col-sm-6">
+  </div>
+  <div class="col-sm-3" align="right">
+    <form id="message_list_form" method="POST">
+      <input class="btn-primary btn" id="deletemessages" type="submit" name="submit" value="Delete"><br>
+      <input class="btn-primary btn" id="archivemessages" type="submit" name="submit" value="Archive"><br>
+    </form>
+  </div>
+</div>
+
+
+<script>
+$(document).ready(function() {
+
+    var selectable_table = $('#message_list').DataTable( {
+        "pageLength": 200,
+        "order": [[ 6, "desc" ]],
+        "lengthMenu": [[ 50, 100, 200, 500 -1], [50, 100, 200, 500, "All"]],
+        "columnDefs": [{
+            "targets": 'no-sort',
+            "orderable": false
+          },{
+            "targets": 'selectcol',
+            "orderable": false,
+            "checkboxes": true
+        }]
+    });
+
+    $('#message_list_form').on('submit', function(eventObj) {
+
+        var $btn = $(document.activeElement);
+        var form = this;
+
+        var rows_selected = selectable_table.column('.selectcol').checkboxes.selected();
+
+console.log($btn);
+console.log(rows_selected);
+console.log(form);
+
+        // Iterate over all selected checkboxes
+        $.each(rows_selected, function(index, rowId){
+             // Create a hidden element
+             $(form).append(
+                 $('<input>')
+                    .attr('type', 'hidden')
+                    .attr('name', 'message_list[]')
+                    .val(rowId)
+             );
+        });
+        if ($btn.is('[id]') && $btn.attr("id") == "archivemessages") {
+            $(form).attr('action', "{{ path('message_messages') }}");
+            $(form).attr('method', 'POST');
+            $(form).append(
+                $('<input>')
+                    .attr('type', 'hidden')
+                    .attr('name', 'state')
+                    .val('ARCHIVE')
+            );
+            return;
+        }
+        if ($btn.is('[id]') && $btn.attr("id") == "deletemessages") {
+console.log("Skal lissom slette");
+            $(form).attr('action', "{{ path('message_messages') }}");
+            $(form).attr('method', 'DELETE');
+            return;
+        }
+
+    });
+});
+
+</script>
+
+{% endblock %}
