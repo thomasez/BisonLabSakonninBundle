@@ -44,7 +44,6 @@
                     {% if is_granted('edit', entity) %}
                     <li>
                     <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Edit</a>
-                    {% endif %}
                     </li>
 <div class="d-none">
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(entity, true) %}
