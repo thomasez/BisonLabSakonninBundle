@@ -59,13 +59,15 @@ function deleteSakonninMessage(message_id) {
 
     orgurl = "{{ path('message_delete', {'message_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
     url = orgurl.replace("xxxxxxxxxxxxx", message_id);
+    deletemessageform = $( "#deletemessageform_" + message_id ).serialize(),
+    console.log(deletemessageform);
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
         },
-        type: "POST",
+        type: "DELETE",
         url: url,
-        data: $( "#deletemessageform_" + message_id ).serialize(),
+        data: deletemessageform,
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {

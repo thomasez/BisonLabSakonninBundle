@@ -474,10 +474,14 @@ class MessageController extends CommonController
             $em = $this->getDoctrineManager();
             $em->remove($message);
             $em->flush($message);
+            if ($this->isRest($access))
+                return new JsonResponse(array("status" => "DELETED"),
+                    Response::HTTP_OK);
         }
         if ($this->isRest($access))
-            return new JsonResponse(array("status" => "DELETED"),
-                Response::HTTP_OK);
+            return $this->returnErrorResponse("Validation Error",
+                Response::HTTP_BAD_REQUEST,
+                $this->handleFormErrors($form));
         else
             return $this->redirect($request->headers->get('referer'));
     }
@@ -489,11 +493,7 @@ class MessageController extends CommonController
      */
     public function messsagesAction(Request $request, $access)
     {
-dump($request->getMethod());
-dump($request->request->get('state'));
-dump($request->request->get('message_list'));
-
-//        $this->denyAccessUnlessGranted('edit', $message);
+        $this->denyAccessUnlessGranted('edit', $message);
 
         if ($this->isRest($access))
             return new JsonResponse(array("status" => "DONE"),
