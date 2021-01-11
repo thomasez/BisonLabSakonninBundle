@@ -69,9 +69,9 @@
         {% endif %}
     {% endif %}
     {% if checked %}
-      <span class="glyphicon glyphicon-check" title="Checked"></span> <em>{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}</em>
+      <span class="fas fa-check" title="Checked"></span> <em>{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}</em>
     {% else %}
-      <span class="glyphicon glyphicon-unchecked" title="Unchecked"></span>
+      <span class="fas fa-unchecked" title="Unchecked"></span>
     {% endif %}
     <br>
   {% endif %}
@@ -96,7 +96,7 @@
     </form>
 </div>
     <div class="dropdown">
-      <button class="glyphicon glyphicon-menu-hamburger" type="button" data-toggle="dropdown">
+      <button class="fas fa-bars" type="button" data-toggle="dropdown">
       <span></span>
       </button>
     <div class="dropdown-menu dropdown-menu-right">
