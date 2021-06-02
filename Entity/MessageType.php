@@ -700,4 +700,19 @@ class MessageType
             return null;
         return ExternalEntityConfig::getBaseTypes()[$bt]['states'][0];
     }
+
+    public function getLabel()
+    {
+        if (!$bt = $this->getBaseType())
+            return '';
+        return ExternalEntityConfig::getBaseTypes()[$bt]['label'];
+    }
+
+    public function isEditable()
+    {
+        if (!$bt = $this->getBaseType())
+            return false;
+dump(ExternalEntityConfig::getBaseTypes()[$bt]);
+        return ExternalEntityConfig::getBaseTypes()[$bt]['editable'];
+    }
 }

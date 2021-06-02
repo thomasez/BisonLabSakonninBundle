@@ -8,8 +8,6 @@
 {% for entity in entities %}
  {% if is_granted('show', entity) %}
     {% include "@BisonLabSakonnin/Message/_show.html.twig" %}
-<hr>
 {% endif %}
 {% endfor %}
-
 {% endif %}

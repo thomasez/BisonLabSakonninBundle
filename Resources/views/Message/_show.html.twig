@@ -76,9 +76,15 @@
     <br>
   {% endif %}
 {# Pretty dangerous #}
-{# TODO: Add markdown #}
 {% if entity.contenttype == 'text/html' %}
+<div class="messageText">
 {{ entity.body | raw }}
+</div>
+{# If you save it as markdown, you'd better have the bundle installed for viewing it. #}
+{% elseif entity.contenttype == 'text/markdown' %}
+<div class="messageText">
+{{ entity.body | markdown }}
+</div>
 {% else %}
 <pre class="messageText" wrap>
 {{ entity.body }}
@@ -87,29 +93,19 @@
 
   </div>
   <div class="col-sm-1">
+{# TODO: separate edit and delete #}
 {% if is_granted('edit', entity) %}
-<div class="d-none">
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(entity, true) %}
     <form id="deletemessageform_{{ entity.messageid }}" onSubmit="return deleteSakonninMessage('{{ entity.messageid }}');">
     {{ form_rest(mdelform) }}
-    <input id="delarchived_{{ entity.messageid }}" type="submit">
+        {% if entity.editable %}
+        <a href="#" onClick="return grabEditSakonninMessageForm('{{ note.messageid }}');"><button class="btn btn-link edit_glyph"></button></a>
+        {% endif %}
+    {# Should use message.deleteable here. Reason I don't is that it needs to use the security model, voter and tags on message type. Which must be a TODO #}
+        <button id="delarchived_{{ entity.messageid }}" type="submit" class="btn btn-link remove_glyph"></button>
     </form>
-</div>
-    <div class="dropdown">
-      <button class="fas fa-bars" type="button" data-toggle="dropdown">
-      <span></span>
-      </button>
-    <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Edit</a>
-        <a class="dropdown-item" href="#" onClick="return $('#delarchived_{{ entity.messageid }}').click();">Delete</a>
-    {# The option to de-archive an entity. Not really sure it makes sense to have at all. #}
-    {% if entity.state == "ARCHIVED" %}
-        <a class="dropdown-item" href="#" onClick="return setStateOnSakonninMessage('{{ entity.messageid }}', '{{ entity.firststate }}', true);">Unarchive</a>
-    {% endif %}
-    </div>
   </div>
 {% endif %}
  </div>
-
-</div>
+<hr>
 </div>

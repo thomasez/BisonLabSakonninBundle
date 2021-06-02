@@ -37,14 +37,18 @@ parameters:
         MESSAGE:
             states: ['UNREAD', 'READ']
             label: "Message"
+            # No sense in making this editable after it's written or sent.
+            editable: false
             description: "Messages with to, from, subject and body"
         NOTE:
             states: ['UNREAD', 'READ']
             label: "Note"
+            editable: true
             description: "Notes attached to a context (object)"
         CHECK:
             states: ['UNCHECKED', 'CHECKED']
             label: "Checkitem"
+            editable: true
             description: "Check(list) item"
 
     sakonnin.address_types:

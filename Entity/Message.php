@@ -701,4 +701,14 @@ class Message
         $this->setState($this->getFirstState());
         return $this;
     }
+
+    /*
+     * This should be extended to use the security model to decide based on the
+     * user accessing it. Not really sure how that's done properly.
+     */
+    public function isEditable()
+    {
+        return $this->getMessageType() ? $this->getMessageType()->isEditable() : false;
+    }
+    // TODO: A (proper) isDeletable.
 }

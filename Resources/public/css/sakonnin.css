@@ -54,6 +54,30 @@ table.sakonnin_properties td {
     padding-left: 10px;
 }
 
+.remove_glyph:after {
+    font-size: 15px;
+    margin-left: 10px;
+    color: red;
+    font-family: 'Font Awesome 5 Free';
+    content: "\f2ed";
+}
+
+.edit_glyph:after {
+    font-size: 15px;
+    margin-left: 10px;
+    color: black;
+    font-family: 'Font Awesome 5 Free';
+    content: "\f044";
+}
+
+.archive_glyph:after {
+    font-size: 15px;
+    margin-left: 10px;
+    color: black;
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0c7";
+}
+
 /* The switch - the box around the slider */
 .checkSwitch {
   position: relative;
