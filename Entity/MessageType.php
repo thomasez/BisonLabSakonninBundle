@@ -712,7 +712,6 @@ class MessageType
     {
         if (!$bt = $this->getBaseType())
             return false;
-dump(ExternalEntityConfig::getBaseTypes()[$bt]);
         return ExternalEntityConfig::getBaseTypes()[$bt]['editable'];
     }
 }
