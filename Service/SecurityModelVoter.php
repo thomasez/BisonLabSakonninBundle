@@ -7,6 +7,7 @@ namespace BisonLab\SakonninBundle\Service;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
 use BisonLab\SakonninBundle\Entity\Message;
@@ -50,8 +51,21 @@ class SecurityModelVoter extends Voter
 
         // If it does not have any security model set, don't bother.
         if (!$security_model = $subject->getSecurityModel()) {
-            return true;
+            return false;
         }
+
+        // If the subject itself decides it's not editable, return false
+        if (method_exists($subject, 'isEditable')
+            && $attribute == "edit"
+            && !$subject->isEditable()) {
+                return false;
+            }
+
+        // If the subject itself decides it's not deleteable, return false
+        if (method_exists($subject, 'isDeleteable')
+            && $attribute == "delete"
+            && !$subject->isDeleteable())
+                return false;
 
         // This can be both a Message and a Message Type.
         switch ($security_model) {
@@ -59,22 +73,22 @@ class SecurityModelVoter extends Voter
                 if (in_array($attribute, array('show', 'index')))
                     return true;
                 elseif (in_array($attribute, array('delete', 'edit', 'create')))
-                    return $this->_isAdmin($token);
+                    return $this->_isAdmin($user, $token);
                 break;
             case 'ALL_READWRITE':
                 return true;
                 break;
             case 'ADMIN_ONLY':
-                return $this->_isAdmin($token);
+                return $this->_isAdmin($user, $token);
                 break;
             case 'ADMIN_RW_USER_R':
                 if (in_array($attribute, array('show', 'index')))
-                    return $this->_isAdmin($token) || $this->_checkPrivate($attribute, $subject, $token);
+                    return $this->_isAdmin($user, $token) || $this->_checkPrivate($attribute, $subject, $token);
                 elseif (in_array($attribute, array('delete', 'edit', 'create')))
-                    return $this->_isAdmin($token);
+                    return $this->_isAdmin($user, $token);
                 break;
             case 'ADMIN_RW_USER_RW':
-                return $this->_isAdmin($token) || $this->_checkPrivate($attribute, $subject, $token);
+                return $this->_isAdmin($user, $token) || $this->_checkPrivate($attribute, $subject, $token);
                 break;
             case 'GROUP_RW':
                 return $this->_hasGroup($attribute, $subject, $token);
@@ -93,8 +107,11 @@ class SecurityModelVoter extends Voter
      * But I have to use the role system here since I have no clue what the
      * bundle users use.
      */
-    private function _isAdmin($token)
+    private function _isAdmin($user, $token)
     {
+        if (method_exists($user, 'isAdmin')) {
+            return $user->isAdmin();
+        }
         if (method_exists($token, 'getRoleNames')) {
             foreach ($token->getRoleNames() as $role) {
                 if (in_array($role, ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'])) {
@@ -135,7 +152,7 @@ class SecurityModelVoter extends Voter
         $user = $token->getUser();
 
         if (!$subject instanceof Message) {
-            return true;
+            return false;
         }
 
         if (('INTERNAL' == $subject->getFromType()) && 
@@ -152,7 +169,7 @@ class SecurityModelVoter extends Voter
                 // what I am looking for?
                 // For now, I presume it's within the same application and
                 // do a pure match.
-               if ($object === $user)
+                if ($object === $user)
                     return true;
             }
         }
@@ -172,7 +189,7 @@ class SecurityModelVoter extends Voter
 
         // Is this correct?
         if (!$subject instanceof Message) {
-            return true;
+            return false;
         }
 
         $user = $token->getUser();
@@ -197,7 +214,7 @@ class SecurityModelVoter extends Voter
                 // For now, I presume it's within the same application and
                 // do a pure match.
                 if (!method_exists($object, 'getGroupNames'))
-                    return false;
+                    continue;
                 
                 if (in_array($object->getGroupNames(), $user->getGroupNames()))
                     return true;
