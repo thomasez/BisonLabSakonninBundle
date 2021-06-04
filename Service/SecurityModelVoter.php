@@ -214,14 +214,16 @@ error_log(print_r( $this->_hasGroup($attribute, $subject, $token), true));
         if (!method_exists($user, 'getGroupNames'))
             return false;
 
-        if ($from_user = $this->sakonnin_messages->getUserFromUserName($from)) {
-            foreach($from_user->getGroupNames() as $gn) {
-                if (in_array($gn, $user->getGroupNames()))
+        if ($from = $subject->getFrom()) {
+            if ($from_user = $this->sakonnin_messages->getUserFromUserName($from)) {
+                foreach($from_user->getGroupNames() as $gn) {
+                    if (in_array($gn, $user->getGroupNames()))
+                        return true;
+                }
+                
+                if (in_array($from_user->getGroupNames(), $user->getGroupNames()))
                     return true;
             }
-            
-            if (in_array($from_user->getGroupNames(), $user->getGroupNames()))
-                return true;
         }
         /*
          * Point here is to check if the object this message is about is in teh
