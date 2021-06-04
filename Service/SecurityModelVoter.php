@@ -13,6 +13,9 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageContext;
 use BisonLab\SakonninBundle\Entity\MessageType;
+use BisonLab\SakonninBundle\Entity\SakonninFile;
+use BisonLab\SakonninBundle\Entity\SakonninFileContext;
+use BisonLab\SakonninBundle\Entity\SakonninFileType;
 
 /*
  * Blatantly cooked from the docs.. 
@@ -32,9 +35,12 @@ class SecurityModelVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // Gotta handle all operations.
-        if ($subject instanceof Message 
+        if ($subject instanceof Message
             || $subject instanceof MessageType
-            || $subject instanceof MessageContext)
+            || $subject instanceof MessageContext
+            || $subject instanceof SakonninfFile
+            || $subject instanceof SakonninfFileType
+            || $subject instanceof SakonninfFileContext)
             return true;
         else
             return false;
@@ -49,6 +55,10 @@ class SecurityModelVoter extends Voter
             return false;
         }
 
+        if ($attribute == "index")
+            return true;
+
+error_log("Voting " . $attribute);
         // If it does not have any security model set, don't bother.
         if (!$security_model = $subject->getSecurityModel()) {
             return false;
@@ -91,6 +101,8 @@ class SecurityModelVoter extends Voter
                 return $this->_isAdmin($user, $token) || $this->_checkPrivate($attribute, $subject, $token);
                 break;
             case 'GROUP_RW':
+error_log("GROUP_RW");
+error_log(print_r( $this->_hasGroup($attribute, $subject, $token), true));
                 return $this->_hasGroup($attribute, $subject, $token);
                 break;
             case 'PRIVATE':
@@ -182,7 +194,7 @@ class SecurityModelVoter extends Voter
      * This model does require that you actually use groups..=)
      * Same issues as with _checkPrivate.
      */
-    private function _hasGroup($atttribute, $subject, $token)
+    private function _hasGroup($attribute, $subject, $token)
     {
         if ($subject instanceof MessageContext)
             $subject = $subject->getMessage();
@@ -192,21 +204,29 @@ class SecurityModelVoter extends Voter
             return false;
         }
 
+        // We are not at a point where we can decide group belongings at create.
+        // (Bloody annoying, but should there be a post-entity build isGranted
+        // call on create?
+        if ($attribute == "create")
+            return true;
+
         $user = $token->getUser();
         if (!method_exists($user, 'getGroupNames'))
             return false;
 
-        if ('INTERNAL' == $subject->getFromType() && $from = $subject->getFrom()) {
-            if ($from_user = $this->sakonnin_messages->getUserFromUserName($from)) {
-                foreach($from_user->getGroupNames() as $gn) {
-                    if (in_array($gn, $user->getGroupNames()))
-                        return true;
-                }
-                
-                if (in_array($from_user->getGroupNames(), $user->getGroupNames()))
+        if ($from_user = $this->sakonnin_messages->getUserFromUserName($from)) {
+            foreach($from_user->getGroupNames() as $gn) {
+                if (in_array($gn, $user->getGroupNames()))
                     return true;
             }
+            
+            if (in_array($from_user->getGroupNames(), $user->getGroupNames()))
+                return true;
         }
+        /*
+         * Point here is to check if the object this message is about is in teh
+         * same group(s) as the use trying to mess with.
+         */
         foreach ($subject->getContexts() as $context) {
             if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
                 // The question now is. How do I know that the object is

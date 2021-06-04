@@ -39,7 +39,10 @@
           <tr>
             <th valign="top">Type:</th>
             <td valign="top">
-                <a href="#" title="{{ entity.messagetype.description }}">{{ entity.messagetype }}</a>
+                {# I wonder what I planneed here
+                    <a href="#" title="{{ entity.messagetype.description }}">{{ entity.messagetype }}</a>
+                #}
+                {{ entity.messagetype }} ({{ entity.messagetype.description }})
             </td>
           </tr>
 {% if entity.replies | length > 0 %}
