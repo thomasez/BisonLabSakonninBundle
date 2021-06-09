@@ -58,7 +58,6 @@ class SecurityModelVoter extends Voter
         if ($attribute == "index")
             return true;
 
-error_log("Voting " . $attribute);
         // If it does not have any security model set, don't bother.
         if (!$security_model = $subject->getSecurityModel()) {
             return false;
@@ -101,8 +100,6 @@ error_log("Voting " . $attribute);
                 return $this->_isAdmin($user, $token) || $this->_checkPrivate($attribute, $subject, $token);
                 break;
             case 'GROUP_RW':
-error_log("GROUP_RW");
-error_log(print_r( $this->_hasGroup($attribute, $subject, $token), true));
                 return $this->_hasGroup($attribute, $subject, $token);
                 break;
             case 'PRIVATE':
