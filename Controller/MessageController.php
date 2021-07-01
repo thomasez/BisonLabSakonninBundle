@@ -405,7 +405,7 @@ class MessageController extends CommonController
             // Gotta do some security check. This is a hack, but it should
             // work..
             if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
-                $message = new  Message();
+                $message = new Message();
                 $message->setMessageType($message_type);
                 $this->denyAccessUnlessGranted('create', $message);
             } else {
@@ -426,7 +426,6 @@ class MessageController extends CommonController
         if ($form->isSubmitted() && $form->isValid()) {
             // Ok, it's valid. We'll send this to postMessage then.
             $message = $form->getData();
-            $this->denyAccessUnlessGranted('create', $message);
             if (!$message->getMessageType() && isset($data['message_type'])) {
                 $em = $this->getDoctrineManager();
                 $message->setMessageType(
@@ -434,6 +433,7 @@ class MessageController extends CommonController
                         ->findOneByName($data['message_type'])
                 );
             }
+            $this->denyAccessUnlessGranted('create', $message);
             if (!$message->getFromType()) {
                 if (isset($data['from_type']))
                     $message->setFromType($data['from_type']);
