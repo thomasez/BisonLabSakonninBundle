@@ -58,11 +58,6 @@ class SecurityModelVoter extends Voter
         if ($attribute == "index")
             return true;
 
-        // If it does not have any security model set, don't bother.
-        if (!$security_model = $subject->getSecurityModel()) {
-            return false;
-        }
-
         // If the subject itself decides it's not editable, return false
         if (method_exists($subject, 'isEditable')
             && $attribute == "edit"
@@ -75,6 +70,11 @@ class SecurityModelVoter extends Voter
             && $attribute == "delete"
             && !$subject->isDeleteable())
                 return false;
+
+        // If it does not have any security model set, don't bother.
+        if (!$security_model = $subject->getSecurityModel()) {
+            return false;
+        }
 
         // This can be both a Message and a Message Type.
         switch ($security_model) {

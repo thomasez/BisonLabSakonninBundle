@@ -466,11 +466,12 @@ class MessageController extends CommonController
     public function deleteAction(Request $request, $access, $message_id)
     {
         $message = $this->_getMessage($message_id);
-        $this->denyAccessUnlessGranted('edit', $message);
+        $this->denyAccessUnlessGranted('delete', $message);
         $form = $this->createDeleteForm($message);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+throw new nei();
             $em = $this->getDoctrineManager();
             $em->remove($message);
             $em->flush($message);
@@ -493,6 +494,7 @@ class MessageController extends CommonController
      */
     public function messsagesAction(Request $request, $access)
     {
+        // TODO: Either delete or edit.
         $this->denyAccessUnlessGranted('edit', $message);
 
         if ($this->isRest($access))
@@ -635,6 +637,8 @@ class MessageController extends CommonController
      */
     public function removeContextAction(Request $request, $access, MessageContext $message_context)
     {
+        // Is "delete" more correct? Should I just do thee check directly on
+        // the context?
         $this->denyAccessUnlessGranted('edit', $message_context->getOwner());
 
         $em = $this->getDoctrineManager();
