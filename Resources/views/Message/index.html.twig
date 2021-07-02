@@ -45,20 +45,22 @@
                     <li>
                     <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Edit</a>
                     </li>
+                    {% endif %}
+                    {% if is_granted('delete', entity) %}
 <div class="d-none">
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(entity, true) %}
-    <form id="deletemessageform_{{ entity.id }}" onSubmit="return deleteSakonninMessage({{ entity.id }});">
+    <form id="deletemessageform_{{ entity.messageid }}" onSubmit="return deleteSakonninMessage('{{ entity.messageid }}');">
     {{ form_rest(mdelform) }}
-    <input id="delarchived_{{ entity.id }}" type="submit">
+    <input id="delarchived_{{ entity.messageid }}" type="submit">
     </form>
 </div>
                     <li>
-                        <a href="#" onClick='return $("#delarchived_{{ entity.id }}").click();'>Delete</a>
+                        <a href="#" onClick='return $("#delarchived_{{ entity.messageid }}").click();'>Delete</a>
                     </li>
                     {% endif %}
                 </ul>
                 </td>
-                <td class="message_list_select"> {{ entity.id }} </td>
+                <td class="message_list_select"> {{ entity.messageid }} </td>
             </tr>
           {% endif %}
         {% endfor %}
