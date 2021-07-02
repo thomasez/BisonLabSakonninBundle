@@ -471,7 +471,6 @@ class MessageController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-throw new nei();
             $em = $this->getDoctrineManager();
             $em->remove($message);
             $em->flush($message);
