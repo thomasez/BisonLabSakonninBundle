@@ -493,8 +493,32 @@ class MessageController extends CommonController
      */
     public function messsagesAction(Request $request, $access)
     {
-        // TODO: Either delete or edit.
-        $this->denyAccessUnlessGranted('edit', $message);
+        if (!$this->isCsrfTokenValid('message-messages', $request->request->get('_token')))
+            return $this->redirect($request->headers->get('referer'));
+
+        $msglist = $request->request->get('message_list');
+        $submit = $request->request->get('submit');
+        if (!is_array($msglist))
+             return $this->redirect($request->headers->get('referer'));
+        $em = $this->getDoctrineManager();
+        foreach ($msglist as $msgid) {
+            if (!$message = $this->_getMessage($msgid))
+                continue;
+            if ($submit == "Delete") {
+                if (!$this->isGranted('delete', $message))
+                    return $this->redirect($request->headers->get('referer'));
+                $em->remove($message);
+                $em->flush($message);
+            }
+            if ($submit == "Archive") {
+                // To be honest, archiving is more like delete than edit.
+                // TODO: Add an "archive" security attribute
+                if (!$this->isGranted('delete', $message))
+                    return $this->redirect($request->headers->get('referer'));
+                $message->setState("ARCHIVE");
+                $em->flush($message);
+            }
+        }
 
         if ($this->isRest($access))
             return new JsonResponse(array("status" => "DONE"),

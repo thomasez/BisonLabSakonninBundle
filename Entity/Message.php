@@ -710,5 +710,10 @@ class Message
     {
         return $this->getMessageType() ? $this->getMessageType()->isEditable() : false;
     }
+
+    public function isArchiveable()
+    {
+        return in_array("ARCHIVE", self::getStates());
+    }
     // TODO: A (proper) isDeletable.
 }

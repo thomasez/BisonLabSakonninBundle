@@ -20,6 +20,7 @@
 {% if entities is not defined and data is defined %}
 {% set entities = data %}
 {% endif %}
+{% set something_archiveable = false %}
         {% for entity in entities %}
           {% if is_granted('show', entity) and not entity.inreplyto %}
             <tr>
@@ -44,6 +45,12 @@
                     {% if is_granted('edit', entity) %}
                     <li>
                     <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Edit</a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('delete', entity) and entity.archiveable %}
+                    {% set something_archiveable = true %}
+                    <li>
+                    <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Archive</a>
                     </li>
                     {% endif %}
                     {% if is_granted('delete', entity) %}
@@ -74,7 +81,9 @@
   <div class="col-sm-3" align="right">
     <form id="message_list_form" method="POST">
       <input class="btn-primary btn" id="deletemessages" type="submit" name="submit" value="Delete"><br>
+{% if something_archiveable == true %}
       <input class="btn-primary btn" id="archivemessages" type="submit" name="submit" value="Archive"><br>
+{% endif %}
     </form>
   </div>
 </div>
@@ -104,10 +113,6 @@ $(document).ready(function() {
 
         var rows_selected = selectable_table.column('.selectcol').checkboxes.selected();
 
-console.log($btn);
-console.log(rows_selected);
-console.log(form);
-
         // Iterate over all selected checkboxes
         $.each(rows_selected, function(index, rowId){
              // Create a hidden element
@@ -118,6 +123,12 @@ console.log(form);
                     .val(rowId)
              );
         });
+        $(form).append(
+            $('<input>')
+               .attr('type', 'hidden')
+               .attr('name', '_token')
+               .val("{{ csrf_token('message-messages') }}")
+        );
         if ($btn.is('[id]') && $btn.attr("id") == "archivemessages") {
             $(form).attr('action', "{{ path('message_messages') }}");
             $(form).attr('method', 'POST');
@@ -130,9 +141,8 @@ console.log(form);
             return;
         }
         if ($btn.is('[id]') && $btn.attr("id") == "deletemessages") {
-console.log("Skal lissom slette");
-            $(form).attr('action', "{{ path('message_messages') }}");
-            $(form).attr('method', 'DELETE');
+            $(form).attr('action', "{{ path('message_messages', { 'method': '_delete'} ) }}");
+            $(form).attr('method', 'POST');
             return;
         }
 
