@@ -510,12 +510,12 @@ class MessageController extends CommonController
                 $em->remove($message);
                 $em->flush($message);
             }
-            if ($submit == "Archive") {
+            if ($submit == "Archive" && $message->isArchiveable()) {
                 // To be honest, archiving is more like delete than edit.
                 // TODO: Add an "archive" security attribute
                 if (!$this->isGranted('delete', $message))
                     return $this->redirect($request->headers->get('referer'));
-                $message->setState("ARCHIVE");
+                $message->setState("ARCHIVED");
                 $em->flush($message);
             }
         }

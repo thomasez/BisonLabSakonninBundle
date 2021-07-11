@@ -42,7 +42,7 @@
                     <li>
                         <a href="{{ path('message_show', { 'message_id': entity.messageid }) }}">Show</a>
                     </li>
-                    {% if is_granted('edit', entity) %}
+                    {% if is_granted('edit', entity) and entity.editable %}
                     <li>
                     <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');">Edit</a>
                     </li>
