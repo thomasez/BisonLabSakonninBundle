@@ -10,7 +10,7 @@ services:
         resource: '../../Controller/*'
         tags: ['controller.service_arguments']
         # AbstractController still needs this!
-        calls: 
+        calls:
             - [ setContainer, ['@service_container'] ]
             - [ setFormFactory, ['@form.factory'] ]
 
