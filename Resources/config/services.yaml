@@ -12,6 +12,7 @@ services:
         # AbstractController still needs this!
         calls: 
             - [ setContainer, ['@service_container'] ]
+            - [ setFormFactory, ['@form.factory'] ]
 
     sakonnin.messages:
         class: BisonLab\SakonninBundle\Service\Messages

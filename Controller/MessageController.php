@@ -744,7 +744,7 @@ class MessageController extends CommonController
     public function createDeleteForm(Message $message, $access = "ajax")
     {
         $form_name = "message_delete_" . $message->getMessageId();
-        return $this->get('form.factory')->createNamedBuilder($form_name,FormType::class)
+        return $this->container->get('form.factory')->createNamedBuilder($form_name,FormType::class)
             ->setAction($this->generateUrl('message_delete', array(
                 'message_id' => $message->getMessageId(),
                 'access' => $access)))
