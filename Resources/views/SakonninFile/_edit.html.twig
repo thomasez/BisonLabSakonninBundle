@@ -1,4 +1,65 @@
+
+<script>
+
+const addEditFormToCollection = (e) => {
+  const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+  const item = document.createElement('li');
+
+  item.innerHTML = collectionHolder
+    .dataset
+    .prototype
+    .replace(
+      /__name__/g,
+      collectionHolder.dataset.index
+    );
+
+  collectionHolder.appendChild(item);
+
+  collectionHolder.dataset.index++;
+{#   addTagFormDeleteLink(item); #}
+};
+
+const addTagFormDeleteLink = (tagFormLi) => {
+
+console.log(tagFormLi);
+    const removeFormButton = document.createElement('button');
+    removeFormButton.classList.add("btn-small", "btn-primary");
+    removeFormButton.innerText = 'Delete this tag';
+
+    tagFormLi.append(removeFormButton);
+
+    removeFormButton.addEventListener('click', (e) => {
+        e.preventDefault()
+        // remove the li for the tag form
+        tagFormLi.remove();
+    });
+}
+
+$(document).ready(function() {
+
+document
+  .querySelectorAll('.add_edit_tag_link')
+  .forEach(btn => btn.addEventListener("click", addEditFormToCollection));
+
+const tags = document.querySelectorAll('li.tags')
+tags.forEach((tag) => {
+    addTagFormDeleteLink(tag);
+})
+
+});
+
+</script>
+
 {{ form_start(edit_form, { 'attr': {'id':'editSakonninFileForm'}}) }}
-{{ form_widget(edit_form) }}
+{{ form_row(edit_form.description, {'id': edit_form.description.vars.id ~ "editform" })}}
+<ul id=filetags_list" data-prototype="{{ form_widget(edit_form.tags.vars.prototype)|e('html_attr') }}">
+{% for tag in edit_form.tags %}
+    <li class="tags" id="tag_li_{{ tag.vars.id }}">{{ form_row(tag) }}</li>
+{% endfor %}
+</ul>
+<button type="button" class="btn-small btn-primary add_edit_tag_link" data-collection-holder-class="tags">Add a tag</button>
+{{ form_row(edit_form.file_type, {'id': edit_form.file_type.vars.id ~ "editform"  })}}
+{{ form_widget(edit_form._token, {'id': edit_form._token.vars.id  ~ "editform" })}} 
 <button type="submit" class="btn-small btn-primary">Save</button>
 {{ form_end(edit_form) }}

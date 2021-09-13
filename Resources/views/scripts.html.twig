@@ -299,12 +299,6 @@ console.log("Submitter");
             $( "#sakonninModal").modal("hide");
             if (reload_after_post) {
                 parent.location.reload();
-            } else {
-                $( "#sakonninfilesubject_" + file_id).text(cont.file.subject);
-                $( "#sakonninfilebody_" + file_id).text(cont.file.body);
-                $( "#sakonninfilefrom_" + file_id).text(cont.file.from);
-                $( "#sakonninfileto_" + file_id).text(cont.file.to);
-                $( "#sakonninfilefiletype_" + file_id).text(cont.file.filetype);
             }
       }).fail(function(xhr, status, error) {
             errmsg = "File sending failed\n";

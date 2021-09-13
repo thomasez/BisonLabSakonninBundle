@@ -115,6 +115,14 @@ class SakonninFile
     private $encoding;
 
     /**
+     * @var array
+     * Tags, the simplest way (No, not simple_array).
+     *
+     * @ORM\Column(name="tags", type="array", nullable=true)
+     */
+    private $tags;
+
+    /**
      * @ORM\OneToMany(targetEntity="SakonninFileContext", mappedBy="file", cascade={"persist", "remove"})
      */
     private $contexts;
@@ -362,6 +370,63 @@ class SakonninFile
     public function getEncoding()
     {
         return $this->encoding;
+    }
+
+    /**
+     * add a tag
+     *
+     * @param string $tag
+     *
+     * @return array
+     */
+    public function addTag($tag)
+    {
+        if (array_search($tag, $this->tags))
+            return $tag;
+
+        $this->tags[] = $tag;
+
+        return $this->tags;
+    }
+
+    /**
+     * remove a tag
+     *
+     * @param string $tag
+     *
+     * @return array
+     */
+    public function removeTag($tag)
+    {
+        if ($idx = array_search($tag, $this->tags))
+            unset($this->tags[$idx]);
+
+        return $this->tags;
+    }
+
+    /**
+     * Set tags, either comma separated or an array.
+     *
+     * @return array
+     */
+    public function setTags($tags)
+    {
+        if (is_array($tags)) {
+            $this->tags = $tags;
+        } else {
+            $this->tags = array_map('trim', explode(",", $tags));
+        }
+        return $this->tags;
+    }
+
+    /**
+     * Get the tags
+     *
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 
     /**

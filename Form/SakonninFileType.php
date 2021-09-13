@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 
 class SakonninFileType extends AbstractType
@@ -19,6 +20,12 @@ class SakonninFileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('description');
+        $builder->add('tags', CollectionType::class, array(
+                'entry_type' => TextType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'entry_options' => ['label' => false],
+            ));
         if (isset($options['data']) && $options['data']->getFileType()) {
             $builder->add('file_type', HiddenType::class);
         } else {

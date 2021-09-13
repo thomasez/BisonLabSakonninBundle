@@ -9,6 +9,36 @@
 {% set reload = "false" %}
 {% endif %}
 
+<script>
+
+const addFormToCollection = (e) => {
+  const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+  const item = document.createElement('li');
+
+  item.innerHTML = collectionHolder
+    .dataset
+    .prototype
+    .replace(
+      /__name__/g,
+      collectionHolder.dataset.index
+    );
+
+  collectionHolder.appendChild(item);
+
+  collectionHolder.dataset.index++;
+};
+
+$(document).ready(function() {
+
+document
+  .querySelectorAll('.add_tag_link')
+  .forEach(btn => btn.addEventListener("click", addFormToCollection));
+
+});
+
+</script>
+
 {% set title = "Add File" %}
 <div class="modal fade" id="uploadfile{{ formname }}" role="dialog" tabindex="-1">
     <div class="modal-dialog">
@@ -28,6 +58,9 @@
             {% endif %}
             {{ form_widget(sfform.file, {'id': sfform.file.vars.id ~ formname })}}
             {{ form_row(sfform.description, {'id': sfform.description.vars.id ~ formname })}}
+            <ul id=filetags_list" class="tags" data-prototype="{{ form_widget(sfform.tags.vars.prototype)|e('html_attr') }}">
+            </ul>
+            <button type="button" class="add_tag_link" data-collection-holder-class="tags">Add a tag</button>
             {{ form_row(sfform.file_type, {'id': sfform.file_type.vars.id ~ formname })}}
             {{ form_widget(sfform.submit, {'id': sfform.submit.vars.id ~ formname })}} 
             {{ form_widget(sfform._token, {'id': sfform._token.vars.id ~ formname })}} 

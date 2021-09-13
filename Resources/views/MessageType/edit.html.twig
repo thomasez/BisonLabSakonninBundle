@@ -9,7 +9,7 @@
 <script type="text/javascript">
 
 function addTagFormDeleteLink($tagFormLi) {
-    var $removeFormA = $('<a href="#">delete this attribute</a>');
+    var $removeFormA = $('<a href="#"><button>Delete this attribute</button></a>');
     $tagFormLi.append($removeFormA);
 
     $removeFormA.on('click', function(e) {
@@ -77,6 +77,10 @@ function addTagFormDeleteLink($tagFormLi) {
             // create a new list element and add it to the list
             var newLi = jQuery('<li></li>').html(newWidget);
             newLi.appendTo(FattrList);
+
+            FattrList.find('li').each(function() {
+                addTagFormDeleteLink($(this));
+            });
         });
     })
 </script>
@@ -110,7 +114,7 @@ function addTagFormDeleteLink($tagFormLi) {
         </li>
     {% endfor %}
     </ul>
-    <a href="#" id="add-another-callbackattribute">Add attribute</a>
+    <a href="#" id="add-another-callbackattribute"><button>Add attribute</button></a>
 </div>
     
 {{ form_row(edit_form.forward_function) }}
@@ -124,8 +128,8 @@ function addTagFormDeleteLink($tagFormLi) {
             {{ form_widget(attr) }}
         </li>
     {% endfor %}
-    <a href="#" id="add-another-forwardattribute">Add attribute</a>
     </ul>
+    <a href="#" id="add-another-forwardattribute"><button>Add attribute</button></a>
 </div>
 
     {{ form_row(edit_form._token) }}
