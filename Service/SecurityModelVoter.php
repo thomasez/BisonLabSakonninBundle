@@ -53,6 +53,7 @@ class SecurityModelVoter extends Voter
         if (!$user instanceof UserInterface) {
             // the user must be logged in; if not, deny access
             return false;
+dump("UserInterface!");
         }
 
         if ($attribute == "index")
@@ -60,16 +61,17 @@ class SecurityModelVoter extends Voter
 
         // If the subject itself decides it's not editable, return false
         if (method_exists($subject, 'isEditable')
-            && $attribute == "edit"
-            && !$subject->isEditable()) {
-                return false;
-            }
+                && $attribute == "edit"
+                && !$subject->isEditable()) {
+            return false;
+        }
 
         // If the subject itself decides it's not deleteable, return false
         if (method_exists($subject, 'isDeleteable')
-            && $attribute == "delete"
-            && !$subject->isDeleteable())
-                return false;
+                && $attribute == "delete"
+                && !$subject->isDeleteable()) {
+            return false;
+        }
 
         // If it does not have any security model set, don't bother.
         if (!$security_model = $subject->getSecurityModel()) {
@@ -186,7 +188,7 @@ class SecurityModelVoter extends Voter
     }
 
     /*
-     * If User is ether sender, receiver og creator, check the group(s) it
+     * If User is ether sender, receiver or creator, check the group(s) it
      * belongs to.
      * This model does require that you actually use groups..=)
      * Same issues as with _checkPrivate.
@@ -222,6 +224,7 @@ class SecurityModelVoter extends Voter
                     return true;
             }
         }
+
         /*
          * Point here is to check if the object this message is about is in teh
          * same group(s) as the use trying to mess with.
@@ -234,8 +237,10 @@ class SecurityModelVoter extends Voter
                 // do a pure match.
                 if (!method_exists($object, 'getGroupNames'))
                     continue;
-                
-                if (in_array($object->getGroupNames(), $user->getGroupNames()))
+                // in_array does not work. And I don't trust php to not end up
+                // with empty always be "false".
+                if (!empty(array_intersect($object->getGroupNames(),
+                        $user->getGroupNames())))
                     return true;
             }
         }
