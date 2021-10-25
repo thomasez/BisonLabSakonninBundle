@@ -102,7 +102,7 @@ class MessageType
     /**
      * @var string
      *
-     * @ORM\Column(name="callback_attributes", type="json_array", length=255, nullable=true)
+     * @ORM\Column(name="callback_attributes", type="json", length=255, nullable=true)
      */
     private $callbackAttributes = array();
 
@@ -117,7 +117,7 @@ class MessageType
     /**
      * @var string
      *
-     * @ORM\Column(name="forward_attributes", type="json_array", length=255, nullable=true)
+     * @ORM\Column(name="forward_attributes", type="json", length=255, nullable=true)
      */
     private $forwardAttributes = array();
 
