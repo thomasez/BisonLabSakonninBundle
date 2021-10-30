@@ -173,7 +173,7 @@ dump("UserInterface!");
             ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
                 return true;
         // Then, how do I get the object the context is pointing at?
-        // Answer: "The ExternalRetriever" in my CommonBundle.
+        // Answer: "The ExternalRetriever" in my ContextBundle.
         foreach ($subject->getContexts() as $context) {
             if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
                 // The question now is. How do I know that the object is

@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Entity;
 
-use BisonLab\CommonBundle\Entity\ContextBase;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MessageContext
 {
-    use \BisonLab\CommonBundle\Entity\ContextBaseTrait;
+    use \BisonLab\ContextBundle\Entity\ContextBaseTrait;
 
     /**
      * @var mixed

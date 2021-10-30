@@ -2,7 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Repository;
 
-use BisonLab\CommonBundle\Entity\ContextBaseRepository;
+use BisonLab\ContextBundle\Entity\ContextBaseRepository;
 
 /**
  * MessageContextRepository
