@@ -53,7 +53,6 @@ class SecurityModelVoter extends Voter
         if (!$user instanceof UserInterface) {
             // the user must be logged in; if not, deny access
             return false;
-dump("UserInterface!");
         }
 
         if ($attribute == "index")
