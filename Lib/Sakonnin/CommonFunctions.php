@@ -121,7 +121,11 @@ trait CommonFunctions
     public function sendSms($message, $receiver, $options = array())
     {
         $sms_handler = $this->container->get('sakonnin.sms_handler');
-        if ($number = $this->extractMobilePhoneNumberFromReceiver($receiver))
+        if (is_array($receiver))
+            $sms_handler->send($message->getBody(), $receiver, $options);
+        elseif (is_numeric($receiver))
+            $sms_handler->send($message->getBody(), $receiver, $options);
+        elseif ($number = $this->extractMobilePhoneNumberFromReceiver($receiver))
             $sms_handler->send($message->getBody(), $number, $options);
 
         return true;
