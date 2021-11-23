@@ -225,7 +225,7 @@ class SecurityModelVoter extends Voter
         }
 
         /*
-         * Point here is to check if the object this message is about is in teh
+         * Point here is to check if the object this message is about is in the
          * same group(s) as the use trying to mess with.
          */
         foreach ($subject->getContexts() as $context) {
