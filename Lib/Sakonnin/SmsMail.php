@@ -15,11 +15,13 @@ class SmsMail
         $message = $options['message'];
         $receivers = $message->getReceivers();
 
+        $sms_numbers = [];
         foreach ($receivers as $receiver) {
             if ($number = $receiver->getMobilePhoneNumber())
-                $this->sendSms($message, $number, $options);
+                $sms_numbers[] = $number;
             if ($email = $this->extractEmailFromReceiver($receiver))
                 $this->sendMail($message, $email, $options);
         }
+        $this->sendSms($message, $sms_numbers, $options);
     }
 }

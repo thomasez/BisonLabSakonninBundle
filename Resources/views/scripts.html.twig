@@ -59,7 +59,7 @@ function deleteSakonninMessage(message_id) {
 
     orgurl = "{{ path('message_delete', {'message_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
     url = orgurl.replace("xxxxxxxxxxxxx", message_id);
-    deletemessageform = $( "#deletemessageform_" + message_id ).serialize(),
+    deletemessageform = $( "#deletemessageform_" + message_id ).serialize();
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
@@ -307,6 +307,28 @@ console.log("Submitter");
     });
     return false;
 }
+
+/* 
+ * Annoying, but cannot redeclare consts, alas I gotta keep it in one place.
+ */
+const addFormToCollection = (e) => {
+  const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+  const item = document.createElement('li');
+
+  item.innerHTML = collectionHolder
+    .dataset
+    .prototype
+    .replace(
+      /__name__/g,
+      collectionHolder.dataset.index
+    );
+
+  collectionHolder.appendChild(item);
+
+  collectionHolder.dataset.index++;
+};
+
 
 </script>
 
