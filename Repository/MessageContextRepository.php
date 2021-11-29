@@ -2,7 +2,9 @@
 
 namespace BisonLab\SakonninBundle\Repository;
 
-use BisonLab\ContextBundle\Entity\ContextBaseRepository;
+use BisonLab\ContextBundle\Repository\ContextBaseRepository;
+use BisonLab\SakonninBundle\Entity\MessageContext;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * MessageContextRepository
@@ -12,16 +14,24 @@ use BisonLab\ContextBundle\Entity\ContextBaseRepository;
  */
 class MessageContextRepository extends ContextBaseRepository
 {
+    /**
+     * @param ManagerRegistry $managerRegistry
+     */
+    public function __construct(ManagerRegistry $managerRegistry)
+    {
+        parent::__construct($managerRegistry, MessageContext::class);
+    }
+
     /*
      * This should explain itself, but the context here is of course not a
      * MessageContext entity, but the keys to find one. And the answer to the
      * question is easy, if there are one or more MessageContexts, there are
      * messages.
      */
-    public function contextHasMessages($context_data, $with_contexts = false)
+    public function contextHasMessages($context_data, $with_contexts = false): bool
     {
-        $qb2 = $this->_em->createQueryBuilder();
-        $qb2->select('mc')
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('mc')
               ->from($this->_entityName, 'mc')
               ->where('mc.system = :system')
               ->andWhere('mc.object_name = :object_name')
@@ -31,10 +41,10 @@ class MessageContextRepository extends ContextBaseRepository
               ->setParameter("external_id", $context_data['external_id']);
 
         if ($with_contexts) {
-            return $qb2->getQuery()->getResult();
+            return $qb->getQuery()->getResult();
         } else {
-            $qb2->setMaxResults(1);
-            $message_contexts = $qb2->getQuery()->getResult();
+            $qb->setMaxResults(1);
+            $message_contexts = $qb->getQuery()->getResult();
             return !empty($message_contexts);
         }
     }

@@ -2,17 +2,22 @@ services:
     _defaults: { public: true }
 
     BisonLab\SakonninBundle\Command\:
-        resource: '../../Command/*'
+        resource: '../Command/*'
         arguments: ['@service_container' ]
         tags: ['console.command']
 
     BisonLab\SakonninBundle\Controller\:
-        resource: '../../Controller/*'
+        resource: '../Controller/*'
         tags: ['controller.service_arguments']
         # AbstractController still needs this!
         calls:
             - [ setContainer, ['@service_container'] ]
             - [ setFormFactory, ['@form.factory'] ]
+
+    BisonLab\SakonninBundle\Repository\:
+        resource: '../Repository/*'
+        autowire: true
+        tags: ['doctrine.repository_service']
 
     sakonnin.messages:
         class: BisonLab\SakonninBundle\Service\Messages
@@ -32,7 +37,7 @@ services:
 
     sakonnin.securitymodel_voter:
         class: BisonLab\SakonninBundle\Service\SecurityModelVoter
-        arguments: ['@external_retriever', '@sakonnin.messages']
+        arguments: ['@bisonlab_context.external_retriever', '@sakonnin.messages']
         public: false
         tags:
             - { name: security.voter }

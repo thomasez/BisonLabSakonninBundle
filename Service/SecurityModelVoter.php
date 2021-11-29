@@ -32,7 +32,7 @@ class SecurityModelVoter extends Voter
         $this->sakonnin_messages  = $sakonnin_messages;
     }
 
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         // Gotta handle all operations.
         if ($subject instanceof Message
@@ -46,14 +46,13 @@ class SecurityModelVoter extends Voter
             return false;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
             // the user must be logged in; if not, deny access
             return false;
-dump("UserInterface!");
         }
 
         if ($attribute == "index")

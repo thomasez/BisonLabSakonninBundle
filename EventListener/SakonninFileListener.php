@@ -29,7 +29,7 @@ class SakonninFileListener implements EventSubscriber
      *
      * @return array The array of events.
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return array(
             'preRemove',
