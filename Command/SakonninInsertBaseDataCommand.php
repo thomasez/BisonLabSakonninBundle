@@ -102,7 +102,7 @@ EOT
         parent::initialize($input, $output);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -114,7 +114,7 @@ EOT
             $parent = null;
             if (isset($type['parent']) && !$parent = $this->_findMt($type['parent'])) {
                 error_log("Could not find the group " . $type['parent']);
-                return false;
+                return 1;
             }
 
             // Now we can update.

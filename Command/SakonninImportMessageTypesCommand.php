@@ -60,14 +60,14 @@ EOT
         $this->delimiter = $input->getOption('delimiter') ? $input->getOption('delimiter') : ',';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
         if (!$this->filename)
         {
            $output->writeln("I do need a filename");
-           exit;
+           return 1;
         }
 
         gc_enable();
@@ -125,7 +125,8 @@ EOT
         return 0;
     }
 
-    private function _findMt($name) {
+    private function _findMt($name)
+    {
         if (isset($this->mt_cache[$name]))
             return $this->mt_cache[$name];
             
