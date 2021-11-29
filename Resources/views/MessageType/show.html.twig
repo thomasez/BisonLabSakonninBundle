@@ -29,6 +29,10 @@
                 <th>Security model</th>
                 <td>{{ entity.securitymodellabel }}</td>
             </tr>
+            <tr>
+                <th>Editable</th>
+                <td>{{ entity.editable ? "Yes" : "No"  }}</td>
+            </tr>
 {% if entity.sakonnintemplate is not null %}
             <tr>
                 <th>Template</th>
