@@ -8,6 +8,18 @@ namespace BisonLab\SakonninBundle\Lib;
 trait CommonStuff 
 {
     private $entityManager;
+    private $sakonmin_messages;
+    private $sakonmin_functions;
+
+    public function setSakonninMessages($sm)
+    {
+        $this->sakonmin_messages = $sm;
+    }
+
+    public function setSakonninFunctions($sf)
+    {
+        $this->sakonmin_functions = $sf;
+    }
 
     public function getLoggedInUser()
     {

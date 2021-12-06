@@ -26,11 +26,9 @@ class MessageController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    protected $sakonmin_messages;
-
-    public function setSakonninMessages($sm)
+    public function setSakonninFunctions($sf)
     {
-        $this->sakonmin_messages = $sm;
+        $this->sakonmin_functions = $sf;
     }
 
     /**

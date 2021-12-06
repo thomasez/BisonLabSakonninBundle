@@ -24,13 +24,6 @@ class MessageTypeController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    protected $sakonmin_functions;
-
-    public function setSakonninFunctions($sf)
-    {
-        $this->sakonmin_functions = $sf;
-    }
-
     /**
      * Lists all MessageType entities.
      *
