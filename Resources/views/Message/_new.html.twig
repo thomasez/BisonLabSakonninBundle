@@ -15,6 +15,11 @@
   {% else %}
     {{ form_widget(form.expire_at, { 'attr': {'class': 'd-none'}}) }}
   {% endif %}
+  {% if "state" in elements %}
+    {{ form_row(form.state) }}
+  {% else %}
+    {{ form_widget(form.state, { 'attr': {'class': 'd-none'}}) }}
+  {% endif %}
   {% if "message_type" in elements %}
     {{ form_row(form.message_type) }}
   {% else %}

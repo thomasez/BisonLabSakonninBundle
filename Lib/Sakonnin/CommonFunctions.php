@@ -3,6 +3,7 @@
 namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
 use BisonLab\SakonninBundle\Entity\Message;
+use Symfony\Component\Mime\Email;
 
 /*
  */
@@ -13,10 +14,12 @@ trait CommonFunctions
 
     protected $container;
     protected $router;
+    protected $mailer;
 
     public function __construct($container, $options = array())
     {
         $this->container = $container;
+        $this->mailer = $options['mailer'];
     }
 
     public function sendMail($message, $mailto, $options = array())
@@ -39,18 +42,6 @@ trait CommonFunctions
             $body .= "Link to this message: " . $url  . "\n\n";
         }
 
-        $attachment = null;
-        if (isset($options['attach_from_path'])) {
-            $filename = $options['attach_filename'] ?? basename($options['attach_from_path']);
-            $attachment = \Swift_Attachment::fromPath($options['attach_from_path'])->setFilename($filename);
-        }
-        if (isset($options['attach_content'])) {
-            $filename = $options['attach_filename'] ?? "Attachment";
-            $attachment = new \Swift_Attachment($options['attach_content'], $filename);
-        }
-        if ($attachment && isset($options['attach_content_type'])) {
-            $attachment->setContentType($options['attach_content_type']);
-        }
 
         $body .= $message->getBody();
         if (!$from = $message->getFrom()) {
@@ -58,22 +49,30 @@ trait CommonFunctions
             $message->setFrom($from);
             $message->setFromType('EMAIL');
         }
+
+        $message->setToType('EMAIL');
+        $mail = (new Email())
+            ->subject($message->getSubject())
+            ->from($from)
+            ->to($mailto)
+            ->text($body)
+        ;
+
         /*
          * Let's handle attachments aswell.
          */
+        if (isset($options['attach_from_path'])) {
+            $content_type = $options['attach_content_type'] ?? null;
+            $filename = $options['attach_filename'] ?? basename($options['attach_from_path']);
+            $mail->attachFromPath($options['attach_from_path'], $filename, $content_type);
+        }
+        if (isset($options['attach_content'])) {
+            $filename = $options['attach_filename'] ?? "Attachment";
+            $mail->attach($options['attach_content'], $filename);
+        }
 
-        $message->setToType('EMAIL');
-        $mail = (new \Swift_Message($message->getSubject()))
-        ->setFrom($from)
-        ->setTo($mailto)
-        ->setBody($body,
-            'text/plain'
-        );
-
-        if ($attachment)
-            $mail->attach($attachment);
-
-        $this->container->get('mailer')->send($mail);
+dump($this->mailer);
+        $this->mailer->send($mail);
         return true;
     }
 

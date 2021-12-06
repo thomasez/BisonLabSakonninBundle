@@ -13,6 +13,7 @@ class Functions
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $container;
+    private $mailer;
     private $user_repository;
 
     private $forward_functions;
@@ -36,6 +37,11 @@ class Functions
                 $this->callback_functions[$r] = $config;
             }
         }
+    }
+
+    public function setMailer($mailer)
+    {
+        $this->mailer = $mailer;
     }
 
     public function getForwardsAsChoices()
@@ -94,7 +100,7 @@ class Functions
         $sm = $this->container->get('sakonnin.messages');
         $user = $sm->getLoggedInUser();
 
-        $class = new $config['class']($this->container);
+        $class = new $config['class']($this->container, ['mailer' => $this->mailer]);
         // Add more if you need to.
         $options['user']       = $user;
         $options['message']    = $message;

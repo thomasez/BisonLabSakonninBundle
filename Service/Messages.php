@@ -20,12 +20,19 @@ class Messages
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $container;
+    private $mailer;
     private $user_repository;
 
+    // TODO: To be removed
     public function __construct($container)
     {
         $this->container  = $container;
         $this->stemplates = $container->get('sakonnin.templates');
+    }
+
+    public function setMailer($mailer)
+    {
+        $this->mailer  = $mailer;
     }
 
     public function postMessage($data, $context_data = [])

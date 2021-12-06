@@ -2,6 +2,8 @@
 
 namespace BisonLab\SakonninBundle\Lib\SmsHandler;
 
+use Symfony\Component\Mime\Email;
+
 /*
  * The simplest way to send an SMS via pswin.com. Hopefully not lasting for
  * long. It's nicked from the old CrewCall and does not look good at all.
@@ -57,12 +59,12 @@ EOMSG;
 		
 		$msg .="\n</MSGLST>\n</SESSION>";
 	
-        $mail = (new \Swift_Message("SMS"))
-        ->setFrom($this->mailfrom)
-        ->setTo($this->mailto)
-        ->setBody($msg,
-            'text/plain'
-        );
+        $mail = (new Email())
+            ->subject("SMS")
+            ->from($this->mailfrom)
+            ->to($this->mailto)
+            ->text($msg)
+        ;
 
         $headers = $mail->getHeaders();
         $headers->addTextHeader('Return-Path', $this->mailfrom);
