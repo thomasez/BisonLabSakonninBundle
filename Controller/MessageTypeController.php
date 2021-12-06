@@ -24,6 +24,13 @@ class MessageTypeController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
+    protected $sakonmin_functions;
+
+    public function setSakonninFunctions($sf)
+    {
+        $this->sakonmin_functions = $sf;
+    }
+
     /**
      * Lists all MessageType entities.
      *
@@ -259,12 +266,10 @@ class MessageTypeController extends CommonController
 
     private function _addFunctionsToForm(&$form)
     {
-        $sakonnin = $this->get('sakonnin.functions');
-
         $form->add('callback_function', ChoiceType::class, array(
                 'required' => false, 
                 'placeholder' => "None",
-                'choices' => $sakonnin->getCallbacksAsChoices()));
+                'choices' => $this->sakonmin_functions->getCallbacksAsChoices()));
         $form->add('callbackAttributes', CollectionType::class,
                 array(
                     'required' => false, 
@@ -277,7 +282,7 @@ class MessageTypeController extends CommonController
         $form->add('forward_function', ChoiceType::class, array(
                 'required' => false, 
                 'placeholder' => "None",
-                'choices' => $sakonnin->getForwardsAsChoices()));
+                'choices' => $this->sakonmin_functions->getForwardsAsChoices()));
         $form->add('forwardAttributes', CollectionType::class,
                 array(
                     'required' => false, 

@@ -26,6 +26,13 @@ class MessageController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
+    protected $sakonmin_messages;
+
+    public function setSakonninMessages($sm)
+    {
+        $this->sakonmin_messages = $sm;
+    }
+
     /**
      * Lists all Message entities.
      *
@@ -37,7 +44,6 @@ class MessageController extends CommonController
     public function listAction(Request $request, $access)
     {
         $this->denyAccessUnlessGranted('index', new Message());
-        $sm = $this->container->get('sakonnin.messages');
         
         // Gotta add criterias then.
         $criterias = [];
@@ -50,7 +56,7 @@ class MessageController extends CommonController
 
         $messages = [];
         if (!empty($criterias))
-            $messages = $sm->getMessages($criterias);
+            $messages = $this->sakonmin_messages->getMessages($criterias);
         
         if ('DESC' == $request->get('sort')) {
             $messages = array_reverse($messages);
@@ -69,9 +75,8 @@ class MessageController extends CommonController
      */
     public function myMessagesAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
         // Todo: paging or just show the last 20
-        $messages = $sm->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
+        $messages = $this->sakonmin_messages->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
@@ -86,8 +91,7 @@ class MessageController extends CommonController
      */
     public function unreadAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
-        $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
+        $messages = $this->sakonmin_messages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         // Gotta set the messages as read.
         /* Unread means not read, this should not automatically mean it's read.
         foreach ($messages as $message) {
@@ -112,8 +116,7 @@ class MessageController extends CommonController
      */
     public function pmAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
-        $messages = $sm->getMessagesForLoggedIn(array('message_type' => 'PM'));
+        $messages = $this->sakonmin_messages->getMessagesForLoggedIn(array('message_type' => 'PM'));
         $unread_starts_at = null;
         foreach ($messages as $message) {
             if ($message->getState() == "UNREAD") {
@@ -142,7 +145,6 @@ class MessageController extends CommonController
      */
     public function listByTypeAction(Request $request, $access, MessageType $messageType)
     {
-        $sm = $this->container->get('sakonnin.messages');
         $messages = $messageType->getMessages(true);
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
@@ -172,7 +174,6 @@ class MessageController extends CommonController
         }
         $this->denyAccessUnlessGranted('show', $message);
         // If it's shown to receiver, it's read.
-        $sm = $this->container->get('sakonnin.messages');
         $user = $this->getUser();
         // Not sure I want to set READ automatically. But UNREAD/READ is not
         // archived, which the users should set themselves.
@@ -295,9 +296,8 @@ class MessageController extends CommonController
             'object_name' => $object_name,
             'external_id' => $external_id,
             ];
-        $sm = $this->container->get('sakonnin.messages');
         $messages = [];
-        foreach ($sm->getMessagesForContext($criterias) as $m) {
+        foreach ($this->sakonmin_messages->getMessagesForContext($criterias) as $m) {
             if ($this->isGranted('show', $m))
                 $messages[] = $m;
         }
@@ -331,10 +331,9 @@ class MessageController extends CommonController
      */
     public function createPmAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
 
         $data = $request->request->all();
-        $form = $sm->getCreatePmForm($data);
+        $form = $this->sakonmin_messages->getCreatePmForm($data);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -367,7 +366,7 @@ class MessageController extends CommonController
             $message->setFromType('INTERNAL');
             $message->setFrom($user->getId());
 
-            $sm->postMessage($message);
+            $this->sakonmin_messages->postMessage($message);
 
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, "OK Done");
@@ -395,7 +394,6 @@ class MessageController extends CommonController
      */
     public function createAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
         $em = $this->getDoctrineManager();
         if ($parsed = json_decode($request->getContent(), true)) {
             $data = $parsed['message_data'];
@@ -412,7 +410,7 @@ class MessageController extends CommonController
                 // No messaagetype? naaah.
                 throw $this->createAccessDeniedException('No access, no message type found for message.');
             }
-            $message = $sm->postMessage($data, isset($parsed['message_context']) ? $parsed['message_context'] : array());
+            $message = $this->sakonmin_messages->postMessage($data, isset($parsed['message_context']) ? $parsed['message_context'] : array());
             if ($message) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
@@ -420,7 +418,7 @@ class MessageController extends CommonController
         }
 
         $data = $request->request->all();
-        $form = $sm->getCreateForm($data);
+        $form = $this->sakonmin_messages->getCreateForm($data);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -440,7 +438,7 @@ class MessageController extends CommonController
                 else
                     $message->setFromType("EXTERNAL");
             }
-            $sm->postMessage($message);
+            $this->sakonmin_messages->postMessage($message);
 
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
@@ -535,11 +533,10 @@ class MessageController extends CommonController
     public function checkUnreadAction(Request $request, $access)
     {
         $em = $this->getDoctrineManager();
-        $sm = $this->container->get('sakonnin.messages');
         $user = $this->getUser();
 
         $repo = $em->getRepository('BisonLabSakonninBundle:Message');
-        $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
+        $messages = $this->sakonmin_messages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
         }
@@ -576,12 +573,11 @@ class MessageController extends CommonController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $sm = $this->container->get('sakonnin.messages');
                 if ($context_data = $request->get('message_context')) {
                     $message_context = new MessageContext($context_data);
                     $message->addContext($message_context);
                 }
-                $sm->postMessage($message);
+                $this->sakonmin_messages->postMessage($message);
                 if ($this->isRest($access)) {
                     return new JsonResponse(array("status" => "OK", 200));
                 }
@@ -743,8 +739,7 @@ class MessageController extends CommonController
      */
     public function createDeleteForm(Message $message, $access = "ajax")
     {
-        $form_name = "message_delete_" . $message->getMessageId();
-        return $this->container->get('form.factory')->createNamedBuilder($form_name,FormType::class)
+        return $this->createFormBuilder()
             ->setAction($this->generateUrl('message_delete', array(
                 'message_id' => $message->getMessageId(),
                 'access' => $access)))

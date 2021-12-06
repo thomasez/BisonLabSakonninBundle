@@ -13,6 +13,8 @@ services:
         calls:
             - [ setContainer, ['@service_container'] ]
             - [ setFormFactory, ['@form.factory'] ]
+            - [ setSakonninMessages, ['@sakonnin.messages'] ]
+            - [ setSakonninFunctions, ['@sakonnin.functions'] ]
 
     BisonLab\SakonninBundle\Repository\:
         resource: '../Repository/*'
