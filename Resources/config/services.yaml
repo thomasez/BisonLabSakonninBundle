@@ -17,6 +17,8 @@ services:
     sakonnin.messages:
         class: BisonLab\SakonninBundle\Service\Messages
         arguments: ['@service_container' ]
+        calls:
+            - [ setMailer, ['@mailer.mailer'] ]
 
     sakonnin.files:
         class: BisonLab\SakonninBundle\Service\Files
@@ -25,6 +27,8 @@ services:
     sakonnin.functions:
         class: BisonLab\SakonninBundle\Service\Functions
         arguments: ['@service_container', '%sakonnin.function_factories%']
+        calls:
+            - [ setMailer, ['@mailer.mailer'] ]
 
     sakonnin.templates:
         class: BisonLab\SakonninBundle\Service\Templates
