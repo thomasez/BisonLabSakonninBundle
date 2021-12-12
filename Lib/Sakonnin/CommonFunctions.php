@@ -71,7 +71,6 @@ trait CommonFunctions
             $mail->attach($options['attach_content'], $filename);
         }
 
-dump($this->mailer);
         $this->mailer->send($mail);
         return true;
     }
