@@ -48,6 +48,10 @@ class SecurityModelVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
+        // darn method_exists changed. to something more corrrect tho.
+        if (!$subject)
+            return false;
+
         $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
