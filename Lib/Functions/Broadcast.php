@@ -1,6 +1,6 @@
 <?php
 
-namespace BisonLab\SakonninBundle\Lib\Sakonnin;
+namespace BisonLab\SakonninBundle\Lib\Functions;
 
 /*
  * Send a PM to everyone.
@@ -9,6 +9,17 @@ namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 class Broadcast
 {
     use CommonFunctions;
+
+    public $callback_functions = [
+    ];
+
+    public $forward_functions = [
+        'broadcast' => [
+            'description' => "Send PM to all enabled users",
+            'attribute_spec' => null,
+            'needs_attributes' => false,
+        ],
+    ];
 
     public function execute($options = array())
     {

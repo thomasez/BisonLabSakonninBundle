@@ -1,0 +1,28 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    BisonLab\SakonninBundle\:
+        resource: '../'
+        exclude:
+            - '../DependencyInjection/'
+            - '../Lib/'
+
+    BisonLab\SakonninBundle\Lib\Functions\:
+        resource: '../Lib/Functions/'
+        exclude:
+            - '../Lib/Functions/CommonFunctions.php'
+        tags:
+            - { name: 'sakonnin.functions' , index_by: 'key' }
+
+    BisonLab\SakonninBundle\Service\Functions:
+        arguments: [!tagged_locator { tag: 'sakonnin.functions', index_by: 'key' }]
+
+    BisonLab\SakonninBundle\Lib\SmsHandler\:
+        resource: '../Lib/SmsHandler/'
+        tags:
+            - { name: 'sakonnin.smshandlers' , index_by: 'key' }
+
+    BisonLab\SakonninBundle\Service\SmsHandler:
+        arguments: [!tagged_locator { tag: 'sakonnin.smshandlers', index_by: 'key' }]

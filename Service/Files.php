@@ -3,14 +3,19 @@
 namespace BisonLab\SakonninBundle\Service;
 
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType as FileFormType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 use BisonLab\SakonninBundle\Entity\SakonninFileContext;
 use BisonLab\SakonninBundle\Controller\SakonninFileController;
+use BisonLab\SakonninBundle\Service\Functions as SakonninFunctions;
 
 /**
  * Files service.
@@ -19,17 +24,23 @@ class Files
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $container;
-    private $user_repository;
+    private $parameterBag;
+    private $tokenStorage;
+    private $entityManager;
+    private $managerRegistry;
+    private $sakonninFunctions;
 
-    public function __construct($container)
+    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, ManagerRegistry $managerRegistry, ParameterBagInterface $parameterBag, SakonninFunctions $sakonninFunctions)
     {
-        $this->container = $container;
+        $this->tokenStorage = $tokenStorage;
+        $this->parameterBag = $parameterBag;
+        $this->entityManager = $entityManager;
+        $this->managerRegistry = $managerRegistry;
+        $this->sakonninFunctions = $sakonninFunctions;
     }
 
     public function storeFile($data, $context_data = array())
     {
-        $em = $this->getDoctrineManager();
         $file = null;
         if ($data instanceof SakonninFile) {
             $file = $data;
@@ -52,9 +63,9 @@ class Files
 
             $file_context = new SakonninFileContext($context_data);
             $file->addContext($file_context);
-            $em->persist($file_context);
+            $this->entityManager->persist($file_context);
         }
-        $em->persist($file);
+        $this->entityManager->persist($file);
 
         // I want the eoncoding, no support for that in Symfony/SplFile yet.
         $finfo = finfo_open(FILEINFO_MIME_ENCODING);
@@ -83,15 +94,13 @@ class Files
          * Cut&paste from Messages. Does not do all that one can, for now.
          * 
          */
-        $dispatcher = $this->container->get('sakonnin.functions');
-        $dispatcher->dispatchFileFunctions($file);
-        $em->flush();
+        $this->sakonninFunctions->dispatchFileFunctions($file);
+        $this->entityManager->flush();
         return $file;
     }
 
     public function getUploadForm($options = array())
     {
-        $em = $this->getDoctrineManager();
         $file = null;
         $file_context = null;
         if (isset($options['file']) && $options['file'] instanceof File) {
@@ -108,8 +117,6 @@ class Files
         }
 
         $c = new SakonninFileController();
-        $c->setContainer($this->container);
-
         $form = $c->createCreateForm($file);
 
         // You may wonder why. It's beause this one is called from twig
@@ -123,7 +130,6 @@ class Files
     public function getDeleteForm($file, $options = array())
     {
         $c = new SakonninFileController();
-        $c->setContainer($this->container);
         $form = $c->createDeleteForm($file);
 
         // You may wonder why. It's beause this one is called from twig
@@ -154,8 +160,7 @@ class Files
 
     public function getFiles($criterias = array())
     {
-        $em   = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
+        $repo = $this->entityManager->getRepository('BisonLabSakonninBundle:SakonninFile');
 
         // There can be only one
         if (isset($criterias['fileid'])) {
@@ -207,15 +212,14 @@ class Files
 
     public function contextHasFiles($context)
     {
-        $em   = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFileContext');
+        $repo = $this->entityManager->getRepository('BisonLabSakonninBundle:SakonninFileContext');
         return $repo->contextHasFiles($context);
     }
 
     public function getStoredFileName(SakonninFile $sfile)
     {
         // TODO: Add access control.
-        $path = $this->container->getParameter('sakonnin.file_storage');
+        $path = $this->parameterBag->get('sakonnin.file_storage');
         $filename = $path . "/" . $sfile->getStoredAs();
         return $filename;
     }
@@ -223,7 +227,7 @@ class Files
     public function getStoredFile(SakonninFile $sfile)
     {
         // TODO: Add access control.
-        $path = $this->container->getParameter('sakonnin.file_storage');
+        $path = $this->parameterBag->get('sakonnin.file_storage');
         $filename = $path . "/" . $sfile->getStoredAs();
         // Not entirely sure this is a good idea. Supposed to be binary safe.
         return file_get_contents($filename);
@@ -239,7 +243,7 @@ class Files
         if (!$sfile->getThumbnailable() || !is_numeric($x) || !is_numeric($y)) {
             return null;
         }
-        $path = $this->container->getParameter('sakonnin.file_storage');
+        $path = $this->parameterBag->get('sakonnin.file_storage');
         // Gotta store the thumbs in a directory.
         $filename = $path . "/" . $sfile->getStoredAs();
         $thumbdir = $filename . "_thumbs";

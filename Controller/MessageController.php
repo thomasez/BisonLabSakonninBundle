@@ -7,15 +7,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Entity\MessageContext;
-
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
+use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
 
 /**
  * Message controller.
@@ -25,6 +26,16 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 class MessageController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
+    private $managerRegistry;
+    private $entityManager;
+    private $sakonninMessages;
+
+    public function __construct(ManagerRegistry $managerRegistry, SakonninMessages $sakonninMessages)
+    {
+        $this->managerRegistry = $managerRegistry;
+        $this->sakonninMessages = $sakonninMessages;
+    }
 
     /**
      * Lists all Message entities.
@@ -37,7 +48,6 @@ class MessageController extends CommonController
     public function listAction(Request $request, $access)
     {
         $this->denyAccessUnlessGranted('index', new Message());
-        $sm = $this->container->get('sakonnin.messages');
         
         // Gotta add criterias then.
         $criterias = [];
@@ -50,7 +60,7 @@ class MessageController extends CommonController
 
         $messages = [];
         if (!empty($criterias))
-            $messages = $sm->getMessages($criterias);
+            $messages = $this->sakonninMessages->getMessages($criterias);
         
         if ('DESC' == $request->get('sort')) {
             $messages = array_reverse($messages);
@@ -69,9 +79,8 @@ class MessageController extends CommonController
      */
     public function myMessagesAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
         // Todo: paging or just show the last 20
-        $messages = $sm->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
+        $messages = $this->sakonninMessages->getMessagesForLoggedIn(array('not_message_type' => 'PM'));
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
         }
@@ -86,16 +95,7 @@ class MessageController extends CommonController
      */
     public function unreadAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
-        $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
-        // Gotta set the messages as read.
-        /* Unread means not read, this should not automatically mean it's read.
-        foreach ($messages as $message) {
-            $message->setState('READ');
-        }
-        $em = $this->getDoctrineManager();
-        $em->flush();
-        */
+        $messages = $this->sakonninMessages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages,
                 array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
@@ -112,8 +112,7 @@ class MessageController extends CommonController
      */
     public function pmAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
-        $messages = $sm->getMessagesForLoggedIn(array('message_type' => 'PM'));
+        $messages = $this->sakonninMessages->getMessagesForLoggedIn(array('message_type' => 'PM'));
         $unread_starts_at = null;
         foreach ($messages as $message) {
             if ($message->getState() == "UNREAD") {
@@ -121,8 +120,8 @@ class MessageController extends CommonController
                 $unread_starts_at = $message->getMessageId();
             }
         }
-        $em = $this->getDoctrineManager();
-        $em->flush();
+        $entityManager = $this->getDoctrineManager();
+        $entityManager->flush();
         if ($this->isRest($access)) {
             $data = array('messages' => $messages,
                 'unread_starts_at' => $unread_starts_at);
@@ -142,7 +141,6 @@ class MessageController extends CommonController
      */
     public function listByTypeAction(Request $request, $access, MessageType $messageType)
     {
-        $sm = $this->container->get('sakonnin.messages');
         $messages = $messageType->getMessages(true);
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
@@ -158,7 +156,7 @@ class MessageController extends CommonController
      */
     public function showAction(Request $request, $access, $message_id)
     {
-        $em = $this->getDoctrineManager();
+        $entityManager = $this->getDoctrineManager();
         // Hack. The contextGetAction in CommonBundle is not as smart as it
         // looks.
         $message = null;
@@ -172,14 +170,12 @@ class MessageController extends CommonController
         }
         $this->denyAccessUnlessGranted('show', $message);
         // If it's shown to receiver, it's read.
-        $sm = $this->container->get('sakonnin.messages');
         $user = $this->getUser();
         // Not sure I want to set READ automatically. But UNREAD/READ is not
         // archived, which the users should set themselves.
         if ($message->getTo() == $user->getId()) {
             $message->setState("READ");
-            $em = $this->getDoctrineManager();
-            $em->flush();
+            $entityManager->flush();
         }
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_show.html.twig'));
@@ -269,7 +265,7 @@ class MessageController extends CommonController
         $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
         $message->setState($state);
-        $this->getDoctrineManager()->flush($message);
+        $this->getDoctrineManager()->flush();
 
         if ($this->isRest($access)) {
             return new JsonResponse(array("status" => "OK",
@@ -295,9 +291,8 @@ class MessageController extends CommonController
             'object_name' => $object_name,
             'external_id' => $external_id,
             ];
-        $sm = $this->container->get('sakonnin.messages');
         $messages = [];
-        foreach ($sm->getMessagesForContext($criterias) as $m) {
+        foreach ($this->sakonninMessages->getMessagesForContext($criterias) as $m) {
             if ($this->isGranted('show', $m))
                 $messages[] = $m;
         }
@@ -331,21 +326,19 @@ class MessageController extends CommonController
      */
     public function createPmAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
-
         $data = $request->request->all();
-        $form = $sm->getCreatePmForm($data);
+        $form = $this->sakonninMessages->getCreatePmForm($data);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $message = $form->getData();
             $this->denyAccessUnlessGranted('create', $message);
-            $em = $this->getDoctrineManager();
+            $entityManager = $this->getDoctrineManager();
             $user = $this->getUser();
 
             $message_type = $data['message_type'] ?: "PM";
             $message->setMessageType(
-                $em->getRepository('BisonLabSakonninBundle:MessageType')
+                $entityManager->getRepository('BisonLabSakonninBundle:MessageType')
                     ->findOneByName($message_type)
             );
 
@@ -358,7 +351,7 @@ class MessageController extends CommonController
              * TODO: Maybe put the test in other places aswell?
              */
             if ($irt = $request->query->get('in_reply_to')) {
-                if (!$irt_msg = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $irt)))
+                if (!$irt_msg = $entityManager->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $irt)))
                     throw $this->createAccessDeniedException('No or bad reply .');
                 if ($irt_msg->getTo() != $user->getId())
                     throw $this->createAccessDeniedException('No or bad reply .');
@@ -367,7 +360,7 @@ class MessageController extends CommonController
             $message->setFromType('INTERNAL');
             $message->setFrom($user->getId());
 
-            $sm->postMessage($message);
+            $this->sakonninMessages->postMessage($message);
 
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, "OK Done");
@@ -395,8 +388,7 @@ class MessageController extends CommonController
      */
     public function createAction(Request $request, $access)
     {
-        $sm = $this->container->get('sakonnin.messages');
-        $em = $this->getDoctrineManager();
+        $entityManager = $this->getDoctrineManager();
         if ($parsed = json_decode($request->getContent(), true)) {
             $data = $parsed['message_data'];
             if (!isset($data['from_type'])) {
@@ -404,7 +396,7 @@ class MessageController extends CommonController
             }
             // Gotta do some security check. This is a hack, but it should
             // work..
-            if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+            if (isset($data['message_type']) && $message_type = $entityManager->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
                 $message = new Message();
                 $message->setMessageType($message_type);
                 $this->denyAccessUnlessGranted('create', $message);
@@ -412,7 +404,7 @@ class MessageController extends CommonController
                 // No messaagetype? naaah.
                 throw $this->createAccessDeniedException('No access, no message type found for message.');
             }
-            $message = $sm->postMessage($data, isset($parsed['message_context']) ? $parsed['message_context'] : array());
+            $message = $this->sakonninMessages->postMessage($data, isset($parsed['message_context']) ? $parsed['message_context'] : array());
             if ($message) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
@@ -420,16 +412,16 @@ class MessageController extends CommonController
         }
 
         $data = $request->request->all();
-        $form = $sm->getCreateForm($data);
+        $form = $this->sakonninMessages->getCreateForm($data);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Ok, it's valid. We'll send this to postMessage then.
             $message = $form->getData();
             if (!$message->getMessageType() && isset($data['message_type'])) {
-                $em = $this->getDoctrineManager();
+                $entityManager = $this->getDoctrineManager();
                 $message->setMessageType(
-                    $em->getRepository('BisonLabSakonninBundle:MessageType')
+                    $entityManager->getRepository('BisonLabSakonninBundle:MessageType')
                         ->findOneByName($data['message_type'])
                 );
             }
@@ -440,7 +432,7 @@ class MessageController extends CommonController
                 else
                     $message->setFromType("EXTERNAL");
             }
-            $sm->postMessage($message);
+            $this->sakonninMessages->postMessage($message);
 
             if ($this->isRest($access)) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
@@ -471,9 +463,9 @@ class MessageController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrineManager();
-            $em->remove($message);
-            $em->flush($message);
+            $entityManager = $this->getDoctrineManager();
+            $entityManager->remove($message);
+            $entityManager->flush($message);
             if ($this->isRest($access))
                 return new JsonResponse(array("status" => "DELETED"),
                     Response::HTTP_OK);
@@ -500,15 +492,15 @@ class MessageController extends CommonController
         $submit = $request->request->get('submit');
         if (!is_array($msglist))
              return $this->redirect($request->headers->get('referer'));
-        $em = $this->getDoctrineManager();
+        $entityManager = $this->getDoctrineManager();
         foreach ($msglist as $msgid) {
             if (!$message = $this->_getMessage($msgid))
                 continue;
             if ($submit == "Delete") {
                 if (!$this->isGranted('delete', $message))
                     return $this->redirect($request->headers->get('referer'));
-                $em->remove($message);
-                $em->flush($message);
+                $entityManager->remove($message);
+                $entityManager->flush($message);
             }
             if ($submit == "Archive" && $message->isArchiveable()) {
                 // To be honest, archiving is more like delete than edit.
@@ -516,7 +508,7 @@ class MessageController extends CommonController
                 if (!$this->isGranted('delete', $message))
                     return $this->redirect($request->headers->get('referer'));
                 $message->setState("ARCHIVED");
-                $em->flush($message);
+                $entityManager->flush($message);
             }
         }
 
@@ -534,12 +526,11 @@ class MessageController extends CommonController
      */
     public function checkUnreadAction(Request $request, $access)
     {
-        $em = $this->getDoctrineManager();
-        $sm = $this->container->get('sakonnin.messages');
+        $entityManager = $this->getDoctrineManager();
         $user = $this->getUser();
 
-        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
-        $messages = $sm->getMessagesForLoggedIn(array('state' => 'UNREAD'));
+        $repo = $entityManager->getRepository('BisonLabSakonninBundle:Message');
+        $messages = $this->sakonninMessages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
         }
@@ -576,12 +567,11 @@ class MessageController extends CommonController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $sm = $this->container->get('sakonnin.messages');
                 if ($context_data = $request->get('message_context')) {
                     $message_context = new MessageContext($context_data);
                     $message->addContext($message_context);
                 }
-                $sm->postMessage($message);
+                $this->sakonninMessages->postMessage($message);
                 if ($this->isRest($access)) {
                     return new JsonResponse(array("status" => "OK", 200));
                 }
@@ -642,9 +632,9 @@ class MessageController extends CommonController
         $context->setObjectName($object_name);
         $context->setExternalId($external_id);
         $context->setOwner($message);
-        $em = $this->getDoctrineManager();
-        $em->persist($context);
-        $em->flush($context);
+        $entityManager = $this->getDoctrineManager();
+        $entityManager->persist($context);
+        $entityManager->flush();
 
         if ($this->isRest($access))
             return new JsonResponse(array("status" => "OK"),
@@ -664,9 +654,9 @@ class MessageController extends CommonController
         // the context?
         $this->denyAccessUnlessGranted('edit', $message_context->getOwner());
 
-        $em = $this->getDoctrineManager();
-        $em->remove($message_context);
-        $em->flush();
+        $entityManager = $this->getDoctrineManager();
+        $entityManager->remove($message_context);
+        $entityManager->flush();
 
         if ($this->isRest($access))
             return new JsonResponse(array("status" => "DELETED"),
@@ -743,8 +733,7 @@ class MessageController extends CommonController
      */
     public function createDeleteForm(Message $message, $access = "ajax")
     {
-        $form_name = "message_delete_" . $message->getMessageId();
-        return $this->container->get('form.factory')->createNamedBuilder($form_name,FormType::class)
+        return $this->createFormBuilder()
             ->setAction($this->generateUrl('message_delete', array(
                 'message_id' => $message->getMessageId(),
                 'access' => $access)))
@@ -755,8 +744,8 @@ class MessageController extends CommonController
 
     private function _getMessage($message_id)
     {
-        $em = $this->getDoctrineManager();
-        if (!$message = $em->getRepository('BisonLabSakonninBundle:Message')
+        $entityManager = $this->getDoctrineManager();
+        if (!$message = $entityManager->getRepository('BisonLabSakonninBundle:Message')
                 ->findOneBy(array('message_id' => $message_id)))
             throw $this->createNotFoundException('Message not found');
         return $message;

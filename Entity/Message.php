@@ -23,7 +23,7 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
  */
 class Message
 {
-    use \BisonLab\CommonBundle\Entity\ContextOwnerTrait;
+    use \BisonLab\ContextBundle\Entity\ContextOwnerTrait;
     use TimestampableEntity;
     use BlameableEntity;
 

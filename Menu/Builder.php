@@ -3,32 +3,30 @@
 namespace BisonLab\SakonninBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Knp\Menu\ItemInterface;
+use Symfony\Component\Routing\RouterInterface;
 
-class Builder implements ContainerAwareInterface
+class Builder
 {
-    use ContainerAwareTrait;
+    private $router;
 
-    public function messageMenu(FactoryInterface $factory, array $options)
+    public function __construct(RouterInterface $router)
     {
-        $menu = $container = null;
+        $this->router = $router;
+    }
+
+    public function messageMenu(FactoryInterface $factory, array $options): ItemInterface
+    {
         if (isset($options['menu'])) {
             $menu = $options['menu'];
         } else {
             $menu = $factory->createItem('root');
         }
-        if (isset($options['container'])) {
-            $container = $options['container'];
-        } else {
-            $container = $this->container;
-        }
 
         // Gotta create routes to the message boxes.
-        $router = $container->get('router');
-        $read_new_route = $router->generate('message_unread', array('access' => 'ajax'));
+        $read_new_route = $this->router->generate('message_unread', array('access' => 'ajax'));
         $read_new_click = 'openSakonninMessageLogBox("' . $read_new_route . '")';
-        $message_log_route = $router->generate('message', array('access' => 'ajax'));
+        $message_log_route = $this->router->generate('message', array('access' => 'ajax'));
         $message_log_click = 'openSakonninMessageLogBox("' . $message_log_route . '")';
 
         $messagesmenu = $menu->addChild('Messages');

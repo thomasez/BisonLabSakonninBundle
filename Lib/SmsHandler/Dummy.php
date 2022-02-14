@@ -9,11 +9,10 @@ namespace BisonLab\SakonninBundle\Lib\SmsHandler;
 
 class Dummy
 {
-    use \BisonLab\SakonninBundle\Lib\Sakonnin\CommonFunctions;
+//    use \BisonLab\SakonninBundle\Lib\Functions\CommonFunctions;
 
-    public function __construct($container, $options = array())
+    public function __construct()
     {
-        $this->container = $container;
     }
 
     public function send($message, $receivers, $options = array())

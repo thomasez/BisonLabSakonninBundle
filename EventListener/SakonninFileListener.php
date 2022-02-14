@@ -5,6 +5,7 @@ namespace BisonLab\SakonninBundle\EventListener;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\EventSubscriber;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 
@@ -19,9 +20,9 @@ class SakonninFileListener implements EventSubscriber
     private $file_storage;
     private $removes = array();
 
-    public function __construct($file_storage)
+    public function __construct(ParameterBagInterface $parameterBag)
     {
-        $this->file_storage = $file_storage;
+        $this->file_storage = $parameterBag->get('sakonnin.file_storage');;
     }
 
     /**
@@ -29,7 +30,7 @@ class SakonninFileListener implements EventSubscriber
      *
      * @return array The array of events.
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return array(
             'preRemove',

@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 
@@ -16,6 +17,7 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
+
 class SakonninExpungeCommand extends Command
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
@@ -23,6 +25,8 @@ class SakonninExpungeCommand extends Command
     protected static $defaultName = 'sakonnin:expunge';
 
     private $verbose = true;
+    private $managerRegistry;
+    private $entityManager;
     private $mt_cache = array();
 
     protected function configure()
@@ -38,9 +42,13 @@ EOT
             );
     }
 
-    public function __construct($container)
+    /*
+     * Not entirely following the flow with setting entityManager here instead
+     * of using getDoctrineManager all over. But it works.
+     */
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->container = $container;
+        $this->managerRegistry = $managerRegistry;
         $this->entityManager = $this->getDoctrineManager();
         parent::__construct();
     }
@@ -51,7 +59,7 @@ EOT
         $this->doit = $input->getOption('doit');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 

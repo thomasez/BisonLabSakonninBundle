@@ -57,8 +57,8 @@ class MessageTypeType extends AbstractType
                     'placeholder' => 'Eventual template',
                     'required' => false,
                     'class' => 'BisonLabSakonninBundle:SakonninTemplate'
-                ));
-        ;
+                ))
+            ;
     }
     
     /**

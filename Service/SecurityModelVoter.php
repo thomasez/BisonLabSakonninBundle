@@ -16,6 +16,8 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 use BisonLab\SakonninBundle\Entity\SakonninFileContext;
 use BisonLab\SakonninBundle\Entity\SakonninFileType;
+use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
+use BisonLab\ContextBundle\Service\ExternalRetriever;
 
 /*
  * Blatantly cooked from the docs.. 
@@ -26,13 +28,13 @@ class SecurityModelVoter extends Voter
     private $external_retriever;
     private $sakonnin_messages;
 
-    public function __construct($external_retriever, $sakonnin_messages)
+    public function __construct(ExternalRetriever $external_retriever, SakonninMessages $sakonnin_messages)
     {
         $this->external_retriever = $external_retriever;
         $this->sakonnin_messages  = $sakonnin_messages;
     }
 
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         // Gotta handle all operations.
         if ($subject instanceof Message
@@ -46,8 +48,12 @@ class SecurityModelVoter extends Voter
             return false;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
+        // darn method_exists changed. to something more corrrect tho.
+        if (!$subject)
+            return false;
+
         $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
@@ -172,7 +178,7 @@ class SecurityModelVoter extends Voter
             ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
                 return true;
         // Then, how do I get the object the context is pointing at?
-        // Answer: "The ExternalRetriever" in my CommonBundle.
+        // Answer: "The ExternalRetriever" in my ContextBundle.
         foreach ($subject->getContexts() as $context) {
             if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
                 // The question now is. How do I know that the object is

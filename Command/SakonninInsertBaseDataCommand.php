@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 
@@ -24,6 +25,8 @@ class SakonninInsertBaseDataCommand extends Command
     protected static $defaultName = 'sakonnin:insert-basedata';
 
     private $verbose = true;
+    private $managerRegistry;
+    private $entityManager;
     private $mt_cache = array();
 
     private $message_types = array(
@@ -90,9 +93,9 @@ EOT
             );
     }
 
-    public function __construct($container)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->container = $container;
+        $this->managerRegistry = $managerRegistry;
         $this->entityManager = $this->getDoctrineManager();
         parent::__construct();
     }
@@ -102,7 +105,7 @@ EOT
         parent::initialize($input, $output);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -114,7 +117,7 @@ EOT
             $parent = null;
             if (isset($type['parent']) && !$parent = $this->_findMt($type['parent'])) {
                 error_log("Could not find the group " . $type['parent']);
-                return false;
+                return 1;
             }
 
             // Now we can update.

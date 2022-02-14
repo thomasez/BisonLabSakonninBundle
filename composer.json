@@ -18,8 +18,9 @@
         }
     ],
     "require": {
-        "bisonlab/common-bundle": "^3.4 || dev-master",
-        "symfony/framework-bundle": "^4.4 || ^5.0",
+        "bisonlab/common-bundle": "dev-no-contexts",
+        "bisonlab/context-bundle": "dev-main",
+        "symfony/framework-bundle": "^5.2|^6.0",
         "vich/uploader-bundle": "^1.16",
         "imagine/imagine": "^1.2",
         "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",

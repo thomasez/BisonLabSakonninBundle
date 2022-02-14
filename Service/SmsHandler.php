@@ -1,17 +1,18 @@
 <?php
 
 namespace BisonLab\SakonninBundle\Service;
+
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /*
  * Handling ways to send and receive SMSes.
  * I could extend this to use external/custom thignies, but I'd rather make you
  * commit the method to this system :=)
  */
-
 class SmsHandler
 {
-    protected $container;
     protected $sender_class;
     protected $receiver_class;
     protected $options;
@@ -42,10 +43,10 @@ class SmsHandler
         )
     );
 
-    public function __construct($container, $options = array())
+    public function __construct(ServiceLocator $locator, ParameterBagInterface $parameterBag)
     {
-        $this->container = $container;
-        $this->options = $options;
+        $this->locator = $locator;
+        $options = $parameterBag->get('sakonnin.sms');
         if (isset($options['sender'])) {
             if (!isset($this->senders[$options['sender']]))
                 throw new \InvalidArgumentException("The SMS sender specified does not exist.");
@@ -61,8 +62,12 @@ class SmsHandler
     public function send($message, $receivers)
     {
         if ($this->sender_class) {
-            $this->sender = new $this->sender_class($this->container, $this->options);
-            return $this->sender->send($message, $receivers);;
+            $sender = $this->locator->get($this->sender_class);
+            // This I may need.
+            // $sender->setSakonninMessages($this->sakonninMessages);
+            // I prefer wrong and working.
+            $sfunc->setSmsHandler($this);
+            return $sender->send($message, $receivers);;
         } else {
             throw new \InvalidArgumentException("Cannot send SMS because no method is set");
         }
@@ -74,8 +79,8 @@ class SmsHandler
     public function receive($data)
     {
         if ($this->receiver_class) {
-            $this->receiver = new $this->receiver_class($this->container, $this->options);
-            return $this->receiver->receive($data);;
+            $receiver = $this->locator->get($this->receiver_class);
+            return $receiver->receive($data);;
         } else {
             throw new \InvalidArgumentException("Cannot handle SMS reception because no method is set");
         }

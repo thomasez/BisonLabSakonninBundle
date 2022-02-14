@@ -1,13 +1,24 @@
 <?php
 
-namespace BisonLab\SakonninBundle\Lib\Sakonnin;
+namespace BisonLab\SakonninBundle\Lib\Functions;
 
 /*
  */
 
-class NotifyOnErrorSubject
+class MailAndNotifyOnErrorSubject
 {
     use CommonFunctions;
+
+    public $callback_functions = [
+        'MailAndNotifyOnErrorSubject' => array(
+            'description' => "Send mail and notification to user when the subject has the word error in it.",
+            'attribute_spec' => "Username",
+            'needs_attributes' => true,
+        ),
+    ];
+
+    public $forward_functions = [
+    ];
 
     /* You may call this lazyness, just having an options array, but it's also
      * more future proof. */
@@ -23,16 +34,14 @@ class NotifyOnErrorSubject
 
         $receivers = isset($options['attributes']) ? $options['attributes'] : array();
         // I'm not ready for validating a mail address. this is just a simple.
-        // TODO: Find out where this came from and decide who/what til get it.
-        // This is most probably wrong and the From is a username.
         if ($first->getFrom())
             $receivers[] = $first->getFrom();
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
+            if ($email = $this->extractEmailFromReceiver($receiver))
+                $this->sendMail($message, $email, $options);
             $this->sendNotification($receiver, $message->getBody());
         }
-
-        return true;
     }
 }

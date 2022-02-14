@@ -3,20 +3,18 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Psr\Log\LoggerInterface;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
-
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
+use BisonLab\SakonninBundle\Service\SmsHandler;
 
 /**
  * SMS receive controller.
@@ -31,8 +29,6 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
  */
 class SmsController extends CommonController
 {
-    use \BisonLab\SakonninBundle\Lib\CommonStuff;
-
     /**
      * Tries it's best to handle whatever being thrown at it and forward the
      * content to the configured default receiver.
@@ -41,7 +37,7 @@ class SmsController extends CommonController
      *
      * @Route("/post", name="sms_create", methods={"POST"})
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request, SmsHandler $smsHandler)
     {
         $data = [];
         // Is it Json?
@@ -53,8 +49,7 @@ class SmsController extends CommonController
                 $request->request->all());
         }
 
-        $sm = $this->container->get('sakonnin.sms_handler');
-        $status = $sm->receive($data);
+        $status = $smsHandler->receive($data);
         if ($status instanceOf Response)
             return $status;
         if (true === $status)

@@ -3,12 +3,18 @@
 namespace BisonLab\SakonninBundle\Service;
 
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageContext;
-use BisonLab\SakonninBundle\Controller\MessageController;
+use BisonLab\SakonninBundle\Service\Templates as SakonninTemplates;
+use BisonLab\SakonninBundle\Service\Functions as SakonninFunctions;
 
 /**
  * Messages service.
@@ -19,40 +25,46 @@ class Messages
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $container;
     private $mailer;
-    private $user_repository;
+    private $router;
+    private $formBuilder;
+    private $parameterBag;
+    private $tokenStorage;
+    private $managerRegistry;
+    private $sakonninTemplates;
+    private $sakonninFunctions;
 
-    // TODO: To be removed
-    public function __construct($container)
+    public function __construct(MailerInterface $mailer, FormFactoryInterface $formBuilder, RouterInterface $router, TokenStorageInterface $tokenStorage, ManagerRegistry $managerRegistry, ParameterBagInterface $parameterBag, SakonninTemplates $sakonninTemplates, SakonninFunctions $sakonninFunctions)
     {
-        $this->container  = $container;
-        $this->stemplates = $container->get('sakonnin.templates');
-    }
-
-    public function setMailer($mailer)
-    {
-        $this->mailer  = $mailer;
+        $this->mailer = $mailer;
+        $this->router = $router;
+        $this->formBuilder = $formBuilder;
+        $this->tokenStorage = $tokenStorage;
+        $this->parameterBag = $parameterBag;
+        $this->managerRegistry = $managerRegistry;
+        $this->sakonninTemplates = $sakonninTemplates;
+        $this->sakonninFunctions = $sakonninFunctions;
     }
 
     public function postMessage($data, $context_data = [])
     {
-        $em = $this->getDoctrineManager();
+        $entityManager = $this->getDoctrineManager();
         $message = null;
         if ($data instanceof Message) {
             $message = $data;
+            $data = [];
         } else {
             $message = new Message($data);
             if (isset($data['template'])) {
                 $template_data = $data['template_data'];
                 $template_data['user'] = $this->getLoggedInUser();
-                if (!$template = $this->stemplates->getTemplate($data['template']))
+                if (!$template = $this->sakonninTemplates->getTemplate($data['template']))
                     throw new \InvalidArgumentException("There is no template named " . $data['template']);
-                $message->setBody($this->stemplates->parse($template->getTemplate(), $template_data));
+                $message->setBody($this->sakonninTemplates->parse($template->getTemplate(), $template_data));
             }
 
             if (isset($data['message_type']) 
-                    && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+                    && $message_type = $entityManager->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            
             } else {
                 throw new \InvalidArgumentException("No message type found or set.");
@@ -77,13 +89,13 @@ class Messages
                         && isset($context['external_id'])) {
                             $message_context = new MessageContext($context);
                             $message->addContext($message_context);
-                            $em->persist($message_context);
+                            $entityManager->persist($message_context);
                     }
                 }
             }
 
             if (isset($data['in_reply_to'])) {
-                if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $data['in_reply_to']))) {
+                if (!$reply_to = $entityManager->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $data['in_reply_to']))) {
                     return false;
                 } else {
                     $message->setInReplyTo($reply_to);
@@ -154,28 +166,32 @@ class Messages
             if (!$message->getState())
                 $message->setFirstState();
         }
-        $em->persist($message);
+        $entityManager->persist($message);
 
         // I planned to use an event listener to dispatch callback/forward
         // functions, but why? This postMessage functions shall be the only
         // entry point for creating messages, so why should I bother?
         $message->setSender($this->getLoggedInUser());
-        $dispatcher = $this->container->get('sakonnin.functions');
-        $dispatcher->dispatchMessageFunctions($message, $data);
+        // If you find this ugly, I agree.
+dump($message);
+dump($data);
+        $data['user'] = $this->getLoggedInUser();
+        $data['sakonninMessages'] = $this;
+        $this->sakonninFunctions->dispatchMessageFunctions($message, $data);
 
-        $em->flush();
+        $entityManager->flush();
         return $message;
     }
 
     public function getCreateForm($options = array())
     {
-        $em = $this->getDoctrineManager();
+        $entityManager = $this->getDoctrineManager();
         $message = null;
         $message_context = null;
         if (isset($options['message']) && $options['message'] instanceof Message) {
              $message =  $options['message'];
         } elseif (isset($options['message_data']) && $data = $options['message_data']) {
-            if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+            if (isset($data['message_type']) && $message_type = $entityManager->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
                 $data['message_type'] = $message_type;
             }
             $message = new Message($data);
@@ -190,16 +206,14 @@ class Messages
 
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $entityManager->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);
             }
         }
 
-        $c = new MessageController();
-        $c->setContainer($this->container);
-        $form = $c->createCreateForm($message);
+        $form = $this->createCreateForm($message);
 
         // You may wonder why. It's beause this one is called from twig
         // templates as well as the message controller (Which adds stuff).
@@ -211,20 +225,18 @@ class Messages
 
     public function getCreatePmForm($options = array())
     {
+        $entityManager = $this->getDoctrineManager();
         $message = new Message();
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $entityManager->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);
             }
         }
 
-        $c = new MessageController();
-        $c->setContainer($this->container);
-
-        $form = $c->createCreatePmForm($message);
+        $form = $this->createCreatePmForm($message);
 
         // You may wonder why. It's beause this one is called from twig
         // templates as well as the message controller (Which adds stuff).
@@ -236,9 +248,7 @@ class Messages
 
     public function getEditForm($message, $create_view = false)
     {
-        $c = new MessageController();
-        $c->setContainer($this->container);
-        $form = $c->createEditForm($message);
+        $form = $this->createEditForm($message);
         if ($create_view)
             return $form->createView();
         else
@@ -247,9 +257,7 @@ class Messages
 
     public function getCreateDeleteForm($message, $create_view = false)
     {
-        $c = new MessageController();
-        $c->setContainer($this->container);
-        $form = $c->createDeleteForm($message);
+        $form = $this->createDeleteForm($message);
         if ($create_view)
             return $form->createView();
         else
@@ -287,8 +295,8 @@ class Messages
 
     public function getMessages($criterias = array())
     {
-        $em = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
+        $entityManager = $this->getDoctrineManager();
+        $repo = $entityManager->getRepository('BisonLabSakonninBundle:Message');
 
         // There can be only one
         if (isset($criterias['id'])) {
@@ -303,7 +311,7 @@ class Messages
             $system      = $criterias['context']['system'];
             $object_name = $criterias['context']['object_name'];
             $external_id = $criterias['context']['external_id'];
-            $query = $em->createQueryBuilder();
+            $query = $entityManager->createQueryBuilder();
             $query->select('m')
                 ->from('BisonLabSakonninBundle:Message', 'm')
                 ->leftJoin('m.contexts', 'mc')
@@ -394,12 +402,59 @@ class Messages
 
     public function contextHasMessages($context, $with_contexts = false)
     {
-        $em = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:MessageContext');
+        $entityManager = $this->getDoctrineManager();
+        $repo = $entityManager->getRepository('BisonLabSakonninBundle:MessageContext');
         return $repo->contextHasMessages($context, $with_contexts);
     }
 
     /*
-     * Helper functions.
+     * Form functions.
      */
+    public function createCreateForm(Message $message)
+    {
+        $route = $this->router->generate('message_create');
+        if ($message->getBaseType() == "CHECK") {
+            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\CheckType::class, $message, array(
+                'action' => $route,
+                'method' => 'POST',
+            ));
+            $form->add('submit', SubmitType::class, array('label' => 'Create'));
+        } elseif ($message->getBaseType() == "NOTE") {
+            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
+                'action' => $route,
+                'method' => 'POST',
+            ));
+            $form->add('submit', SubmitType::class, array('label' => 'Create'));
+        } else {
+            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
+                'action' => $route,
+                'method' => 'POST',
+            ));
+            $form->add('submit', SubmitType::class, array('label' => 'Save'));
+        }
+        return $form;
+    }
+
+    public function createEditForm(Message $message)
+    {
+        if ($message->getBaseType() == "CHECK") {
+            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\CheckType::class, $message);
+        } else {
+            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message);
+        }
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
+        return $form;
+    }
+
+    public function createDeleteForm(Message $message, $access = "ajax")
+    {
+        $route = $this->router->generate('message_delete', array(
+                'message_id' => $message->getMessageId(),
+                'access' => $access));
+        return $this->formBuilder->createBuilder()
+            ->setAction($route)
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
 }

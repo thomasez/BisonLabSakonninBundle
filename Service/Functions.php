@@ -1,6 +1,11 @@
 <?php
 
 namespace BisonLab\SakonninBundle\Service;
+
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
+
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 
@@ -10,38 +15,32 @@ use BisonLab\SakonninBundle\Entity\SakonninFile;
  */
 class Functions
 {
-    use \BisonLab\SakonninBundle\Lib\CommonStuff;
-
-    private $container;
-    private $mailer;
-    private $user_repository;
+    private $locator;
+    private $parameterBag;
 
     private $forward_functions;
     private $callback_functions;
 
-    public function __construct($container, $Sakonnin_classes = array())
+    public function __construct(ServiceLocator $locator, ParameterBagInterface $parameterBag)
     {
-        $this->container = $container;
-        foreach ($Sakonnin_classes as $class) {
-            $sakonnin_object = new $class($container, array());
+        $this->locator = $locator;
+        $this->parameterBag = $parameterBag;
 
-            $forward_functions = $sakonnin_object->getForwardFunctions();
+        foreach ($this->locator->getProvidedServices() as $sclass) {
+            $sf = $this->locator->get($sclass);
+
+            $forward_functions = $sf->getForwardFunctions();
             foreach ($forward_functions as $p => $config) {
-                if (!isset($config['class']))  $config['class'] = $class;
+                $config['class'] = $sclass;
                 $this->forward_functions[$p] = $config;
             }
 
-            $callback_functions = $sakonnin_object->getCallbackFunctions();
+            $callback_functions = $sf->getCallbackFunctions();
             foreach ($callback_functions as $r => $config) {
-                if (!isset($config['class']))  $config['class'] = $class;
+                $config['class'] = $sclass;
                 $this->callback_functions[$r] = $config;
             }
         }
-    }
-
-    public function setMailer($mailer)
-    {
-        $this->mailer = $mailer;
     }
 
     public function getForwardsAsChoices()
@@ -97,17 +96,18 @@ class Functions
             $attributes = $messagetype->getForwardAttributes();
         }
 
-        $sm = $this->container->get('sakonnin.messages');
-        $user = $sm->getLoggedInUser();
+        $sfunc = $this->locator->get($config['class']);
+        // I prefer wrong and working.
+        $sfunc->setSakonninMessages($options['sakonninMessages']);
+        $sfunc->setSmsHandler($options['smsHandler'] ?? null);
 
-        $class = new $config['class']($this->container, ['mailer' => $this->mailer]);
         // Add more if you need to.
         $options['user']       = $user;
         $options['message']    = $message;
         $options['attributes'] = $attributes;
         $options['function']   = $function;
         $options['config']     = $config;
-        return $class->execute($options);
+        return $sfunc->execute($options);
     }
 
     /* 

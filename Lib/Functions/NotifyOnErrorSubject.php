@@ -1,6 +1,6 @@
 <?php
 
-namespace BisonLab\SakonninBundle\Lib\Sakonnin;
+namespace BisonLab\SakonninBundle\Lib\Functions;
 
 /*
  */
@@ -8,6 +8,12 @@ namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 class NotifyOnErrorSubject
 {
     use CommonFunctions;
+
+    public $callback_functions = [
+    ];
+
+    public $forward_functions = [
+    ];
 
     /* You may call this lazyness, just having an options array, but it's also
      * more future proof. */

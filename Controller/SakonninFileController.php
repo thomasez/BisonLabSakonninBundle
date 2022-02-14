@@ -9,14 +9,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\SakonninFile;
+use BisonLab\SakonninBundle\Service\Files as SakonninFiles;
 
 /**
  * SakonninFile controller.
@@ -27,6 +29,16 @@ class SakonninFileController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
+    private $sakonninFiles;
+    private $parameterBag;
+
+    public function __construct(SakonninFiles $sakonninFiles, ParameterBagInterface $parameterBag)
+    {
+        $this->sakonninFiles = $sakonninFiles;
+        $this->parameterBag = $parameterBag;
+    }
+
+
     /**
      * Lists all file entities.
      *
@@ -34,9 +46,8 @@ class SakonninFileController extends CommonController
      */
     public function indexAction($access)
     {
-        $sf = $this->container->get('sakonnin.files');
         // Todo: paging or just show the last 20
-        $sfiles = $sf->getFilesForLoggedIn();
+        $sfiles = $this->sakonninFiles->getFilesForLoggedIn();
 
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $sfiles, array('html' =>'file/_index.html.twig'));
@@ -73,8 +84,7 @@ class SakonninFileController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $sf = $this->container->get('sakonnin.files');
-            $sf->storeFile($sfile, isset($data['file_context']) ? $data['file_context'] : array());
+            $this->sakonninFiles->storeFile($sfile, isset($data['file_context']) ? $data['file_context'] : array());
 
             if ($this->isRest($access)) {
                 return new JsonResponse('OK Done', Response::HTTP_CREATED);
@@ -152,15 +162,13 @@ class SakonninFileController extends CommonController
      */
     public function thumbnailAction(Request $request, $access, $file_id, $x, $y)
     {
-        $sf = $this->container->get('sakonnin.files');
-
         $sfile = $this->_getFile($file_id);
 
         if (!$sfile->getThumbnailable())
             $this->returnError($request, 'Not an image');
         // TODO: Add access control.
         // Gotta get the thumbnail then.
-        $thumbfile = $sf->getThumbnailFilename($sfile, $x, $y);
+        $thumbfile = $this->sakonninFiles->getThumbnailFilename($sfile, $x, $y);
         $response = new BinaryFileResponse($thumbfile);
         $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         return $response;
@@ -187,7 +195,8 @@ class SakonninFileController extends CommonController
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrineManager()->flush();
+            $entityManager = $this->getDoctrineManager();
+            $entityManager->flush();
             if ($this->isRest($access)) {
                 return new JsonResponse([
                     "status" => "OK",
@@ -226,9 +235,9 @@ class SakonninFileController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrineManager();
-            $em->remove($sfile);
-            $em->flush();
+            $entityManager = $this->getDoctrineManager();
+            $entityManager->remove($sfile);
+            $entityManager->flush();
             if ($back = $request->request->get('back'))
                 return $this->redirect($back);
         }
@@ -276,13 +285,12 @@ class SakonninFileController extends CommonController
 
     private function getFilePath()
     {
-        return $this->container->getParameter('sakonnin.file_storage');
+        return $this->parameterBag->get('sakonnin.file_storage');
     }
 
     private function _getFile($file_id)
     {
-        $sf = $this->container->get('sakonnin.files');
-        if (!$sfile = $sf->getFiles(['fileid' => $file_id]))
+        if (!$sfile = $this->sakonninFiles->getFiles(['fileid' => $file_id]))
             throw $this->createNotFoundException('File not found');
         return $sfile;
     }

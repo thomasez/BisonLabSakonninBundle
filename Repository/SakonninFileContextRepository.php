@@ -2,7 +2,9 @@
 
 namespace BisonLab\SakonninBundle\Repository;
 
-use BisonLab\CommonBundle\Entity\ContextBaseRepository;
+use BisonLab\ContextBundle\Repository\ContextBaseRepository;
+use BisonLab\SakonninBundle\Entity\SakonninFileContext;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * SakonninFileContextRepository
@@ -12,26 +14,39 @@ use BisonLab\CommonBundle\Entity\ContextBaseRepository;
  */
 class SakonninFileContextRepository extends ContextBaseRepository
 {
+    /**
+     * @param ManagerRegistry $managerRegistry
+     */
+    public function __construct(ManagerRegistry $managerRegistry)
+    {
+        parent::__construct($managerRegistry, SakonninFileContext::class);
+    }
+
     /*
      * This should explain itself, but the context here is of course not a
      * FileContext entity, but the keys to find one. And the answer to the
      * question is easy, if there are one or more FileContexts, there are
      * files.
      */
-    public function contextHasFiles($context_data)
+    public function contextHasFiles($context_data, $with_contexts = false): bool
     {
-        $qb2 = $this->_em->createQueryBuilder();
-        $qb2->select('mc')
-              ->from($this->_entityName, 'mc')
-              ->where('mc.system = :system')
-              ->andWhere('mc.object_name = :object_name')
-              ->andWhere('mc.external_id = :external_id')
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('fc')
+              ->from($this->_entityName, 'fc')
+              ->where('fc.system = :system')
+              ->andWhere('fc.object_name = :object_name')
+              ->andWhere('fc.external_id = :external_id')
               ->setParameter("system", $context_data['system'])
               ->setParameter("object_name", $context_data['object_name'])
               ->setParameter("external_id", $context_data['external_id'])
               ->setMaxResults(1);
 
-        $file_context = $qb2->getQuery()->getResult();
-        return !empty($file_context);
+        if ($with_contexts) {
+            return $qb->getQuery()->getResult();
+        } else {
+            $qb->setMaxResults(1);
+            $file_contexts = $qb->getQuery()->getResult();
+            return !empty($file_contexts);
+        }
     }
 }

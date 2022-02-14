@@ -1,8 +1,9 @@
 <?php
 
-namespace BisonLab\SakonninBundle\Lib\Sakonnin;
+namespace BisonLab\SakonninBundle\Lib\Functions;
 
 use BisonLab\SakonninBundle\Entity\Message;
+use Symfony\Component\Routing\RouterInterface;
 
 /*
  */
@@ -10,6 +11,24 @@ use BisonLab\SakonninBundle\Entity\Message;
 class NotifyiOnReceptionMailOnErrorSubject
 {
     use CommonFunctions;
+
+    public $callback_functions = [
+        'NotifyiOnReceptionMailOnErrorSubject' => array(
+            'description' => "Send a Notification when message received. If ERROR in subject, send mail aswell.",
+            'attribute_spec' => "Username",
+            'needs_attributes' => false,
+        ),
+    ];
+
+    public $forward_functions = [
+    ];
+
+    protected $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
 
     public function execute($options = array())
     {

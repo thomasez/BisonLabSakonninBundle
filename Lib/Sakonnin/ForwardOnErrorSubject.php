@@ -9,13 +9,6 @@ class ForwardOnErrorSubject
 {
     use CommonFunctions;
 
-    protected $container;
-
-    public function __construct($container, $options = array())
-    {
-        $this->container = $container;
-    }
-
     /* You may call this lazyness, just having an options array, but it's also
      * more future proof. */
     public function execute($options = array())

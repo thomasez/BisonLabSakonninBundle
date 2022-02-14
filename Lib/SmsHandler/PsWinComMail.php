@@ -11,17 +11,15 @@ use Symfony\Component\Mime\Email;
 
 class PsWinComMail
 {
-    use \BisonLab\SakonninBundle\Lib\Sakonnin\CommonFunctions;
+    use \BisonLab\SakonninBundle\Lib\Functions\CommonFunctions;
 
-    protected $container;
     protected $username;
     protected $password;
     protected $mailaddress;
     protected $sender;
 
-    public function __construct($container, $options = array())
+    public function __construct($options = array())
     {
-        $this->container = $container;
         // Let it just barf if the parameters are  missing.
         $this->username = $options['username'];
         $this->password = $options['password'];

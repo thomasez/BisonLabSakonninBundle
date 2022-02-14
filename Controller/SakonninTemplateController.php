@@ -4,6 +4,7 @@ namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\SakonninTemplate;
@@ -24,9 +25,8 @@ class SakonninTemplateController extends CommonController
      */
     public function indexAction()
     {
-        $em = $this->getDoctrineManager();
-
-        $sakonninTemplates = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findAll();
+        $entityManager = $this->getDoctrineManager();
+        $sakonninTemplates = $entityManager->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findAll();
 
         return $this->render('@BisonLabSakonnin/SakonninTemplate/index.html.twig',
             array( 'sakonninTemplates' => $sakonninTemplates,));
@@ -37,18 +37,18 @@ class SakonninTemplateController extends CommonController
      *
      * @Route("/new", name="sakonnintemplate_new", methods={"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, TranslatorInterface $translator)
     {
         $sakonninTemplate = new Sakonnintemplate();
-        $default_lang_code = $this->container->get('translator')->getLocale();
+        $default_lang_code = $translator->getLocale();
         $sakonninTemplate->setLangCode($default_lang_code);
         $form = $this->createForm('BisonLab\SakonninBundle\Form\SakonninTemplateType', $sakonninTemplate);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrineManager();
-            $em->persist($sakonninTemplate);
-            $em->flush();
+            $entityManager = $this->getDoctrineManager();
+            $entityManager->persist($sakonninTemplate);
+            $entityManager->flush();
 
             return $this->redirectToRoute('sakonnintemplate_show', array('id' => $sakonninTemplate->getId()));
         }
@@ -88,7 +88,7 @@ class SakonninTemplateController extends CommonController
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrineManager()->flush();
+            $this->getDoctrineManager()->flush();
 
             return $this->redirectToRoute('sakonnintemplate_show', array('id' => $sakonninTemplate->getId()));
         }
@@ -112,9 +112,9 @@ class SakonninTemplateController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrineManager();
-            $em->remove($sakonninTemplate);
-            $em->flush();
+            $entityManager = $this->getDoctrineManager();
+            $entityManager->remove($sakonninTemplate);
+            $entityManager->flush();
         }
 
         return $this->redirectToRoute('sakonnintemplate_index');

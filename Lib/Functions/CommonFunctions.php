@@ -1,36 +1,42 @@
 <?php
 
-namespace BisonLab\SakonninBundle\Lib\Sakonnin;
-
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Routing\RouterInterface;
-
-use BisonLab\SakonninBundle\Entity\Message;
-use BisonLab\SakonninBundle\Service\SmsHandler;
-use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
-use BisonLab\SakonninBundle\Service\Messages as SakonninTemplates;
+namespace BisonLab\SakonninBundle\Lib\Functions;
 
 /*
+ * Used services:
+ * 
+ * Symfony\Component\Mailer\MailerInterface $this->mailer;
+ * Symfony\Component\Routing\RouterInterface $this->router;
+ *
+ * Crculartypehinting is not really working.
+ * Which is why it's setters further down.
+ * BisonLab\SakonninBundle\Service\Messages as SakonninMessages $this->sakonninMessages;
+ * BisonLab\SakonninBundle\Service\SmsHandler $this->smsHandler
  */
 
 trait CommonFunctions
 {
-    use \BisonLab\SakonninBundle\Lib\CommonStuff;
-
-    protected $router;
-    protected $mailer;
-    protected $smsHandler;
     protected $sakonninMessages;
-    protected $sakonninTemplates;
+    protected $smsHandler;
 
-    public function __construct(MailerInterface $mailer, RouterInterface $router, SakonninMessages $sakonninMessages, SakonninTemplates $sakonninTemplates, SmsHandler $smsHandler)
+    public function setSakonninMessages($sakonninMessages)
     {
-        $this->mailer = $mailer;
-        $this->router = $router;
-        $this->smsHandler = $smsHandler;
         $this->sakonninMessages = $sakonninMessages;
-        $this->sakonninTemplates = $sakonninTemplates;
+    } 
+
+    public function setSmsHandler($smsHandler)
+    {
+        $this->smsHandler = $smsHandler;
+    } 
+
+    public function getCallbackFunctions()
+    {
+        return $this->callback_functions;
+    } 
+
+    public function getForwardFunctions()
+    {
+        return $this->forward_functions;
     }
 
     public function sendMail($message, $mailto, $options = array())
@@ -46,8 +52,7 @@ trait CommonFunctions
 
         $body = '';
         if (isset($options['provide_link']) && $options['provide_link']) {
-            $router = $this->getRouter();
-            $url = $router->generate('message_show',
+            $url = $this->router->generate('message_show',
                 array('message_id' => $message->getMessageId()), true);
             $body .= "Link to this message: " . $url  . "\n\n";
         }
@@ -90,9 +95,9 @@ trait CommonFunctions
         // Receiver should/could be userid, username or user object.
         if (!is_object($to)) {
             if (is_numeric($to)) {
-                $to = $this->getUserFromUserId($to);
+                $to = $this->sakonninMessages->getUserFromUserId($to);
             } else {
-                $to = $this->getUserFromUserName($to);
+                $to = $this->sakonninMessages->getUserFromUserName($to);
             }
             if (!$to)
                 return false;
@@ -103,7 +108,7 @@ trait CommonFunctions
         $content_type = $options['content_type'] ?? "text/plain";
 
         $message->setMessageType(
-            $this->entityManager->getRepository('BisonLabSakonninBundle:MessageType')
+            $this->sakonninMessages->getDoctrineManager()->getRepository('BisonLabSakonninBundle:MessageType')
                   ->findOneByName($message_type)
         );
         $message->setContentType($content_type);
@@ -112,7 +117,7 @@ trait CommonFunctions
         $message->setToType('INTERNAL');
         $message->setBody($body);
 
-        $from = $this->getLoggedInUser();
+        $from = $this->sakonninMessages->getLoggedInUser();
         $message->setFrom($from->getId());
         $message->setFromType('INTERNAL');
         // I'll let it contain HTML. This is a security risk if the message
@@ -147,7 +152,6 @@ trait CommonFunctions
         return null;
     }
 
-    // This should be put in a trait later.
     public function extractEmailFromReceiver($receiver)
     {
         if (is_object($receiver) && method_exists($receiver, "getEmail"))
@@ -159,7 +163,7 @@ trait CommonFunctions
             // Let's assume this is the email address we're sending to. 
             return $receiver;
         } else {
-            return $this->getEmailFromUser($receiver);
+            return $this->sakonninMessages->getEmailFromUser($receiver);
         }
         return null;
     }

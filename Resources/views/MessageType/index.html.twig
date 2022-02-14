@@ -9,6 +9,7 @@
                 <th>Group</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Base type</th>
                 <th>Callback function</th>
                 <th>Forward function</th>
                 <th>Security model</th>
@@ -26,6 +27,7 @@
                 <td><a href="{{ path('messagetype_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
                 {% endif %}
                 <td>{{ entity.description }}</td>
+                <td>{{ entity.label }}</td>
                 <td>{{ entity.callbackFunction }}</td>
                 <td>{{ entity.forwardFunction }}</td>
                 <td>{{ entity.securitymodellabel }}</td>

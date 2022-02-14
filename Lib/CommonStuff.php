@@ -3,6 +3,11 @@
 namespace BisonLab\SakonninBundle\Lib;
 
 /*
+ * As the name says. Functions used everywhere.
+ *
+ * This needs these services:
+ *  * Doctrine\Persistence\ManagerRegistry $managerRegistry
+ *  * Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage 
  */
 
 trait CommonStuff 
@@ -13,10 +18,8 @@ trait CommonStuff
     {
         // Note to whoever: Controllers have "$this->getUser()", but this is
         // not one.
-        if (!$this->container) return null;
-        if (!$this->container->get('security.token_storage')) return null;
-        if (!$this->container->get('security.token_storage')->getToken()) return null;
-        return $this->container->get('security.token_storage')->getToken()->getUser();
+        if (!$token = $this->tokenStorage->getToken()) return null;
+        return $token->getUser();
     }
 
     public function getUserFromUserId($userid)
@@ -102,19 +105,17 @@ trait CommonStuff
     {
         // This is a fallback. It may even handle the cases it's needed.
         // (Mainly Commands)
-        if (!isset($this->container))
-            $this->container = $this->getContainer();
         if (!$this->entityManager) {
             // Check if the manager exists.
             if (in_array('sakonnin', 
-                    array_keys($this->container->get('doctrine')
+                    array_keys($this->managerRegistry
                     ->getManagerNames()))) {
                 $this->entityManager
-                  = $this->container->get('doctrine')->getManager('sakonnin');
+                  = $this->managerRegistry->getManager('sakonnin');
             } else {
                 // Well, use the default then.
                 $this->entityManager
-                    = $this->container->get('doctrine')->getManager();
+                    = $this->managerRegistry->getManager();
             }
         }
         return $this->entityManager;
@@ -122,17 +123,13 @@ trait CommonStuff
 
     public function getUserEntityManager()
     {
-        if (!isset($this->container))
-            $this->container = $this->getContainer();
-        $user_class = $this->container->getParameter('sakonnin.user')['class'];
-        return $this->container->get('doctrine')->getManagerForClass($user_class);
+        $user_class = $this->parameterBag->get('sakonnin.user')['class'];
+        return $this->managerRegistry->getManagerForClass($user_class);
     }
 
     public function getUserRepository()
     {
-        if (!isset($this->container))
-            $this->container = $this->getContainer();
-        $user_class = $this->container->getParameter('sakonnin.user')['class'];
+        $user_class = $this->parameterBag->get('sakonnin.user')['class'];
         return $this->getUserEntityManager()->getRepository($user_class);
     }
 }

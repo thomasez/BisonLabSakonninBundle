@@ -4,6 +4,7 @@ namespace BisonLab\SakonninBundle\Service;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Twig\Extension\StringLoaderExtension;
 use Twig\Loader\ArrayLoader;
@@ -24,20 +25,20 @@ class Templates
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $container;
+    private $managerRegistry;
 
-    public function __construct($container)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->container = $container;
+        $this->managerRegistry = $managerRegistry;
     }
 
     public function getTemplate($name)
     {
-        $em = $this->getDoctrineManager();
+        $entityManager = $this->getDoctrineManager();
         if (is_numeric($name))
-            $template = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->find($name);
+            $template = $entityManager->getRepository('BisonLabSakonninBundle:SakonninTemplate')->find($name);
         else
-            $template = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findOneByName($name);
+            $template = $entityManager->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findOneByName($name);
         return $template;
     }
 
@@ -50,8 +51,8 @@ class Templates
      */
     public function storeTemplate(SakonninTemplate $template, array $options)
     {
-        $em = $this->getDoctrineManager();
-        $em->persist($template);
+        $entityManager = $this->getDoctrineManager();
+        $entityManager->persist($template);
         return $template;
     }
 

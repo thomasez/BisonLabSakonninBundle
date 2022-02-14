@@ -7,9 +7,6 @@ namespace BisonLab\SakonninBundle\Lib\Sakonnin;
 
 class SakonninFunctions implements SakonninFunctionsInterface
 {
-
-    protected $container;
-
     public $callback_functions = array(
         'sendnotificationtouserlist' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\Sakonnin\SendNotificationToUserList',
@@ -95,11 +92,6 @@ class SakonninFunctions implements SakonninFunctionsInterface
             'needs_attributes' => true,
         )
     );
-
-    public function __construct($container, $options = array())
-    {
-        $this->container = $container;
-    }
 
     public function getCallbackFunctions()
     {

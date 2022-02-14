@@ -9,11 +9,13 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Form\MessageTypeType;
 use BisonLab\SakonninBundle\Form\FunctionAttributeType;
+use BisonLab\SakonninBundle\Service\Functions as SakonninFunctions;
 
 /**
  * MessageType controller.
@@ -23,6 +25,16 @@ use BisonLab\SakonninBundle\Form\FunctionAttributeType;
 class MessageTypeController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
+    private $managerRegistry;
+    private $entityManager;
+    private $sakonninFunctions;
+
+    public function __construct(ManagerRegistry $managerRegistry, SakonninFunctions $sakonninFunctions)
+    {
+        $this->sakonninFunctions = $sakonninFunctions;
+        $this->managerRegistry = $managerRegistry;
+    }
 
     /**
      * Lists all MessageType entities.
@@ -259,12 +271,10 @@ class MessageTypeController extends CommonController
 
     private function _addFunctionsToForm(&$form)
     {
-        $sakonnin = $this->get('sakonnin.functions');
-
         $form->add('callback_function', ChoiceType::class, array(
                 'required' => false, 
                 'placeholder' => "None",
-                'choices' => $sakonnin->getCallbacksAsChoices()));
+                'choices' => $this->sakonninFunctions->getCallbacksAsChoices()));
         $form->add('callbackAttributes', CollectionType::class,
                 array(
                     'required' => false, 
@@ -277,7 +287,7 @@ class MessageTypeController extends CommonController
         $form->add('forward_function', ChoiceType::class, array(
                 'required' => false, 
                 'placeholder' => "None",
-                'choices' => $sakonnin->getForwardsAsChoices()));
+                'choices' => $this->sakonninFunctions->getForwardsAsChoices()));
         $form->add('forwardAttributes', CollectionType::class,
                 array(
                     'required' => false, 
