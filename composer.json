@@ -19,7 +19,7 @@
     ],
     "require": {
         "bisonlab/common-bundle": "dev-sf6",
-        "bisonlab/context-bundle": "dev-main",
+        "bisonlab/context-bundle": "dev-sf6",
         "symfony/framework-bundle": "^5.2|^6.0",
         "vich/uploader-bundle": "^1.16",
         "imagine/imagine": "^1.2",
