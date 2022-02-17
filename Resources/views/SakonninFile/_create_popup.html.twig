@@ -43,10 +43,9 @@ document
             </ul>
             <button type="button" class="add_tag_link" data-collection-holder-class="tags">Add a tag</button>
             {{ form_row(sfform.file_type, {'id': sfform.file_type.vars.id ~ formname })}}
-            {{ form_widget(sfform.submit, {'id': sfform.submit.vars.id ~ formname })}} 
-            {{ form_widget(sfform._token, {'id': sfform._token.vars.id ~ formname })}} 
+        <input type="submit" form="uploadfileform{{ formname }}" name="sendfile" value="Send"/>
        {{ form_rest(sfform)}}
-       </form>
+       </form><!-- End upload file form -->
       </div>
     </div>
   </div>

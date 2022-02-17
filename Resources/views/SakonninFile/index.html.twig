@@ -15,16 +15,16 @@
         <tbody>
         {% for file in files %}
             <tr>
-                <td><a href="{{ path('file_show', { 'file_id': file.fileid }) }}">{{ file.name }}</a></td>
+                <td><a href="{{ path('sakonninfile_show', { 'file_id': file.fileid }) }}">{{ file.name }}</a></td>
                 <td>{{ file.fileId }}</td>
                 <td>{{ file.mimetype }}</td>
                 <td>
                     <ul>
                         <li>
-                            <a href="{{ path('file_show', { 'file_id': file.fileid }) }}">show</a>
+                            <a href="{{ path('sakonninfile_show', { 'file_id': file.fileid }) }}">show</a>
                         </li>
                         <li>
-                            <a href="{{ path('file_edit', { 'file_id': file.fileid }) }}">edit</a>
+                            <a href="{{ path('sakonninfile_edit', { 'file_id': file.fileid }) }}">edit</a>
                         </li>
                     </ul>
                 </td>
@@ -35,7 +35,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('file_new') }}">Create a new file</a>
+            <a href="{{ path('sakoninfile_new') }}">Create a new file</a>
         </li>
     </ul>
 {% endblock %}

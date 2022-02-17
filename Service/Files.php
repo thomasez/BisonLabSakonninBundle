@@ -5,16 +5,18 @@ namespace BisonLab\SakonninBundle\Service;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType as FileFormType;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 use BisonLab\SakonninBundle\Entity\SakonninFileContext;
-use BisonLab\SakonninBundle\Controller\SakonninFileController;
 use BisonLab\SakonninBundle\Service\Functions as SakonninFunctions;
 
 /**
@@ -24,14 +26,18 @@ class Files
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
+    private $router;
+    private $formBuilder;
     private $parameterBag;
     private $tokenStorage;
     private $entityManager;
     private $managerRegistry;
     private $sakonninFunctions;
 
-    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, ManagerRegistry $managerRegistry, ParameterBagInterface $parameterBag, SakonninFunctions $sakonninFunctions)
+    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, ManagerRegistry $managerRegistry, ParameterBagInterface $parameterBag, SakonninFunctions $sakonninFunctions, FormFactoryInterface $formBuilder, RouterInterface $router)
     {
+        $this->router = $router;
+        $this->formBuilder = $formBuilder;
         $this->tokenStorage = $tokenStorage;
         $this->parameterBag = $parameterBag;
         $this->entityManager = $entityManager;
@@ -116,8 +122,7 @@ class Files
             $file->addContext($file_context);
         }
 
-        $c = new SakonninFileController();
-        $form = $c->createCreateForm($file);
+        $form = $this->createCreateForm($file);
 
         // You may wonder why. It's beause this one is called from twig
         // templates as well as the file controller (Which adds stuff).
@@ -129,8 +134,7 @@ class Files
 
     public function getDeleteForm($file, $options = array())
     {
-        $c = new SakonninFileController();
-        $form = $c->createDeleteForm($file);
+        $form = $this->createDeleteForm($file);
 
         // You may wonder why. It's beause this one is called from twig
         // templates as well as the file controller (Which adds stuff).
@@ -258,5 +262,31 @@ class Files
         $thumb->save($thumbname);
 
         return $thumbname;
+    }
+
+    public function createCreateForm(SakonninFile $sfile)
+    {
+        $route = $this->router->generate('sakoninfile_new');
+        $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $sfile, array(
+            'action' => $route,
+            'method' => 'POST',
+        ));
+        $form->add('file', VichFileType::class, [
+            'required' => true,
+            'allow_delete' => true,
+        ]);
+        return $form;
+    }
+
+    public function createDeleteForm(SakonninFile $sfile)
+    {
+        $route = $this->router->generate('sakonninfile_delete', array(
+                'file_id' => $sfile->getMessageId(),
+                'access' => $access));
+        return $this->formBuilder->createBuilder()
+            ->setAction($route)
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
     }
 }

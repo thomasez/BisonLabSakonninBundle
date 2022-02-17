@@ -181,7 +181,7 @@ function submitSakonninFileForm(formname = '', reload_after_post = true) {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
-        url: "{{ path('file_new', { 'access': 'ajax' }) }}",
+        url: "{{ path('sakoninfile_new', { 'access': 'ajax' }) }}",
         data: formData,
         processData: false,
         contentType: false,
@@ -260,7 +260,7 @@ function openSakonninImageModal(imageId) {
 
 function grabEditSakonninFileForm(file_id, options = {}) {
     $( "#sakonninModalBody" ).html("");
-    orgurl = "{{ path('file_edit', {'file_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
+    orgurl = "{{ path('sakonninfile_edit', {'file_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
     url = orgurl.replace("xxxxxxxxxxxxx", file_id);
     title = "Edit";
     if (options['title']) {
@@ -282,7 +282,7 @@ function grabEditSakonninFileForm(file_id, options = {}) {
 
 function submitEditSakonninFileForm(file_id, reload_after_post) {
 
-    orgurl = "{{ path('file_edit', {'file_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
+    orgurl = "{{ path('sakonninfile_edit', {'file_id': 'xxxxxxxxxxxxx', 'access': 'ajax' }) }}";
     url = orgurl.replace("xxxxxxxxxxxxx", file_id);
 console.log("Submitter");
     formdata = $( "#editSakonninFileForm" ).serialize();

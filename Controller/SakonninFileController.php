@@ -42,7 +42,7 @@ class SakonninFileController extends CommonController
     /**
      * Lists all file entities.
      *
-     * @Route("/", name="file_index", methods={"GET"})
+     * @Route("/", name="sakonninfile_index", methods={"GET"})
      */
     public function indexAction($access)
     {
@@ -59,7 +59,7 @@ class SakonninFileController extends CommonController
     /**
      * Creates a new file entity.
      *
-     * @Route("/new", name="file_new", methods={"GET", "POST"})
+     * @Route("/new", name="sakoninfile_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {
@@ -85,11 +85,10 @@ class SakonninFileController extends CommonController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->sakonninFiles->storeFile($sfile, isset($data['file_context']) ? $data['file_context'] : array());
-
             if ($this->isRest($access)) {
                 return new JsonResponse('OK Done', Response::HTTP_CREATED);
             }
-            return $this->redirectToRoute('file_show', array('file_id' => $sfile->getFileId()));
+            return $this->redirectToRoute('sakonninfile_show', array('file_id' => $sfile->getFileId()));
         }
 
         if ($this->isRest($access)) {
@@ -110,7 +109,7 @@ class SakonninFileController extends CommonController
     /**
      * Finds and displays a file entity.
      *
-     * @Route("/{file_id}", name="file_show", methods={"GET"}, requirements={"file_id"="\w{13}"})
+     * @Route("/{file_id}", name="sakonninfile_show", methods={"GET"}, requirements={"file_id"="\w{13}"})
      */
     public function showAction(Request $request, $file_id, $access)
     {
@@ -127,7 +126,7 @@ class SakonninFileController extends CommonController
     /**
      * Download a file.
      *
-     * @Route("/{file_id}/download", name="file_download", methods={"GET"})
+     * @Route("/{file_id}/download", name="sakonninfile_download", methods={"GET"})
      */
     public function downloadAction(Request $request, $file_id, $access)
     {
@@ -143,7 +142,7 @@ class SakonninFileController extends CommonController
     /**
      * View a file.
      *
-     * @Route("/{file_id}/view", name="file_view", methods={"GET"})
+     * @Route("/{file_id}/view", name="sakonninfile_view", methods={"GET"})
      */
     public function viewAction(Request $request, $file_id, $access)
     {
@@ -158,7 +157,7 @@ class SakonninFileController extends CommonController
     /**
      * Create/cache thumbnail.
      *
-     * @Route("/{file_id}/thumbnail/{x}/{y}", name="file_thumbnail", methods={"GET"})
+     * @Route("/{file_id}/thumbnail/{x}/{y}", name="sakonninfile_thumbnail", methods={"GET"})
      */
     public function thumbnailAction(Request $request, $access, $file_id, $x, $y)
     {
@@ -177,13 +176,13 @@ class SakonninFileController extends CommonController
     /**
      * Displays a form to edit an existing file entity.
      *
-     * @Route("/{file_id}/edit", name="file_edit", methods={"GET", "POST"})
+     * @Route("/{file_id}/edit", name="sakonninfile_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
         $deleteForm = $this->createDeleteForm($sfile);
-        $action = $this->generateUrl('file_edit', array(
+        $action = $this->generateUrl('sakonninfile_edit', array(
             'file_id' => $sfile->getFileId(),
             'access' => $access
             ));
@@ -203,7 +202,7 @@ class SakonninFileController extends CommonController
                     ], 200);
             }
 
-            return $this->redirectToRoute('file_show', array('file_id' => $sfile->getFileId()));
+            return $this->redirectToRoute('sakonninfile_show', array('file_id' => $sfile->getFileId()));
         }
 
         if ($this->isRest($access)) {
@@ -226,7 +225,7 @@ class SakonninFileController extends CommonController
     /**
      * Deletes a file entity.
      *
-     * @Route("/{file_id}", name="file_delete", methods={"DELETE"})
+     * @Route("/{file_id}", name="sakonninfile_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, $file_id, $access)
     {
@@ -242,7 +241,7 @@ class SakonninFileController extends CommonController
                 return $this->redirect($back);
         }
 
-        return $this->redirectToRoute('file_index');
+        return $this->redirectToRoute('sakonninfile_index');
     }
 
     /**
@@ -255,15 +254,13 @@ class SakonninFileController extends CommonController
     public function createCreateForm(SakonninFile $entity)
     {
         $form = $this->createForm(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $entity, array(
-            'action' => $this->generateUrl('file_new'),
+            'action' => $this->generateUrl('sakoninfile_new'),
             'method' => 'POST',
         ));
         $form->add('file', VichFileType::class, [
             'required' => true,
             'allow_delete' => true,
         ]);
-        $form->add('submit', SubmitType::class, array('label' => 'Engage'));
-
         return $form;
     }
 
@@ -277,7 +274,7 @@ class SakonninFileController extends CommonController
     public function createDeleteForm(SakonninFile $sfile)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('file_delete', array('file_id' => $sfile->getFileId())))
+            ->setAction($this->generateUrl('sakonninfile_delete', array('file_id' => $sfile->getFileId())))
             ->setMethod('DELETE')
             ->getForm()
         ;
