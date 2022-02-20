@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
@@ -31,10 +32,12 @@ class MessageController extends CommonController
     private $entityManager;
     private $sakonninMessages;
 
-    public function __construct(ManagerRegistry $managerRegistry, SakonninMessages $sakonninMessages)
+    public function __construct(ManagerRegistry $managerRegistry, SakonninMessages $sakonninMessages, SerializerInterface $serializer)
     {
         $this->managerRegistry = $managerRegistry;
         $this->sakonninMessages = $sakonninMessages;
+        // Push this "back to" the RestTrait included in CommonController.
+        $this->serializer = $serializer;
     }
 
     /**
