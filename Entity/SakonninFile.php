@@ -120,7 +120,7 @@ class SakonninFile
      *
      * @ORM\Column(name="tags", type="array", nullable=true)
      */
-    private $tags;
+    private $tags = [];
 
     /**
      * @ORM\OneToMany(targetEntity="SakonninFileContext", mappedBy="file", cascade={"persist", "remove"})
@@ -381,6 +381,9 @@ class SakonninFile
      */
     public function addTag($tag)
     {
+        // Don't want a blowup.
+        if (empty($tag))
+            return $this->tags;
         if (array_search($tag, $this->tags))
             return $tag;
 
