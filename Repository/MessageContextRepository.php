@@ -28,7 +28,7 @@ class MessageContextRepository extends ContextBaseRepository
      * question is easy, if there are one or more MessageContexts, there are
      * messages.
      */
-    public function contextHasMessages($context_data, $with_contexts = false): bool
+    public function contextHasMessages($context_data, $with_contexts = false)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('mc')
