@@ -120,10 +120,10 @@ class SakonninFile
      *
      * @ORM\Column(name="tags", type="array", nullable=true)
      */
-    private $tags;
+    private $tags = [];
 
     /**
-     * @ORM\OneToMany(targetEntity="SakonninFileContext", mappedBy="file", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="SakonninFileContext", mappedBy="owner", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $contexts;
 
@@ -133,7 +133,7 @@ class SakonninFile
         if (isset($options['file_type']))
             $this->setFileType($options['file_type']);
         $this->setFileId(uniqid());
-        return $this->traitConstruct($options);
+        $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -381,8 +381,11 @@ class SakonninFile
      */
     public function addTag($tag)
     {
+        if (!$tag || empty($tag))
+            return $this->tags;
+
         if (array_search($tag, $this->tags))
-            return $tag;
+            return $this->tags;
 
         $this->tags[] = $tag;
 
@@ -398,6 +401,9 @@ class SakonninFile
      */
     public function removeTag($tag)
     {
+        if (!$tag || empty($tag))
+            return $this->tags;
+
         if ($idx = array_search($tag, $this->tags))
             unset($this->tags[$idx]);
 
@@ -449,5 +455,26 @@ class SakonninFile
     public static function getFileTypes()
     {
         return ExternalEntityConfig::getFileTypes();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
+    /*
+     * Cheating, but close enough.
+     */
+    public function isImage(): bool
+    {
+        return strpos($this->mimeType, 'image') !== FALSE;
+    }
+
+    /*
+     * Cheating, but close enough.
+     */
+    public function isText(): bool
+    {
+        return strpos($this->mimeType, 'text') !== FALSE;
     }
 }

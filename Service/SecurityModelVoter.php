@@ -40,9 +40,9 @@ class SecurityModelVoter extends Voter
         if ($subject instanceof Message
             || $subject instanceof MessageType
             || $subject instanceof MessageContext
-            || $subject instanceof SakonninfFile
-            || $subject instanceof SakonninfFileType
-            || $subject instanceof SakonninfFileContext)
+            || $subject instanceof SakonninFile
+            || $subject instanceof SakonninFileType
+            || $subject instanceof SakonninFileContext)
             return true;
         else
             return false;

@@ -173,8 +173,6 @@ class Messages
         // entry point for creating messages, so why should I bother?
         $message->setSender($this->getLoggedInUser());
         // If you find this ugly, I agree.
-dump($message);
-dump($data);
         $data['user'] = $this->getLoggedInUser();
         $data['sakonninMessages'] = $this;
         $this->sakonninFunctions->dispatchMessageFunctions($message, $data);

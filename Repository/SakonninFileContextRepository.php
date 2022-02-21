@@ -28,7 +28,7 @@ class SakonninFileContextRepository extends ContextBaseRepository
      * question is easy, if there are one or more FileContexts, there are
      * files.
      */
-    public function contextHasFiles($context_data, $with_contexts = false): bool
+    public function contextHasFiles($context_data, $with_contexts = false)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('fc')

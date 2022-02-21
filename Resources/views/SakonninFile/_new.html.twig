@@ -1,8 +1,8 @@
     {{ form_start(form) }}
-        {{ form_errors(form) }}
-         {{ form_errors(form.file) }}
-         {{ form_widget(form.file) }}
-         {{ form_row(form.description) }}
-         {{ form_row(form.tags) }}
-         {{ form_row(form.file_type) }}
+      {{ form_widget(form) }}
+            {% if file_context is not null%}
+            <input id="system{{formname}}" type="hidden" name="file_context[system]" value="{{file_context.system}}">
+            <input id="object_name{{formname}}" type="hidden" name="file_context[object_name]" value="{{file_context.object_name}}">
+            <input id="external_id{{formname}}" type="hidden" name="file_context[external_id]" value="{{file_context.external_id}}">
+            {% endif %}
     {{ form_end(form) }}

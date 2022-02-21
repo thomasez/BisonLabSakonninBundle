@@ -181,7 +181,7 @@ function submitSakonninFileForm(formname = '', reload_after_post = true) {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
-        url: "{{ path('sakoninfile_new', { 'access': 'ajax' }) }}",
+        url: "{{ path('sakonninfile_new', { 'access': 'ajax' }) }}",
         data: formData,
         processData: false,
         contentType: false,
@@ -304,6 +304,27 @@ console.log("Submitter");
             errmsg = "File sending failed\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
+    });
+    return false;
+}
+
+function grabUploadSakonninFileForm(options = {}) {
+    $( "#sakonninModalBody" ).html("");
+    url = "{{ path('sakonninfile_new', { 'access': 'ajax' }) }}";
+    title = "Edit";
+    if (options['title']) {
+        title = options['title'];
+        delete options['title'];
+    }
+    url = url + "?" + jQuery.param( options );
+    $.get(url, function( data ) {
+        $( "#sakonninModalBody" ).html(data);
+        $( "#sakonninModalTitle" ).html(title);
+        $( "#sakonninModal" ).modal();
+        $( "#editSakonninMessageForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitEditSakonninMessageForm(message_id, options['reload_after_post']);
+        });
     });
     return false;
 }

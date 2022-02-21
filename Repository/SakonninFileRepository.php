@@ -44,7 +44,7 @@ class SakonninFileRepository extends ServiceEntityRepository
 
         if (empty($file_context)) { return null; }
 
-        return current($file_context)->getSakonninFile();
+        return current($file_context)->getOwner();
     }
     
     public function findByContext($system, $object_name, $external_id)
@@ -63,7 +63,7 @@ class SakonninFileRepository extends ServiceEntityRepository
 
         $files = new ArrayCollection();
         foreach($qb2->getQuery()->getResult() as $sfc) {
-            $files->add($sfc->getSakonninFile());
+            $files->add($sfc->getOwner());
         }
         $iterator = $files->getIterator();
         $iterator->uasort(function ($a, $b) {

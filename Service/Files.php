@@ -60,8 +60,32 @@ class Files
             }
         }
 
+        // I want the eoncoding, no support for that in Symfony/SplFile yet.
+        $finfo = finfo_open(FILEINFO_MIME_ENCODING);
+        $encoding = finfo_file($finfo, $file->getRealPath());
+        $file->setEncoding($encoding);
+
+        if (!$file->getFileType() || $file->getFileType() == "AUTO") {
+            /*
+             * Gotta guess. I'll keep it here as with the content type above.
+             * This is the way to store/add files, so it should work out
+             * although having it in an event listener would be more correct.
+             */
+            if ($file->isImage())
+                $file->setFileType('IMAGE');
+            elseif ($file->isText())
+                $file->setFileType('TEXT');
+            else
+                $file->setFileType('UNKNOWN');
+        }
+
         // I'll add context data regardless what the data was.
         // If context data is provided we gotta handle it regardless.
+        // I wonder what doctrine has done to make persist not be enough to get
+        // an id any more.
+        $this->entityManager->persist($file);
+        $this->entityManager->flush();
+        // $this->entityManager->persist($file);
         if (isset($context_data)
             && isset($context_data['system'])
             && isset($context_data['object_name'])
@@ -71,34 +95,9 @@ class Files
             $file->addContext($file_context);
             $this->entityManager->persist($file_context);
         }
-        $this->entityManager->persist($file);
-
-        // I want the eoncoding, no support for that in Symfony/SplFile yet.
-        $finfo = finfo_open(FILEINFO_MIME_ENCODING);
-        $encoding = finfo_file($finfo, $file->getRealPath());
-        $file->setEncoding($encoding);
-
-        if (!$file->getFileType() || $file->getFileType() == "AUTO") {
-            /*
-             *  Gotta guess. I'll keep it here as with the content type above.
-             *  This is the way to store/add files, so it should work out
-             *  although having it in an event listener would be more correct.
-             *
-             * I'll start with being a coward and use the mime type. In a
-             * simple manner.
-             */
-            $mime_type = $file->getMimeType();
-            if (strpos($mime_type, 'image') !== false)
-                $file->setFileType('IMAGE');
-            elseif (strpos($mime_type, 'text') !== false)
-                $file->setFileType('TEXT');
-            else
-                $file->setFileType('UNKNOWN');
-        }
 
         /*
          * Cut&paste from Messages. Does not do all that one can, for now.
-         * 
          */
         $this->sakonninFunctions->dispatchFileFunctions($file);
         $this->entityManager->flush();
@@ -117,12 +116,35 @@ class Files
             $file = new SakonninFile();
         }
 
+/*
+ * Not sure this is the right thing to do.
+ * TODO: Decide on doing this here on storeFile where it is now.
         if (isset($options['file_context'])) {
             $file_context = new SakonninFileContext($options['file_context']);
             $file->addContext($file_context);
         }
+ */
+
+        if ($ft = $options['file_type'] ?? null) {
+            $file->setFileType($ft);
+        }
+
+        if ($tags = $options['tags'] ?? null) {
+            $file->setTags($tags);
+        }
 
         $form = $this->createCreateForm($file);
+
+        if (isset($options['no_description'])) {
+            $form->remove('description');
+        }
+
+        if (isset($options['no_tags'])) {
+            $form->remove('tags');
+        }
+        if (!isset($options['no_submit'])) {
+            $form->add('submit', SubmitType::class, array('label' => 'Save'));
+        }
 
         // You may wonder why. It's beause this one is called from twig
         // templates as well as the file controller (Which adds stuff).
@@ -266,7 +288,7 @@ class Files
 
     public function createCreateForm(SakonninFile $sfile)
     {
-        $route = $this->router->generate('sakoninfile_new');
+        $route = $this->router->generate('sakonninfile_new');
         $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $sfile, array(
             'action' => $route,
             'method' => 'POST',
@@ -281,8 +303,7 @@ class Files
     public function createDeleteForm(SakonninFile $sfile)
     {
         $route = $this->router->generate('sakonninfile_delete', array(
-                'file_id' => $sfile->getMessageId(),
-                'access' => $access));
+                'file_id' => $sfile->getFileId()));
         return $this->formBuilder->createBuilder()
             ->setAction($route)
             ->setMethod('DELETE')

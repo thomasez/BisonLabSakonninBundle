@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
@@ -29,13 +30,18 @@ class SakonninFileController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
+    private $managerRegistry;
     private $sakonninFiles;
     private $parameterBag;
 
-    public function __construct(SakonninFiles $sakonninFiles, ParameterBagInterface $parameterBag)
+    public function __construct(ManagerRegistry $managerRegistry, SakonninFiles $sakonninFiles, ParameterBagInterface $parameterBag, SerializerInterface $serializer)
     {
+        $this->managerRegistry = $managerRegistry;
         $this->sakonninFiles = $sakonninFiles;
         $this->parameterBag = $parameterBag;
+
+        // Push this "back to" the RestTrait included in CommonController.
+        $this->serializer = $serializer;
     }
 
 
@@ -59,11 +65,16 @@ class SakonninFileController extends CommonController
     /**
      * Creates a new file entity.
      *
-     * @Route("/new", name="sakoninfile_new", methods={"GET", "POST"})
+     * @Route("/new", name="sakonninfile_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {
         $max_filesize = UploadedFile::getMaxFilesize();
+
+        if ($request->isMethod('POST'))
+            $request_data = $request->request->all();
+        else
+            $request_data = $request->query->all();
         /*
          * OK, this annoys me. Somehow I should get a better message than
          * "The file "" does not exist" - exception when the file I attempt to
@@ -77,30 +88,41 @@ class SakonninFileController extends CommonController
             return new Response( 'The file is probably too big for the system to handle. Either reduce size or configure the web server to handle bigger files', 400);
         }
 
-        $sfile = new SakonninFile();
-        $form = $this->createCreateForm($sfile);
-        $data = $request->request->all();
+        $form = $this->sakonninFiles->getUploadForm($request_data);
 
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->sakonninFiles->storeFile($sfile, isset($data['file_context']) ? $data['file_context'] : array());
-            if ($this->isRest($access)) {
-                return new JsonResponse('OK Done', Response::HTTP_CREATED);
+        $sfile = $form->getData();
+        if ($form->isSubmitted()) {
+            if ( $form->isValid()) {
+                $this->sakonninFiles->storeFile($sfile, isset($request_data['file_context']) ? $request_data['file_context'] : array());
+                if ($this->isRest($access)) {
+                    return new JsonResponse('OK Done', Response::HTTP_CREATED);
+                }
+                return $this->redirectToRoute('sakonninfile_show',
+                    array('file_id' => $sfile->getFileId()));
+            } elseif ($this->isRest($access)) {
+                # We have a problem, and need to tell our user what it is.
+                # Better make this a Json some day.
+                return $this->returnErrorResponse("Validation Error", 400,
+                    $this->handleFormErrors($form));
             }
-            return $this->redirectToRoute('sakonninfile_show', array('file_id' => $sfile->getFileId()));
         }
-
         if ($this->isRest($access)) {
-            # We have a problem, and need to tell our user what it is.
-            # Better make this a Json some day.
-            return $this->returnErrorResponse("Validation Error", 400,
-                $this->handleFormErrors($form));
+            return $this->render('@BisonLabSakonnin/SakonninFile/_new.html.twig',
+                array(
+                    'max_filesize' => $max_filesize,
+                    'file' => $sfile,
+                    'file_context' => $request_data['file_context'] ?? null,
+                    'formname' => $form->getName(),
+                    'form' => $form->createView()
+            ));
         }
 
         return $this->render('@BisonLabSakonnin/SakonninFile/new.html.twig',
             array(
                 'max_filesize' => $max_filesize,
+                'file_context' => $request_data['file_context'] ?? null,
+                'formname' => $form->getName(),
                 'file' => $sfile,
                 'form' => $form->createView()
         ));
@@ -242,26 +264,6 @@ class SakonninFileController extends CommonController
         }
 
         return $this->redirectToRoute('sakonninfile_index');
-    }
-
-    /**
-     * Creates a form to create a File entry.
-     *
-     * @param File $entity The entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    public function createCreateForm(SakonninFile $entity)
-    {
-        $form = $this->createForm(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $entity, array(
-            'action' => $this->generateUrl('sakoninfile_new'),
-            'method' => 'POST',
-        ));
-        $form->add('file', VichFileType::class, [
-            'required' => true,
-            'allow_delete' => true,
-        ]);
-        return $form;
     }
 
     /**
