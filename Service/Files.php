@@ -180,7 +180,10 @@ class Files
 
     public function getFilesForUser($user, $criterias = array())
     {
-        $criterias['username'] = $user->getUsername();
+        if (method_exists($user, 'getUsername'))
+            $criterias['username'] = $user->getUsername();
+        else
+            $criterias['username'] = $user->getUserIdentifier();
         return $this->getFiles($criterias);
     }
 
@@ -306,7 +309,6 @@ class Files
                 'file_id' => $sfile->getFileId()));
         return $this->formBuilder->createBuilder()
             ->setAction($route)
-            ->setMethod('DELETE')
             ->getForm()
         ;
     }

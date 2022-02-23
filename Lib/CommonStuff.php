@@ -28,10 +28,20 @@ trait CommonStuff
         return $user_repo->find($userid);
     }
 
+    public function getUserFromUserIdentifier($identifier)
+    {
+        $user_repo = $this->getUserRepository();
+        return $user_repo->findOneBy(array('identifier' => $identifier));
+    }
+
     public function getUserFromUserName($username)
     {
         $user_repo = $this->getUserRepository();
-        return $user_repo->findOneBy(array('username' => $username));
+        $c = $user_repo->getClassName();
+        if (property_exists($c, 'username'))
+            return $user_repo->findOneBy(array('username' => $username));
+        else
+            return $this->getUserFromUserIdentifier($username);
     }
 
     public function getUserNameFromUserId($userid)

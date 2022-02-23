@@ -78,7 +78,11 @@ class SecurityModelVoter extends Voter
             return false;
         }
 
-        // If it does not have any security model set, don't bother.
+        // It hurts, but how can I do without?
+        if (!method_exists($subject, 'getSecurityModel'))
+            return true;
+
+        // If it does not have any security model set, just say no.
         if (!$security_model = $subject->getSecurityModel()) {
             return false;
         }

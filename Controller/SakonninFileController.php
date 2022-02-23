@@ -136,6 +136,7 @@ class SakonninFileController extends CommonController
     public function showAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
+        $this->denyAccessUnlessGranted('show', $sfile);
         $deleteForm = $this->createDeleteForm($sfile);
 
         return $this->render('@BisonLabSakonnin/SakonninFile/show.html.twig',
@@ -153,6 +154,7 @@ class SakonninFileController extends CommonController
     public function downloadAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
+        $this->denyAccessUnlessGranted('show', $sfile);
         // TODO: Add access control.
         $path = $this->getFilePath();
         $response = new BinaryFileResponse($path . "/" . $sfile->getStoredAs());
@@ -169,6 +171,7 @@ class SakonninFileController extends CommonController
     public function viewAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
+        $this->denyAccessUnlessGranted('show', $sfile);
         // TODO: Add access control.
         $path = $this->getFilePath();
         $response = new BinaryFileResponse($path . "/" . $sfile->getStoredAs());
@@ -184,6 +187,7 @@ class SakonninFileController extends CommonController
     public function thumbnailAction(Request $request, $access, $file_id, $x, $y)
     {
         $sfile = $this->_getFile($file_id);
+        $this->denyAccessUnlessGranted('show', $sfile);
 
         if (!$sfile->getThumbnailable())
             $this->returnError($request, 'Not an image');
@@ -203,6 +207,7 @@ class SakonninFileController extends CommonController
     public function editAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
+        $this->denyAccessUnlessGranted('edit', $sfile);
         $deleteForm = $this->createDeleteForm($sfile);
         $action = $this->generateUrl('sakonninfile_edit', array(
             'file_id' => $sfile->getFileId(),
@@ -247,21 +252,22 @@ class SakonninFileController extends CommonController
     /**
      * Deletes a file entity.
      *
-     * @Route("/{file_id}", name="sakonninfile_delete", methods={"DELETE"})
+     * @Route("/{file_id}/delete", name="sakonninfile_delete", methods={"POST", "DELETE"})
      */
     public function deleteAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
         $form = $this->createDeleteForm($sfile);
         $form->handleRequest($request);
+        $this->denyAccessUnlessGranted('delete', $sfile);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrineManager();
             $entityManager->remove($sfile);
             $entityManager->flush();
-            if ($back = $request->request->get('back'))
-                return $this->redirect($back);
         }
+        if ($back = $request->request->get('back'))
+            return $this->redirect($back);
 
         return $this->redirectToRoute('sakonninfile_index');
     }
@@ -277,7 +283,6 @@ class SakonninFileController extends CommonController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('sakonninfile_delete', array('file_id' => $sfile->getFileId())))
-            ->setMethod('DELETE')
             ->getForm()
         ;
     }
