@@ -308,27 +308,6 @@ console.log("Submitter");
     return false;
 }
 
-function grabUploadSakonninFileForm(options = {}) {
-    $( "#sakonninModalBody" ).html("");
-    url = "{{ path('sakonninfile_new', { 'access': 'ajax' }) }}";
-    title = "Edit";
-    if (options['title']) {
-        title = options['title'];
-        delete options['title'];
-    }
-    url = url + "?" + jQuery.param( options );
-    $.get(url, function( data ) {
-        $( "#sakonninModalBody" ).html(data);
-        $( "#sakonninModalTitle" ).html(title);
-        $( "#sakonninModal" ).modal();
-        $( "#editSakonninMessageForm" ).submit(function( event ) {
-            event.preventDefault();
-            submitEditSakonninMessageForm(message_id, options['reload_after_post']);
-        });
-    });
-    return false;
-}
-
 /* 
  * Annoying, but cannot redeclare consts, alas I gotta keep it in one place.
  */

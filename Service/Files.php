@@ -133,7 +133,16 @@ class Files
             $file->setTags($tags);
         }
 
-        $form = $this->createCreateForm($file);
+        $route = $this->router->generate('sakonninfile_new');
+        $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $file, array(
+            'action' => $route,
+            'method' => 'POST',
+            'attr' => ['id' => 'sakonninFileUploadForm' ]
+        ));
+        $form->add('file', VichFileType::class, [
+            'required' => true,
+            'allow_delete' => true,
+        ]);
 
         if (isset($options['no_description'])) {
             $form->remove('description');
@@ -287,20 +296,6 @@ class Files
         $thumb->save($thumbname);
 
         return $thumbname;
-    }
-
-    public function createCreateForm(SakonninFile $sfile)
-    {
-        $route = $this->router->generate('sakonninfile_new');
-        $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $sfile, array(
-            'action' => $route,
-            'method' => 'POST',
-        ));
-        $form->add('file', VichFileType::class, [
-            'required' => true,
-            'allow_delete' => true,
-        ]);
-        return $form;
     }
 
     public function createDeleteForm(SakonninFile $sfile)
