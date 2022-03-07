@@ -10,6 +10,9 @@ use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Service\SmsHandler;
 use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
 use BisonLab\SakonninBundle\Service\Messages as SakonninTemplates;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\MessageIDValidation;
+use Egulias\EmailValidator\Validation\RFCValidation;
 
 /*
  */
@@ -42,6 +45,18 @@ trait CommonFunctions
          */
         if (empty($mailto)) {
             $mailto = $message->getTo();
+        }
+
+        /*
+         * Email addresses should be validated before they arrive here.
+         * But I am not happy with throwing an exception since most users
+         * cannot understand it.
+         * Which means I am doing somthign someonme would consider even worse,
+         * ignoring it.
+         */
+        $validator = new EmailValidator();
+        if (!$validator->isValid($mailto, class_exists(MessageIDValidation::class) ? new MessageIDValidation() : new RFCValidation())) {
+            return false;
         }
 
         $body = '';

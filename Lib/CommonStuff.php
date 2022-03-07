@@ -2,6 +2,8 @@
 
 namespace BisonLab\SakonninBundle\Lib;
 
+use BisonLab\SakonninBundle\Entity\MessageType;
+
 /*
  * As the name says. Functions used everywhere.
  *

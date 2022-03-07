@@ -83,10 +83,9 @@
 <div class="messageText">
 {{ entity.body | raw }}
 </div>
-{# If you save it as markdown, you'd better have the bundle installed for viewing it. #}
 {% elseif entity.contenttype == 'text/markdown' %}
 <div class="messageText">
-{{ entity.body | markdown }}
+{{ entity.body | markdown_to_html }}
 </div>
 {% else %}
 <pre class="messageText" wrap>
