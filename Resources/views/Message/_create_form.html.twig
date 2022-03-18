@@ -1,0 +1,52 @@
+{% if mconfig.formname is defined %}
+{% set formname = mconfig.formname %}
+{% else %}
+{% set formname = "" %}
+{% endif %}
+{% if mconfig.reload_after_post is defined and mconfig.reload_after_post %}
+{% set reload = "true" %}
+{% else %}
+{% set reload = "false" %}
+{% endif %}
+
+{% set title = "Message" %}
+{% if mconfig.title is defined %}
+    {% set title = mconfig.title %}
+{% elseif mconfig.message_type is defined %}
+    {% set title = mconfig.message_type %}
+{% endif %}
+{% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true, 'formname': formname }) %}
+<form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitSakonninMessageForm('{{ formname }}', {{ reload }});">
+{% if mconfig.message_type is defined %}
+<input id="{{ mform.message_type.vars.id ~ formname }}" type="hidden" name="message_type" value="{{mconfig.message_type}}">
+{% else %}
+{{ form_row(mform.message_type, {'id': mform.message_type.vars.id ~ formname })}} 
+{% endif %}
+{% if mconfig.context is defined and mconfig.context is not null %}
+<input id="system{{formname}}" type="hidden" name="message_context[system]" value="{{mconfig.context.system}}">
+<input id="object_name{{formname}}" type="hidden" name="message_context[object_name]" value="{{mconfig.context.object_name}}">
+<input id="external_id{{formname}}" type="hidden" name="message_context[external_id]" value="{{mconfig.context.external_id}}">
+{% endif %}
+{% if mconfig.subject is defined and mconfig.subject is not null %}
+{{ form_row(mform.subject, {'id': mform.subject.vars.id ~ formname })}} 
+{% endif %}
+{% if mconfig.from_field is defined and mconfig.from_field and mform.from is defined %}
+{{ form_widget(mform.from, {'id': mform.from.vars.id ~ formname })}} 
+{% endif %}
+{% if mconfig.to_type is defined and mconfig.to_type and mform.to_type is defined %}
+{{ form_widget(mform.to_type, {'id': mform.to_type.vars.id ~ formname })}} 
+{% endif %}
+{% if mconfig.to_field is defined and mconfig.to_field and mform.to is defined %}
+{{ form_widget(mform.to, {'id': mform.to.vars.id ~ formname })}} 
+{% endif %}
+{{ form_row(mform.body, {'id': mform.body.vars.id ~ formname })}} 
+{% if mconfig.expire_field is defined and mconfig.expire_field and mform.expire_at is defined %}
+{{ form_row(mform.expire_at, {'id': mform.expire_at.vars.id ~ formname })}} 
+{% endif %}
+{% if mconfig.submit is defined %}
+<input type="submit" name="submit" value="{{ mconfig.submit }}">
+{% else %}
+{{ form_widget(mform.submit, {'id': mform.submit.vars.id ~ formname })}} 
+{% endif %}
+{{ form_widget(mform._token, {'id': mform._token.vars.id ~ formname })}} 
+</form>
