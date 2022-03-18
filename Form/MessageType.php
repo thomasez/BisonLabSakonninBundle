@@ -88,7 +88,7 @@ class MessageType extends AbstractType
                 'label' => "Expire at",
                 'required' => false,
                 'widget' => "single_text"))
-            ->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
+            ->add('body', TextareaType::class, array('label' => false, 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
         ;
     }
     
