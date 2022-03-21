@@ -253,7 +253,7 @@ class SakonninFileController extends CommonController
             'required' => true,
             'allow_delete' => true,
         ]);
-        $form->add('submit', SubmitType::class, array('label' => 'Engage'));
+        $form->add('submit', SubmitType::class, array('label' => 'Upload'));
 
         return $form;
     }
