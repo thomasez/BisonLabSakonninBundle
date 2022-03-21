@@ -4,7 +4,7 @@
  #}
 <script type="text/javascript">
 function createPmMessage(type = "PM") {
-    $( "#createpmmodal" ).modal();
+    $( "#createpmmodal" ).modal("show");
     $( "#createpmform #pmmessage_type" ).val(type);
 
     $( "#createpmform #to" ).autocomplete({
@@ -84,7 +84,7 @@ jQuery(document).ready(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Write a PM</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
        {# Gotta remember to add some way to send "in_reply_to" here. #}

@@ -21,12 +21,12 @@ function openSakonninMessageLogBox(url, title = null) {
     } else {
         $( "#sakonninModalTitle" ).html("Messages");
     }
-    $( "#sakonninModal" ).modal();
+    $( "#sakonninModal" ).modal("show");
     return false;
 }
 
 function createSakonninMessage(formname = '') {
-    $( "#createmessage" + formname ).modal();
+    $( "#createmessage" + formname ).modal("show");
     return false;
 }
 
@@ -84,7 +84,7 @@ function deleteSakonninMessage(message_id) {
 }
 
 function createSakonninCheck(formname = '') {
-    $( "#createcheck" + formname ).modal();
+    $( "#createcheck" + formname ).modal("show");
     return false;
 }
 
@@ -125,7 +125,7 @@ function grabEditSakonninMessageForm(message_id, options = {}) {
     $.get(url, function( data ) {
         $( "#sakonninModalBody" ).html(data);
         $( "#sakonninModalTitle" ).html(title);
-        $( "#sakonninModal" ).modal();
+        $( "#sakonninModal" ).modal("show");
         $( "#editSakonninMessageForm" ).submit(function( event ) {
             event.preventDefault();
             submitEditSakonninMessageForm(message_id, options['reload_after_post']);
@@ -168,7 +168,7 @@ function submitEditSakonninMessageForm(message_id, reload_after_post) {
 }
 
 function uploadSakonninFile(formname = '') {
-    $( "#uploadfile" + formname ).modal();
+    $( "#uploadfile" + formname ).modal("show");
 }
 
 function submitSakonninFileForm(formname = '', reload_after_post = true) {
@@ -271,7 +271,7 @@ function grabEditSakonninFileForm(file_id, options = {}) {
     $.get(url, function( data ) {
         $( "#sakonninModalBody" ).html(data);
         $( "#sakonninModalTitle" ).html(title);
-        $( "#sakonninModal" ).modal();
+        $( "#sakonninModal" ).modal("show");
         $( "#editSakonninFileForm" ).submit(function( event ) {
             event.preventDefault();
             submitEditSakonninFileForm(file_id, options['reload_after_post']);
@@ -338,7 +338,7 @@ const addFormToCollection = (e) => {
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="sakonninModalTitle"></h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
             <div id="sakonninModalBody">
