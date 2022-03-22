@@ -29,7 +29,7 @@ class SakonninTemplateType extends AbstractType
                 'wrapper_attr' => array(), // aceeditor wrapper html attributes.
                 // 'width' => 700,
                 'width' => '100%',
-                'height' => 200,
+                'height' => '400px',
                 'font_size' => 12,
                 'mode' => 'ace/mode/twig', // every single default mode must have ace/mode/* prefix
                 'theme' => 'ace/theme/tomorrow', // every single default theme must have ace/theme/* prefix

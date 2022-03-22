@@ -19,7 +19,12 @@ class SakonninFileType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('description');
+        $sfile = $options['data'];
+        if (isset($options['data']) && $options['data']->getDescription()) {
+            $builder->add('description', HiddenType::class);
+        } else {
+            $builder->add('description');
+        }
 
         if (isset($options['data']) && $options['data']->getTags()) {
             $builder->add('tags', CollectionType::class, array(
@@ -39,6 +44,7 @@ class SakonninFileType extends AbstractType
                     'entry_options' => ['label' => false],
                 ));
         }
+
         if (isset($options['data']) && $options['data']->getFileType()) {
             $builder->add('file_type', HiddenType::class);
         } else {

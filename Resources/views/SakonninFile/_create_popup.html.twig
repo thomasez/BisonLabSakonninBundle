@@ -9,6 +9,7 @@
 {% set reload = "false" %}
 {% endif %}
 
+{% if sfconfig.tags is defined and sfconfig.tags %}
 <script>
 $(document).ready(function() {
 
@@ -19,15 +20,15 @@ document
 });
 
 </script>
+{% endif %}
 
-{% set title = "Add File" %}
 <div class="modal fade" id="uploadfile{{ formname }}" role="dialog" tabindex="-1">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">{{ title }}</h4>
-          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{ sfconfig.title | default("Add File") }}</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
         {% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true, 'formname': formname }) %}
@@ -39,9 +40,11 @@ document
             {% endif %}
             {{ form_widget(sfform.file, {'id': sfform.file.vars.id ~ formname })}}
             {{ form_row(sfform.description, {'id': sfform.description.vars.id ~ formname })}}
+{% if tags is defined and tags %}
             <ul id=filetags_list" class="tags" data-prototype="{{ form_widget(sfform.tags.vars.prototype)|e('html_attr') }}">
             </ul>
             <button type="button" class="add_tag_link" data-collection-holder-class="tags">Add a tag</button>
+{% endif %}
             {{ form_row(sfform.file_type, {'id': sfform.file_type.vars.id ~ formname })}}
         <input type="submit" form="uploadfileform{{ formname }}" name="sendfile" value="Send"/>
        {{ form_rest(sfform)}}
