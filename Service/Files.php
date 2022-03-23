@@ -4,6 +4,7 @@ namespace BisonLab\SakonninBundle\Service;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\FileType as FileFormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -139,10 +140,26 @@ class Files
             'method' => 'POST',
             'attr' => ['id' => 'sakonninFileUploadForm' ]
         ));
-        $form->add('file', VichFileType::class, [
-            'required' => true,
-            'allow_delete' => true,
-        ]);
+        if ($options['multiple'] ?? $options['sakonninfile']['multiple'] ?? null) {
+            $form->add('multiple', HiddenType::class, [
+                'data' => true,
+                'mapped' => false,
+            ]);
+            $form->add('files', FileFormType::class, [
+                'mapped' => false,
+                'required' => true,
+                'multiple' => true,
+            ]);
+        } else {
+            $form->add('multiple', HiddenType::class, [
+                'data' => false,
+                'mapped' => false,
+            ]);
+            $form->add('file', VichFileType::class, [
+                'required' => true,
+                'allow_delete' => true,
+            ]);
+        }
 
         if (isset($options['no_description'])) {
             $form->remove('description');
