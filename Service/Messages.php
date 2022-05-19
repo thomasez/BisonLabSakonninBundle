@@ -15,6 +15,8 @@ use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageContext;
 use BisonLab\SakonninBundle\Service\Templates as SakonninTemplates;
 use BisonLab\SakonninBundle\Service\Functions as SakonninFunctions;
+use BisonLab\SakonninBundle\Entity\MessageType;
+use BisonLab\SakonninBundle\Controller\MessageController;
 
 /**
  * Messages service.
@@ -189,7 +191,7 @@ class Messages
         if (isset($options['message']) && $options['message'] instanceof Message) {
              $message =  $options['message'];
         } elseif (isset($options['message_data']) && $data = $options['message_data']) {
-            if (isset($data['message_type']) && $message_type = $em->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
+            if (isset($data['message_type']) && $message_type = $entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $data['message_type'] = $message_type;
             }
             $message = new Message($data);
@@ -204,7 +206,7 @@ class Messages
 
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $em->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);
@@ -227,7 +229,7 @@ class Messages
         $message = new Message();
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $em->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);

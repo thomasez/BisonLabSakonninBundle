@@ -529,15 +529,11 @@ class MessageController extends CommonController
      */
     public function checkUnreadAction(Request $request, $access)
     {
-        $entityManager = $this->getDoctrineManager();
-        $user = $this->getUser();
-
-        $repo = $entityManager->getRepository(Message::class);
-        $messages = $this->sakonmin_messages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
+        $messages = $this->sakonmin_messages
+            ->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
         }
-        // return $this->returnRestData($request, false);
         return $this->returnRestData($request, array('amount' => 0));
     }
 
