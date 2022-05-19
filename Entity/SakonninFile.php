@@ -381,9 +381,9 @@ class SakonninFile
      */
     public function addTag($tag)
     {
-        // Don't want a blowup.
-        if (empty($tag))
+        if (!$tag || empty($tag))
             return $this->tags;
+
         if (array_search($tag, $this->tags))
             return $this->tags;
 

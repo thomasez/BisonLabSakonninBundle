@@ -89,12 +89,22 @@ class SakonninFileController extends CommonController
         }
 
         $form = $this->sakonninFiles->getUploadForm($request_data);
-
         $form->handleRequest($request);
         $sfile = $form->getData();
         if ($form->isSubmitted()) {
             if ( $form->isValid()) {
-                $this->sakonninFiles->storeFile($sfile, isset($request_data['file_context']) ? $request_data['file_context'] : array());
+                if ($request_data['sakonninfile']['multiple'] && !$sfile->getFile()) {
+                    $files = $request->files->all()['sakonninfile']['files'] ?? [];
+                    foreach ($files as $ulfile) {
+                        $clfile = clone($sfile);
+                        $clfile->setFile($ulfile);
+                        $clfile->setFileId(uniqid());
+                        $this->sakonninFiles->storeFile($clfile, $request_data['file_context'] ?? array());
+                    }
+                } else {
+                    $this->sakonninFiles->storeFile($sfile, $request_data['file_context'] ?? array());
+                }
+
                 if ($this->isRest($access)) {
                     return new JsonResponse('OK Done', Response::HTTP_CREATED);
                 }

@@ -15,18 +15,7 @@
 {% elseif mconfig.message_type is defined %}
     {% set title = mconfig.message_type %}
 {% endif %}
-
-<div class="modal fade" id="createmessage{{formname}}" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">{{ title }}</h4>
-          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
 {% set mform = sakonnin_messages.getCreateForm({'message_data': mconfig, 'message_context': mconfig.context, 'create_view': true, 'formname': formname }) %}
-
 <form id="createmessageform{{formname}}" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitSakonninMessageForm('{{ formname }}', {{ reload }});">
 {% if mconfig.message_type is defined %}
 <input id="{{ mform.message_type.vars.id ~ formname }}" type="hidden" name="message_type" value="{{mconfig.message_type}}">
@@ -61,13 +50,3 @@
 {% endif %}
 {{ form_widget(mform._token, {'id': mform._token.vars.id ~ formname })}} 
 </form>
-
-        </div>
-<!-- Not sure I want it.
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-        </div>
--->
-      </div>
-    </div>
-  </div>
