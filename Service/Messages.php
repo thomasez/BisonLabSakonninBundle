@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageContext;
+use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Controller\MessageController;
 
 /**

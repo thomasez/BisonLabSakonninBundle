@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use BisonLab\SakonninBundle\Entity\MessageType;
+use BisonLab\SakonninBundle\Entity\SakonninTemplate;
 
 class MessageTypeType extends AbstractType
 {
@@ -44,7 +45,7 @@ class MessageTypeType extends AbstractType
                     'label' => 'Group',
                     'placeholder' => 'Choose a Group',
                     'required' => false,
-                    'class' => 'BisonLabSakonninBundle:MessageType',
+                    'class' => MessageType::class,
                     'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('mt')
                      ->where('mt.parent is null')
@@ -56,7 +57,7 @@ class MessageTypeType extends AbstractType
                     'label' => 'Template',
                     'placeholder' => 'Eventual template',
                     'required' => false,
-                    'class' => 'BisonLabSakonninBundle:SakonninTemplate'
+                    'class' => SakonninTemplate::class
                 ))
             ;
     }

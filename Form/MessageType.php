@@ -17,6 +17,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 use BisonLab\SakonninBundle\Entity\Message;
+use BisonLab\SakonninBundle\Entity\MessageType as MessageTypeEntity;
 
 class MessageType extends AbstractType
 {
@@ -35,7 +36,7 @@ class MessageType extends AbstractType
                     'label' => 'Type',
                     'placeholder' => 'Choose a Type',
                     'required' => true,
-                    'class' => 'BisonLabSakonninBundle:MessageType',
+                    'class' => MessageTypeEntity::class,
                     'query_builder' => function(EntityRepository $er) {
                      return $er->createQueryBuilder('m')
                          ->where('m.parent is not null')
@@ -60,7 +61,7 @@ class MessageType extends AbstractType
                         'attr' => array('class' => 'd-none'),
                         'label' => false,
                         'required' => true,
-                        'class' => 'BisonLabSakonninBundle:MessageType',
+                        'class' => MessageTypeEntity::class,
                         'choices' => $type_choices,
                     ));
             } else {
@@ -69,7 +70,7 @@ class MessageType extends AbstractType
                         'label' => 'Type',
                         'placeholder' => 'Choose a Type',
                         'required' => true,
-                        'class' => 'BisonLabSakonninBundle:MessageType',
+                        'class' => MessageTypeEntity::class,
                         'choices' => $type_choices,
                     ));
             }

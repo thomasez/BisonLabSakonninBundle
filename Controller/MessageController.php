@@ -533,7 +533,7 @@ class MessageController extends CommonController
         $em = $this->getDoctrineManager();
         $user = $this->getUser();
 
-        $repo = $em->getRepository()Message::class;
+        $repo = $em->getRepository(Message::class);
         $messages = $this->sakonmin_messages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
