@@ -66,9 +66,9 @@ EOT
         // This is to make sure we don't end up with massige memory useage. 
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->mt_repo = $this->entityManager
-                ->getRepository('BisonLabSakonninBundle:MessageType');
+                ->getRepository(MessageType::class);
         $this->m_repo  = $this->entityManager
-                ->getRepository('BisonLabSakonninBundle:Message');
+                ->getRepository(Message::class);
 
         // First, Find the message types that has expunge.
         // I'll just pick the types, not the groups (parents)

@@ -215,7 +215,7 @@ class Files
 
     public function getFiles($criterias = array())
     {
-        $repo = $this->entityManager->getRepository('BisonLabSakonninBundle:SakonninFile');
+        $repo = $this->entityManager->getRepository(SakonninFile::class);
 
         // There can be only one
         if (isset($criterias['fileid'])) {
@@ -267,7 +267,7 @@ class Files
 
     public function contextHasFiles($context)
     {
-        $repo = $this->entityManager->getRepository('BisonLabSakonninBundle:SakonninFileContext');
+        $repo = $this->entityManager->getRepository(SakonninFileContext::class);
         return $repo->contextHasFiles($context);
     }
 

@@ -111,14 +111,14 @@ trait CommonStuff
         if ($name instanceof MessageType)
             return $name;
         $em = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:MessageType');
+        $repo = $em->getRepository(MessageType::class);
         return $repo->findOneByName($name);
     }
 
     public function getMessageTypes($criterias)
     {
         $em = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:MessageType');
+        $repo = $em->getRepository(MessageType::class);
         if (isset($criterias['base_type'])) {
             return $repo->findBy(['base_type' => $criterias['base_type']]);
         }
@@ -147,13 +147,13 @@ trait CommonStuff
 
     public function getUserEntityManager()
     {
-        $user_class = $this->parameterBag->get('sakonnin.user')['class'];
+        $user_class = $this->parameterBag->get('sakonnin.user')['entity'];
         return $this->managerRegistry->getManagerForClass($user_class);
     }
 
     public function getUserRepository()
     {
-        $user_class = $this->parameterBag->get('sakonnin.user')['class'];
+        $user_class = $this->parameterBag->get('sakonnin.user')['entity'];
         return $this->getUserEntityManager()->getRepository($user_class);
     }
 }

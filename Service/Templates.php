@@ -34,11 +34,11 @@ class Templates
 
     public function getTemplate($name)
     {
-        $entityManager = $this->getDoctrineManager();
+        $em = $this->getDoctrineManager();
         if (is_numeric($name))
-            $template = $entityManager->getRepository('BisonLabSakonninBundle:SakonninTemplate')->find($name);
+            $template = $em->getRepository(SakonninTemplate::class)->find($name);
         else
-            $template = $entityManager->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findOneByName($name);
+            $template = $em->getRepository(SakonninTemplate::class)->findOneByName($name);
         return $template;
     }
 

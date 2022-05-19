@@ -64,7 +64,7 @@ class Messages
             }
 
             if (isset($data['message_type']) 
-                    && $message_type = $entityManager->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+                    && $message_type = $em->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            
             } else {
                 throw new \InvalidArgumentException("No message type found or set.");
@@ -95,7 +95,7 @@ class Messages
             }
 
             if (isset($data['in_reply_to'])) {
-                if (!$reply_to = $entityManager->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $data['in_reply_to']))) {
+                if (!$reply_to = $em->getRepository(Message::class)->findOneBy(array('message_id' => $data['in_reply_to']))) {
                     return false;
                 } else {
                     $message->setInReplyTo($reply_to);
@@ -189,7 +189,7 @@ class Messages
         if (isset($options['message']) && $options['message'] instanceof Message) {
              $message =  $options['message'];
         } elseif (isset($options['message_data']) && $data = $options['message_data']) {
-            if (isset($data['message_type']) && $message_type = $entityManager->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+            if (isset($data['message_type']) && $message_type = $em->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $data['message_type'] = $message_type;
             }
             $message = new Message($data);
@@ -204,7 +204,7 @@ class Messages
 
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $entityManager->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $em->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);
@@ -227,7 +227,7 @@ class Messages
         $message = new Message();
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $entityManager->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $em->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);
@@ -294,7 +294,7 @@ class Messages
     public function getMessages($criterias = array())
     {
         $entityManager = $this->getDoctrineManager();
-        $repo = $entityManager->getRepository('BisonLabSakonninBundle:Message');
+        $repo = $entityManager->getRepository(Message::class);
 
         // There can be only one
         if (isset($criterias['id'])) {
@@ -401,7 +401,7 @@ class Messages
     public function contextHasMessages($context, $with_contexts = false)
     {
         $entityManager = $this->getDoctrineManager();
-        $repo = $entityManager->getRepository('BisonLabSakonninBundle:MessageContext');
+        $repo = $entityManager->getRepository(MessageContext::class);
         return $repo->contextHasMessages($context, $with_contexts);
     }
 
