@@ -35,9 +35,9 @@ class Templates
     {
         $em = $this->getDoctrineManager();
         if (is_numeric($name))
-            $template = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->find($name);
+            $template = $em->getRepository(SakonninTemplate::class)->find($name);
         else
-            $template = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findOneByName($name);
+            $template = $em->getRepository(SakonninTemplate::class)->findOneByName($name);
         return $template;
     }
 

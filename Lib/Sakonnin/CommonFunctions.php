@@ -110,7 +110,7 @@ trait CommonFunctions
         $content_type = $options['content_type'] ?? "text/plain";
 
         $message->setMessageType(
-            $em->getRepository('BisonLabSakonninBundle:MessageType')
+            $em->getRepository(MessageType::class)
                   ->findOneByName($message_type)
         );
         $message->setContentType($content_type);

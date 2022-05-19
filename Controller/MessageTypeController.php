@@ -33,7 +33,7 @@ class MessageTypeController extends CommonController
     {
         $em = $this->getDoctrineManager();
 
-        $entities = $em->getRepository('BisonLabSakonninBundle:MessageType')->findAll();
+        $entities = $em->getRepository(MessageType::class)->findAll();
         $parents = $em->createQueryBuilder()
                   ->select('mt')
                   ->from('BisonLab\SakonninBundle\Entity\MessageType', 'mt')
@@ -124,21 +124,15 @@ class MessageTypeController extends CommonController
      *
      * @Route("/{id}", name="messagetype_show", methods={"GET"}, requirements={"id"="\d+"})
      */
-    public function showAction($id)
+    public function showAction(MessageType $messagetype)
     {
         $em = $this->getDoctrineManager();
 
-        $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find MessageType entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($messagetype->getid());
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/show.html.twig', array(
-            'entity'      => $entity,
+            'entity'      => $messagetype,
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -148,21 +142,14 @@ class MessageTypeController extends CommonController
      *
      * @Route("/{id}/edit", name="messagetype_edit", methods={"GET"})
      */
-    public function editAction($id)
+    public function editAction(MessageType $messagetype)
     {
-        $em = $this->getDoctrineManager();
-        $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find MessageType entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($messagetype);
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
-            'entity'      => $entity,
+            'entity'      => $messagetype,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
@@ -191,27 +178,22 @@ class MessageTypeController extends CommonController
      *
      * @Route("/{id}", name="messagetype_update", methods={"PUT"})
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, MessageType $messagetype)
     {
         $em = $this->getDoctrineManager();
-        $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find MessageType entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($messagetype->getId());
+        $editForm = $this->createEditForm($messagetype);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $em->flush();
-            return $this->redirectToRoute('messagetype_show', array('id' => $entity->getId()));
+            return $this->redirectToRoute('messagetype_show', array('id' => $messagetype->getId()));
         }
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
-            'entity'      => $entity,
+            'entity'      => $messagetype,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
@@ -222,20 +204,13 @@ class MessageTypeController extends CommonController
      *
      * @Route("/{id}", name="messagetype_delete", methods={"DELETE"})
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, $messagetype)
     {
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($messagetype->getId());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrineManager();
-            $entity = $em->getRepository('BisonLabSakonninBundle:MessageType')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find MessageType entity.');
-            }
-
-            $em->remove($entity);
+            $em->remove($messagetype);
             $em->flush();
         }
         return $this->redirectToRoute('messagetype');

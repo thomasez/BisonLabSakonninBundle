@@ -107,7 +107,7 @@ EOT
         $io = new SymfonyStyle($input, $output);
 
         $this->mt_repo = $this->entityManager
-                ->getRepository('BisonLabSakonninBundle:MessageType');
+                ->getRepository(MessageType::class);
 
         foreach ($this->message_types as $name => $type) {
             // Handling a parent.

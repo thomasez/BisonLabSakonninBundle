@@ -155,7 +155,7 @@ class Files
     public function getFiles($criterias = array())
     {
         $em   = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFile');
+        $repo = $em->getRepository(SakonninFile::class);
 
         // There can be only one
         if (isset($criterias['fileid'])) {
@@ -208,7 +208,7 @@ class Files
     public function contextHasFiles($context)
     {
         $em   = $this->getDoctrineManager();
-        $repo = $em->getRepository('BisonLabSakonninBundle:SakonninFileContext');
+        $repo = $em->getRepository(SakonninFileContext::class);
         return $repo->contextHasFiles($context);
     }
 

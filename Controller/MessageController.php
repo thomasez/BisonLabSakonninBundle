@@ -342,7 +342,7 @@ class MessageController extends CommonController
 
             $message_type = $data['message_type'] ?: "PM";
             $message->setMessageType(
-                $em->getRepository('BisonLabSakonninBundle:MessageType')
+                $em->getRepository(MessageType::class)
                     ->findOneByName($message_type)
             );
 
@@ -355,7 +355,7 @@ class MessageController extends CommonController
              * TODO: Maybe put the test in other places aswell?
              */
             if ($irt = $request->query->get('in_reply_to')) {
-                if (!$irt_msg = $em->getRepository('BisonLabSakonninBundle:Message')->findOneBy(array('message_id' => $irt)))
+                if (!$irt_msg = $em->getRepository(Message::class)->findOneBy(array('message_id' => $irt)))
                     throw $this->createAccessDeniedException('No or bad reply .');
                 if ($irt_msg->getTo() != $user->getId())
                     throw $this->createAccessDeniedException('No or bad reply .');
@@ -400,7 +400,7 @@ class MessageController extends CommonController
             }
             // Gotta do some security check. This is a hack, but it should
             // work..
-            if (isset($data['message_type']) && $message_type = $em->getRepository('BisonLabSakonninBundle:MessageType')->findOneByName($data['message_type'])) {
+            if (isset($data['message_type']) && $message_type = $em->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $message = new Message();
                 $message->setMessageType($message_type);
                 $this->denyAccessUnlessGranted('create', $message);
@@ -425,7 +425,7 @@ class MessageController extends CommonController
             if (!$message->getMessageType() && isset($data['message_type'])) {
                 $em = $this->getDoctrineManager();
                 $message->setMessageType(
-                    $em->getRepository('BisonLabSakonninBundle:MessageType')
+                    $em->getRepository(MessageType::class)
                         ->findOneByName($data['message_type'])
                 );
             }
@@ -533,7 +533,7 @@ class MessageController extends CommonController
         $em = $this->getDoctrineManager();
         $user = $this->getUser();
 
-        $repo = $em->getRepository('BisonLabSakonninBundle:Message');
+        $repo = $em->getRepository()Message::class;
         $messages = $this->sakonmin_messages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
@@ -554,12 +554,12 @@ class MessageController extends CommonController
             $em = $this->getDoctrineManager();
             if (is_numeric($message_type)) {
                 $message->setMessageType(
-                    $em->getRepository('BisonLabSakonninBundle:MessageType')
+                    $em->getRepository(MessageType::class)
                         ->find($message_type)
                 );
             } else {
                 $message->setMessageType(
-                    $em->getRepository('BisonLabSakonninBundle:MessageType')
+                    $em->getRepository(MessageType::class)
                         ->findOneByName($message_type)
                 );
             }
@@ -749,7 +749,7 @@ class MessageController extends CommonController
     private function _getMessage($message_id)
     {
         $em = $this->getDoctrineManager();
-        if (!$message = $em->getRepository('BisonLabSakonninBundle:Message')
+        if (!$message = $em->getRepository(Message::class)
                 ->findOneBy(array('message_id' => $message_id)))
             throw $this->createNotFoundException('Message not found');
         return $message;

@@ -85,7 +85,7 @@ EOT
 
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->mt_repo = $this->entityManager
-                ->getRepository('BisonLabSakonninBundle:MessageType');
+                ->getRepository(MessageType::class);
 
         while (($data = fgetcsv($handle, 1000, $this->delimiter)) !== FALSE) {
 

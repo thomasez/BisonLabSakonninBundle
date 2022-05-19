@@ -26,7 +26,7 @@ class SakonninTemplateController extends CommonController
     {
         $em = $this->getDoctrineManager();
 
-        $sakonninTemplates = $em->getRepository('BisonLabSakonninBundle:SakonninTemplate')->findAll();
+        $sakonninTemplates = $em->getRepository(SakonninTemplate::class)->findAll();
 
         return $this->render('@BisonLabSakonnin/SakonninTemplate/index.html.twig',
             array( 'sakonninTemplates' => $sakonninTemplates,));
