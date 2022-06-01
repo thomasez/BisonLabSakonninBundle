@@ -306,7 +306,7 @@ class Messages
             $external_id = $criterias['context']['external_id'];
             $query = $em->createQueryBuilder();
             $query->select('m')
-                ->from('BisonLabSakonninBundle:Message', 'm')
+                ->from(Message::class, 'm')
                 ->leftJoin('m.contexts', 'mc')
                 ->where("mc.system = :system")
                 ->andWhere("mc.object_name = :object_name")
