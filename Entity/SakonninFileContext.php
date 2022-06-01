@@ -74,6 +74,11 @@ class SakonninFileContext
         return "BisonLabSakonninBundle:SakonninFile";
     }
 
+    public function getOwnerEntityClass()
+    {
+        return SakonninFile::class;
+    }
+
     public function isDeleteable()
     {
         return true;

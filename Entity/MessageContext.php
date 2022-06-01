@@ -84,6 +84,11 @@ class MessageContext
         return "BisonLabSakonninBundle:Message";
     }
 
+    public function getOwnerEntityClass()
+    {
+        return Message::class;
+    }
+
     public function isDeleteable()
     {
         return true;
