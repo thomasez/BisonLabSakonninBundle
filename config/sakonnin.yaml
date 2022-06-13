@@ -1,7 +1,7 @@
 parameters:
     sakonnin.user:
         class: BisonLabUserBundle:User
-        entity: \BisonLab\UserBundle\Entity\User
+        entity: BisonLab\UserBundle\Entity\User
 
     sakonnin.function_factories:
         - BisonLab\SakonninBundle\Lib\Sakonnin\SakonninFunctions
