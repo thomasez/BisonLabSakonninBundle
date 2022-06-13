@@ -66,14 +66,14 @@ class MessageTypeController extends CommonController
     }
 
     /**
-     * Creates a new MessageType entity.
+     * Creates a new MessageType.
      *
      * @Route("/", name="messagetype_create", methods={"POST"})
      */
     public function createAction(Request $request)
     {
-        $entity = new MessageType();
-        $form = $this->createCreateForm($entity);
+        $messagetype = new MessageType();
+        $form = $this->createCreateForm($messagetype);
         $form->handleRequest($request);
         $data = $form->getData();
         if (!$data->getParent() && !isset($request->request->get($form->getName())['create_group'])) {
@@ -82,28 +82,28 @@ class MessageTypeController extends CommonController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrineManager();
-            $em->persist($entity);
+            $em->persist($messagetype);
             $em->flush();
-            return $this->redirectToRoute('messagetype_show', array('id' => $entity->getId()));
+            return $this->redirectToRoute('messagetype_show', array('id' => $messagetype->getId()));
         }
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
-            'entity' => $entity,
+            'entity' => $messagetype,
             'form'   => $form->createView(),
         ));
     }
 
     /**
-     * Creates a form to create a MessageType entity.
+     * Creates a form to create a MessageType.
      *
-     * @param MessageType $entity The entity
+     * @param MessageType $messagetype
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(MessageType $entity)
+    private function createCreateForm(MessageType $messagetype)
     {
-        $form = $this->createForm(MessageTypeType::class, $entity, array(
+        $form = $this->createForm(MessageTypeType::class, $messagetype, array(
             'action' => $this->generateUrl('messagetype_create'),
             'method' => 'POST',
         ));
@@ -115,24 +115,24 @@ class MessageTypeController extends CommonController
     }
 
     /**
-     * Displays a form to create a new MessageType entity.
+     * Displays a form to create a new MessageType.
      *
      * @Route("/new", name="messagetype_new", methods={"GET"})
      */
     public function newAction()
     {
-        $entity = new MessageType();
-        $form   = $this->createCreateForm($entity);
+        $messagetype = new MessageType();
+        $form   = $this->createCreateForm($messagetype);
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
-            'entity' => $entity,
+            'entity' => $messagetype,
             'edit_form'   => $form->createView(),
         ));
     }
 
     /**
-     * Finds and displays a MessageType entity.
+     * Finds and displays a MessageType.
      *
      * @Route("/{id}", name="messagetype_show", methods={"GET"}, requirements={"id"="\d+"})
      */
@@ -157,7 +157,7 @@ class MessageTypeController extends CommonController
     public function editAction(MessageType $messagetype)
     {
         $editForm = $this->createEditForm($messagetype);
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($messagetype->getId());
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
@@ -168,17 +168,17 @@ class MessageTypeController extends CommonController
     }
 
     /**
-    * Creates a form to edit a MessageType entity.
+    * Creates a form to edit a MessageType.
     *
     * @param MessageType $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(MessageType $entity)
+    private function createEditForm(MessageType $messagetype)
     {
-        $form = $this->createForm(MessageTypeType::class, $entity, array(
-            'action' => $this->generateUrl('messagetype_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
+        $form = $this->createForm(MessageTypeType::class, $messagetype, array(
+            'action' => $this->generateUrl('messagetype_update',
+                ['id' => $messagetype->getId()]),
         ));
         $this->_addFunctionsToForm($form);
 
@@ -186,9 +186,9 @@ class MessageTypeController extends CommonController
     }
 
     /**
-     * Edits an existing MessageType entity.
+     * Edits an existing MessageType.
      *
-     * @Route("/{id}", name="messagetype_update", methods={"PUT"})
+     * @Route("/{id}/update", name="messagetype_update", methods={"POST"})
      */
     public function updateAction(Request $request, MessageType $messagetype)
     {
@@ -212,7 +212,7 @@ class MessageTypeController extends CommonController
     }
 
     /**
-     * Deletes a MessageType entity.
+     * Deletes a MessageType.
      *
      * @Route("/{id}", name="messagetype_delete", methods={"DELETE"})
      */
@@ -229,7 +229,7 @@ class MessageTypeController extends CommonController
     }
 
     /**
-     * Creates a form to delete a MessageType entity by id.
+     * Creates a form to delete a MessageType by id.
      *
      * @param mixed $id The entity id
      *

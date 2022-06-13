@@ -2,6 +2,10 @@
 
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
+use BisonLab\SakonninBundle\Entity\Message;
+use BisonLab\SakonninBundle\Entity\MessageType;
+use Symfony\Component\Mime\Email;
+
 /*
  * Used services:
  * 
@@ -105,24 +109,20 @@ trait CommonFunctions
         $message = new Message();
 
         $message_type = $options['message_type'] ?? "Notification";
-        $content_type = $options['content_type'] ?? "text/plain";
 
-        $message->setMessageType(
-            $this->sakonninMessages->getDoctrineManager()->getRepository('BisonLabSakonninBundle:MessageType')
-                  ->findOneByName($message_type)
-        );
-        $message->setContentType($content_type);
+        $message->setMessageType($this->sakonninMessages
+            ->getMessageType($message_type));
+        // I'll let it contain HTML. This is a security risk if the message
+        // contains the wrong HTML or includes something from the outside.
+        $message->setContentType('text/html');
 
-        $message->setTo($to->getId());
+        $message->setTo($to);
         $message->setToType('INTERNAL');
         $message->setBody($body);
 
         $from = $this->sakonninMessages->getLoggedInUser();
-        $message->setFrom($from->getId());
+        $message->setFrom($from);
         $message->setFromType('INTERNAL');
-        // I'll let it contain HTML. This is a security risk if the message
-        // contains the wrong HTML or includes something from the outside.
-        $message->setContentType('text/html');
 
         $this->sakonninMessages->postMessage($message);
 

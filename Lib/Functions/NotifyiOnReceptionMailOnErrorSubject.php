@@ -45,7 +45,7 @@ class NotifyiOnReceptionMailOnErrorSubject
         $pm = 'You got a message<br/>Subject: ' . $message->getSubject();
 
         $url = $this->router->generate('message_show',
-            array('meessage_id' => $message->getMessageId()), true);
+            array('message_id' => $message->getMessageId()), true);
         $pm .= '<br/><a href="' . $url . '">Link to the message</a>';
 
         foreach ($receivers as $receiver) {

@@ -9,6 +9,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\SakonninBundle\Entity\Message;
@@ -146,6 +147,15 @@ class Messages
             if (empty($toers))
                 return true;
             foreach ($toers as $toer) {
+                // It's the state for the receivers, not sender as long as
+                // this is an INTERAL to-type.
+                $message->setFirstState();
+                // A user is a user.
+                if ($toer instanceof UserInterface) {
+                    $message->addReceiver($toer);
+                    $message->setTo($toer->getId());
+                    continue;
+                }
                 // In case of no userid, but username
                 // (Gotta consider some more automagic handling of all this.)
                 // (And is_numeric is kinda wrong since a user can be named
@@ -157,9 +167,6 @@ class Messages
                         throw new \InvalidArgumentException("No user with that username.(" . $toer . ")");
                     }
                 }
-                // It's the state for the receivers, not sender as long as
-                // this is an INTERAL to-type.
-                $message->setFirstState();
                 $message->addReceiver($this->getUserFromUserId($toer));
             }
             // Add the To-user object as a receiver.
@@ -236,7 +243,13 @@ class Messages
             }
         }
 
-        $form = $this->createCreatePmForm($message);
+        $form = $this->formBuilder
+                ->create(\BisonLab\SakonninBundle\Form\PmType::class,
+            $message, array(
+                'action' => $this->router->generate('pm_create'),
+                'method' => 'POST',
+        ));
+        $form->add('submit', SubmitType::class, array('label' => 'Send'));
 
         // You may wonder why. It's beause this one is called from twig
         // templates as well as the message controller (Which adds stuff).
@@ -289,7 +302,10 @@ class Messages
     public function getMessagesForUser($user, $criterias = array())
     {
         $criterias['userid'] = $user->getId();
-        $criterias['username'] = $user->getUsername();
+        if (method_exists($user, 'getUserName'))
+            $criterias['username'] = $user->getUsername();
+        else
+            $criterias['username'] = $user->getUserIdentifier();
         return $this->getMessages($criterias);
     }
 
@@ -313,7 +329,7 @@ class Messages
             $external_id = $criterias['context']['external_id'];
             $query = $entityManager->createQueryBuilder();
             $query->select('m')
-                ->from('BisonLabSakonninBundle:Message', 'm')
+                ->from(Message::class, 'm')
                 ->leftJoin('m.contexts', 'mc')
                 ->where("mc.system = :system")
                 ->andWhere("mc.object_name = :object_name")

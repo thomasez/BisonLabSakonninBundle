@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\SakonninFile;
+use BisonLab\ContextBundle\Service\ExternalRetriever;
 
 /**
  * Functions service. This handles the callback and forward functions, both
@@ -17,14 +18,16 @@ class Functions
 {
     private $locator;
     private $parameterBag;
+    private $external_retriever;
 
     private $forward_functions;
     private $callback_functions;
 
-    public function __construct(ServiceLocator $locator, ParameterBagInterface $parameterBag)
+    public function __construct(ServiceLocator $locator, ParameterBagInterface $parameterBag, ExternalRetriever $external_retriever)
     {
         $this->locator = $locator;
         $this->parameterBag = $parameterBag;
+        $this->external_retriever = $external_retriever;
 
         foreach ($this->locator->getProvidedServices() as $sclass) {
             $sf = $this->locator->get($sclass);
@@ -102,11 +105,11 @@ class Functions
         $sfunc->setSmsHandler($options['smsHandler'] ?? null);
 
         // Add more if you need to.
-        $options['user']       = $user;
         $options['message']    = $message;
         $options['attributes'] = $attributes;
         $options['function']   = $function;
         $options['config']     = $config;
+        $options['retriever']  = $this->external_retriever;
         return $sfunc->execute($options);
     }
 

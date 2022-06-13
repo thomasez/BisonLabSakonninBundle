@@ -31,9 +31,12 @@ function checkUnread() {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
           if (cont['amount'] > 0) {
-              $( "#message_menu" ).children().css("color","red");
-              $( "#message_menu .dropdown-toggle" ).append("("+cont['amount']+")");
-              $( "#menu_unread" ).show();
+                $( "#message_menu" ).children().css("color","red");
+                $( "#message_menu .dropdown-toggle" ).append("("+cont['amount']+")");
+                $( "#menu_unread" ).show();
+                /* In case of another way to show unreads */
+                $( "#message_unread_counter" ).children().css("color","red");
+                $( "#message_unread_counter" ).text(cont['amount']);
           } else {
             setTimeout ( "checkUnread()", 60000 );
           }

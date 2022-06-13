@@ -15,17 +15,17 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 trait CommonStuff 
 {
     private $entityManager;
-    private $sakonmin_messages;
-    private $sakonmin_functions;
+    private $sakonninMessages;
+    private $sakonninFunctions;
 
     public function setSakonninMessages($sm)
     {
-        $this->sakonmin_messages = $sm;
+        $this->sakonninMessages = $sm;
     }
 
     public function setSakonninFunctions($sf)
     {
-        $this->sakonmin_functions = $sf;
+        $this->sakonninFunctions = $sf;
     }
 
     public function getLoggedInUser()
@@ -64,7 +64,10 @@ trait CommonStuff
         if (!is_numeric($userid)) return $userid;
         $user = $this->getUserFromUserId($userid);
         if (!$user) return $userid;
-        return $user->getUserName();;
+        if (method_exists($user, 'getUserName'))
+            return $user->getUserName();
+        else
+            return $user->getUserIdentifier();
     }
 
     public function getEmailFromUser($user = null)

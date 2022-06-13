@@ -153,7 +153,7 @@ class MessageController extends CommonController
     }
 
     /**
-     * Finds and displays a Message entity.
+     * Finds and displays a Message.
      *
      * @Route("/{message_id}", name="message_show", methods={"GET"}, requirements={"message_id"="\w{13}"})
      */
@@ -188,7 +188,7 @@ class MessageController extends CommonController
     }
 
     /**
-     * Displays a form to edit an existing person entity.
+     * Displays a form to edit an existing message.
      *
      * @Route("/{message_id}/edit", name="message_edit", methods={"GET", "POST"})
      */
@@ -259,7 +259,7 @@ class MessageController extends CommonController
     }
 
     /**
-     * Displays a form to edit an existing person entity.
+     * Displays a form to edit an existing message.
      *
      * @Route("/{message_id}/state/{state}", name="message_state", methods={"POST"})
      */
@@ -454,7 +454,7 @@ class MessageController extends CommonController
     }
 
     /**
-     * Deletes a message entity.
+     * Deletes a message.
      *
      * @Route("/{message_id}", name="message_delete", methods={"DELETE"}, requirements={"message_id"="\w{13}"})
      */
@@ -529,7 +529,7 @@ class MessageController extends CommonController
      */
     public function checkUnreadAction(Request $request, $access)
     {
-        $messages = $this->sakonmin_messages
+        $messages = $this->sakonninMessages
             ->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
@@ -538,7 +538,7 @@ class MessageController extends CommonController
     }
 
     /**
-     * Creates a new person entity.
+     * Creates a new message.
      *
      * @Route("/new", name="message_new", methods={"GET", "POST"})
      */
@@ -665,9 +665,9 @@ class MessageController extends CommonController
     }
 
     /**
-     * Creates a form to create a Message entity.
+     * Creates a form to create a Message.
      *
-     * @param Message $message The entity
+     * @param Message $message
      *
      * @return \Symfony\Component\Form\Form The form
      */
@@ -695,20 +695,10 @@ class MessageController extends CommonController
         return $form;
     }
 
-    public function createCreatePmForm(Message $entity)
-    {
-        $form = $this->createForm(\BisonLab\SakonninBundle\Form\PmType::class, $entity, array(
-            'action' => $this->generateUrl('pm_create'),
-            'method' => 'POST',
-        ));
-        $form->add('submit', SubmitType::class, array('label' => 'Send'));
-        return $form;
-    }
-
     /**
-     * Creates an Edit form to create a Message entity.
+     * Creates an Edit form to create a Message.
      *
-     * @param MessageType $entity The entity
+     * @param MessageType $entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
@@ -724,9 +714,9 @@ class MessageController extends CommonController
     }
 
     /**
-     * Creates a form to delete a message entity.
+     * Creates a form to delete a message.
      *
-     * @param Message $message The message entity
+     * @param Message $message The message
      *
      * @return \Symfony\Component\Form\Form The form
      */

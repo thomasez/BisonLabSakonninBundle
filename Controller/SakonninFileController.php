@@ -63,7 +63,7 @@ class SakonninFileController extends CommonController
     }
 
     /**
-     * Creates a new file entity.
+     * Creates a new file.
      *
      * @Route("/new", name="sakonninfile_new", methods={"GET", "POST"})
      */
@@ -139,7 +139,7 @@ class SakonninFileController extends CommonController
     }
 
     /**
-     * Finds and displays a file entity.
+     * Finds and displays a file.
      *
      * @Route("/{file_id}", name="sakonninfile_show", methods={"GET"}, requirements={"file_id"="\w{13}"})
      */
@@ -210,7 +210,7 @@ class SakonninFileController extends CommonController
     }
 
     /**
-     * Displays a form to edit an existing file entity.
+     * Displays a form to edit an existing file.
      *
      * @Route("/{file_id}/edit", name="sakonninfile_edit", methods={"GET", "POST"})
      */
@@ -260,7 +260,7 @@ class SakonninFileController extends CommonController
     }
 
     /**
-     * Deletes a file entity.
+     * Deletes a file.
      *
      * @Route("/{file_id}/delete", name="sakonninfile_delete", methods={"POST", "DELETE"})
      */
@@ -283,9 +283,9 @@ class SakonninFileController extends CommonController
     }
 
     /**
-     * Creates a form to delete a file entity.
+     * Creates a form to delete a file.
      *
-     * @param SakonninFile $sfile The file entity
+     * @param SakonninFile $sfile The file
      *
      * @return \Symfony\Component\Form\Form The form
      */
