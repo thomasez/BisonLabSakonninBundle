@@ -4,15 +4,15 @@ services:
         autoconfigure: true
 
     BisonLab\SakonninBundle\:
-        resource: '../'
+        resource: '../src/'
         exclude:
-            - '../DependencyInjection/'
-            - '../Lib/'
+            - '../src/DependencyInjection/'
+            - '../src/Lib/'
 
     BisonLab\SakonninBundle\Lib\Functions\:
-        resource: '../Lib/Functions/'
+        resource: '../src/Lib/Functions/'
         exclude:
-            - '../Lib/Functions/CommonFunctions.php'
+            - '../src/Lib/Functions/CommonFunctions.php'
         tags:
             - { name: 'sakonnin.functions' , index_by: 'key' }
 
@@ -20,7 +20,7 @@ services:
         arguments: [!tagged_locator { tag: 'sakonnin.functions', index_by: 'key' }]
 
     BisonLab\SakonninBundle\Lib\SmsHandler\:
-        resource: '../Lib/SmsHandler/'
+        resource: '../src/Lib/SmsHandler/'
         tags:
             - { name: 'sakonnin.smshandlers' , index_by: 'key' }
 
