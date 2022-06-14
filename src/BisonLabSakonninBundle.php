@@ -7,7 +7,15 @@ use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 
 class BisonLabSakonninBundle extends Bundle
 {
-    public function __toString() { return 'BisonLabSakonninBundle'; }
+    public function __toString()
+    {
+        return 'BisonLabSakonninBundle';
+    }
+
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
 
     public function boot()
     {
