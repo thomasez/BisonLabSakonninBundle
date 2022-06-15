@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,11 +18,13 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
+#[AsCommand(
+    name: 'sakonnin:messagetype:load',
+    description: 'Import message types.'
+)]
 class SakonninImportMessageTypesCommand extends Command
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
-
-    protected static $defaultName = 'sakonnin:messagetype:load';
 
     private $verbose = true;
     private $managerRegistry;
@@ -31,7 +34,6 @@ class SakonninImportMessageTypesCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Import message types.')
             ->addOption('delimiter', '', InputOption::VALUE_REQUIRED, 'Field delimiter, defaults to ; semicolon')
             ->addOption('file', '', InputOption::VALUE_REQUIRED, 'Need a file')
             ->setHelp(<<<EOT

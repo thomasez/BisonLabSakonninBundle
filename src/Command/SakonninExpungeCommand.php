@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,11 +19,13 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
 
+#[AsCommand(
+    name: 'sakonnin:expunge',
+    description: 'Use the expunge days value in Message Type to delete older messages..'
+)]
 class SakonninExpungeCommand extends Command
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
-
-    protected static $defaultName = 'sakonnin:expunge';
 
     private $verbose = true;
     private $managerRegistry;
@@ -32,7 +35,6 @@ class SakonninExpungeCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Use the expunge days value in Message Type to delete older messages..')
            ->addOption('doit', '', InputOption::VALUE_REQUIRED, 'And you have to set it with --doit=yes to make it happen')
            ->setHelp(<<<EOT
 This is for cleaning up old messages based on the Expunge Days value on the Message Types and "Expire at" on messages if it's set.

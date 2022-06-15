@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,11 +19,13 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
+#[AsCommand(
+    name: 'sakonnin:insert-basedata',
+    description: 'Inserts or updates the data we need for a working Sakonnin.',
+)]
 class SakonninInsertBaseDataCommand extends Command
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
-
-    protected static $defaultName = 'sakonnin:insert-basedata';
 
     private $verbose = true;
     private $managerRegistry;
@@ -84,7 +87,6 @@ class SakonninInsertBaseDataCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Inserts or updates the data we need for a working Sakonnin.')
             ->setHelp(<<<EOT
 Inserts or updates the data we need for a working Sakonnin.
 
