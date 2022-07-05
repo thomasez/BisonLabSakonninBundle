@@ -67,7 +67,7 @@ class Messages
             }
 
             if (isset($data['message_type']) 
-                    && $message_type = $em->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
+                    && $message_type = $entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            
             } else {
                 throw new \InvalidArgumentException("No message type found or set.");
@@ -98,7 +98,7 @@ class Messages
             }
 
             if (isset($data['in_reply_to'])) {
-                if (!$reply_to = $em->getRepository(Message::class)->findOneBy(array('message_id' => $data['in_reply_to']))) {
+                if (!$reply_to = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $data['in_reply_to']))) {
                     return false;
                 } else {
                     $message->setInReplyTo($reply_to);
