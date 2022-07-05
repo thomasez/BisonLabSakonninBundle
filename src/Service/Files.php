@@ -86,7 +86,6 @@ class Files
         // an id any more.
         $this->entityManager->persist($file);
         $this->entityManager->flush();
-        // $this->entityManager->persist($file);
         if (isset($context_data)
             && isset($context_data['system'])
             && isset($context_data['object_name'])
