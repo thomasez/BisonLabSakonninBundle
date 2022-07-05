@@ -29,7 +29,6 @@ class MessageController extends CommonController
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $managerRegistry;
-    private $entityManager;
     private $sakonninMessages;
 
     public function __construct(ManagerRegistry $managerRegistry, SakonninMessages $sakonninMessages, SerializerInterface $serializer)

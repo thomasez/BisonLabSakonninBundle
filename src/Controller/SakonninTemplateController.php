@@ -5,6 +5,7 @@ namespace BisonLab\SakonninBundle\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\SakonninTemplate;
@@ -17,6 +18,13 @@ use BisonLab\SakonninBundle\Entity\SakonninTemplate;
 class SakonninTemplateController extends CommonController
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
+
+    private $managerRegistry;
+
+    public function __construct(ManagerRegistry $managerRegistry)
+    {
+        $this->managerRegistry = $managerRegistry;
+    }
 
     /**
      * Lists all sakonninTemplate entities.
