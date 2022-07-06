@@ -26,7 +26,12 @@
 
     <ul>
         <li>
-            <a  href="{{ path('sakonnintemplate_edit', { 'id': sakonninTemplate.id }) }}">
+            <a href="{{ path('sakonnintemplate_index') }}">
+            <button>Template List</button>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('sakonnintemplate_edit', { 'id': sakonninTemplate.id }) }}">
             <button>Edit</button>
             </a>
         </li>

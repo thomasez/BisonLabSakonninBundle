@@ -111,7 +111,7 @@ class SakonninTemplateController extends CommonController
     /**
      * Deletes a sakonninTemplate entity.
      *
-     * @Route("/{id}", name="sakonnintemplate_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="sakonnintemplate_delete", methods={"POST", "DELETE"})
      */
     public function deleteAction(Request $request, SakonninTemplate $sakonninTemplate)
     {

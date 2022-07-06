@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * SakonninTemplate
  *
- * @ORM\Table(name="sakonnin_template")
+ * @ORM\Table(name="sakonnin_template", uniqueConstraints={@ORM\UniqueConstraint(name="sakonnin_template_tuple_idx", columns={"name", "lang_code"})})
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninTemplateRepository")
  */
 class SakonninTemplate
@@ -24,7 +24,7 @@ class SakonninTemplate
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=50, unique=true)
+     * @ORM\Column(name="name", type="string", length=50)
      */
     private $name;
 
