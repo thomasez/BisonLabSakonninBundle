@@ -714,4 +714,9 @@ class MessageType
             return false;
         return ExternalEntityConfig::getBaseTypes()[$bt]['editable'];
     }
+
+    public function isDeleteable()
+    {
+        return $this->getMessages()->count() == 0 && $this->getChildren() == 0;
+    }
 }

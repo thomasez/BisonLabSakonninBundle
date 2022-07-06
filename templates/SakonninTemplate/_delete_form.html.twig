@@ -1,0 +1,4 @@
+<form id="stDeleteForm" method="post" action="{{ path('sakonnintemplate_delete', {'id': sakonninTemplate.id}) }}" onsubmit="return confirm('Are you sure you want to delete this Template?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sakonninTemplate.id) }}">
+    <input type="submit" value="Delete Template">
+</form>

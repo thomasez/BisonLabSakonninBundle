@@ -74,12 +74,9 @@ class SakonninTemplateController extends CommonController
      */
     public function showAction(SakonninTemplate $sakonninTemplate)
     {
-        $deleteForm = $this->createDeleteForm($sakonninTemplate);
-
         return $this->render('@BisonLabSakonnin/SakonninTemplate/show.html.twig',
             array(
             'sakonninTemplate' => $sakonninTemplate,
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 
@@ -104,7 +101,6 @@ class SakonninTemplateController extends CommonController
             array(
                 'sakonninTemplate' => $sakonninTemplate,
                 'edit_form' => $editForm->createView(),
-                'delete_form' => $deleteForm->createView(),
         ));
     }
 
@@ -115,31 +111,12 @@ class SakonninTemplateController extends CommonController
      */
     public function deleteAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
-        $form = $this->createDeleteForm($sakonninTemplate);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($this->isCsrfTokenValid('delete'.$sakonninTemplate->getId(), $request->request->get('_token')) && $sakonninTemplate->isDeleteable()) {
             $entityManager = $this->getDoctrineManager();
             $entityManager->remove($sakonninTemplate);
             $entityManager->flush();
+            return $this->redirectToRoute('sakonnintemplate_index');
         }
-
-        return $this->redirectToRoute('sakonnintemplate_index');
-    }
-
-    /**
-     * Creates a form to delete a sakonninTemplate entity.
-     *
-     * @param SakonninTemplate $sakonninTemplate The sakonninTemplate entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(SakonninTemplate $sakonninTemplate)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('sakonnintemplate_delete', array('id' => $sakonninTemplate->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
+        return $this->redirectToRoute('sakonnintemplate_show', array('id' => $sakonninTemplate->getId()));
     }
 }

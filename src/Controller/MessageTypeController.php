@@ -127,7 +127,7 @@ class MessageTypeController extends CommonController
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
             'entity' => $messagetype,
-            'edit_form'   => $form->createView(),
+            'edit_form' => $form->createView(),
         ));
     }
 
@@ -140,12 +140,9 @@ class MessageTypeController extends CommonController
     {
         $em = $this->getDoctrineManager();
 
-        $deleteForm = $this->createDeleteForm($messagetype->getid());
-
         return $this->render(
             '@BisonLabSakonnin/MessageType/show.html.twig', array(
-            'entity'      => $messagetype,
-            'delete_form' => $deleteForm->createView(),
+            'entity' => $messagetype,
         ));
     }
 
@@ -157,13 +154,11 @@ class MessageTypeController extends CommonController
     public function editAction(MessageType $messagetype)
     {
         $editForm = $this->createEditForm($messagetype);
-        $deleteForm = $this->createDeleteForm($messagetype->getId());
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
             'entity'      => $messagetype,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 
@@ -194,7 +189,6 @@ class MessageTypeController extends CommonController
     {
         $em = $this->getDoctrineManager();
 
-        $deleteForm = $this->createDeleteForm($messagetype->getId());
         $editForm = $this->createEditForm($messagetype);
         $editForm->handleRequest($request);
 
@@ -207,41 +201,24 @@ class MessageTypeController extends CommonController
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
             'entity'      => $messagetype,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
      * Deletes a MessageType.
      *
-     * @Route("/{id}", name="messagetype_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="messagetype_delete", methods={"POST"})
      */
     public function deleteAction(Request $request, $messagetype)
     {
-        $form = $this->createDeleteForm($messagetype->getId());
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->remove($messagetype);
-            $em->flush();
+        if ($this->isCsrfTokenValid('delete'.$messagetype->getId(), $request->request->get('_token')) && $messagetype->isDeleteable()) {
+            $entityManager = $this->getDoctrineManager();
+            $entityManager->remove($messagetype);
+            $entityManager->flush();
+            return $this->redirectToRoute('messagetype');
         }
-        return $this->redirectToRoute('messagetype');
-    }
 
-    /**
-     * Creates a form to delete a MessageType by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('messagetype_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
+        return $this->redirectToRoute('messagetype_show', array('id' => $messagetype->getId()));
     }
 
     private function _addFunctionsToForm(&$form)

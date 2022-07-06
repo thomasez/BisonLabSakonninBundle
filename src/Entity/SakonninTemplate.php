@@ -193,6 +193,11 @@ class SakonninTemplate
         return $this->message_types;
     }
 
+    public function isDeleteable()
+    {
+        return $this->getMessageTypes()->count() == 0;
+    }
+
     public function __toString()
     {
         return $this->getName();

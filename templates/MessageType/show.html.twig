@@ -92,10 +92,8 @@
         </tbody>
     </table>
     <a class="btn btn-primary" href="{{ path('messagetype_edit', { 'id': entity.id }) }}">Edit</a><br>
-    {{ form_start(delete_form) }}
-    {{ form_errors(delete_form) }}
-    {{ form_widget(delete_form) }}
-    <button type="submit" class="btn btn-danger">Delete</button>
-    {{ form_end(delete_form) }}
+    {% if entity.deleteable %}
+    {{ include('@BisonLabSakonnin/MessageType/_delete_form.html.twig') }}
+    {% endif %}
     <a class="btn btn-primary" href="{{ path('messagetype') }}">Back to list</a><br>
 {% endblock %}

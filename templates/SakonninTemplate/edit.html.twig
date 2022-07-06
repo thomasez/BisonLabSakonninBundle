@@ -10,7 +10,7 @@
     <a  href="{{ path('sakonnintemplate_show', { 'id': sakonninTemplate.id }) }}">
     <button>Cancel</button>
     </a>
-    {{ form_start(delete_form) }}
-        <input type="submit" value="Delete">
-    {{ form_end(delete_form) }}
+    {% if sakonninTemplate.deleteable %}
+    {{ include('@BisonLabSakonnin/SakonninTemplate/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}
