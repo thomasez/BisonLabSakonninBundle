@@ -87,7 +87,6 @@ class SakonninTemplateController extends CommonController
      */
     public function editAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
-        $deleteForm = $this->createDeleteForm($sakonninTemplate);
         $editForm = $this->createForm('BisonLab\SakonninBundle\Form\SakonninTemplateType', $sakonninTemplate);
         $editForm->handleRequest($request);
 

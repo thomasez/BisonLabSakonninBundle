@@ -6,6 +6,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\StringLoaderExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFilter;
@@ -25,21 +27,36 @@ class Templates
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $managerRegistry;
-
-    public function __construct(ManagerRegistry $managerRegistry)
-    {
-        $this->managerRegistry = $managerRegistry;
+    public function __construct(
+        private ManagerRegistry $managerRegistry,
+        private ParameterBagInterface $parameterBag,
+        private TranslatorInterface $translator
+    ) {
     }
 
     public function getTemplate($name)
     {
         $em = $this->getDoctrineManager();
+        // Just the id, ok.
         if (is_numeric($name))
-            $template = $em->getRepository(SakonninTemplate::class)->find($name);
-        else
-            $template = $em->getRepository(SakonninTemplate::class)->findOneByName($name);
-        return $template;
+            return $em->getRepository(SakonninTemplate::class)->find($name);
+
+        // Attempt #1
+        $locale = $this->translator->getLocale();
+        if ($template = $em->getRepository(SakonninTemplate::class)->findOneBy(
+            ['name' => $name, 'lang_code' => $locale]))
+                return $template;
+
+        // Attempt #2 - Fallback
+        foreach ($this->translator->getFallbackLocales() as $fb) {
+            if ($template = $em->getRepository(SakonninTemplate::class)
+                ->findOneBy(['name' => $name, 'lang_code' => $fb]))
+                    return $template;
+        }
+
+        // Whatever!
+        return $em->getRepository(SakonninTemplate::class)->findOneBy(
+            ['name' => $name]);
     }
 
     /*
