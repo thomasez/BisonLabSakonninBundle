@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
+use BisonLab\SakonninBundle\Entity\Message;
 
 /**
  * Imports message types. Either for fixtures or just install for prod.
