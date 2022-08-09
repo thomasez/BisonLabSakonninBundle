@@ -11,13 +11,7 @@ class NotifyiOnReceptionMailOnErrorSubject
 {
     use CommonFunctions;
 
-    protected $container;
     protected $router;
-
-    public function __construct($container, $options = array())
-    {
-        $this->container = $container;
-    }
 
     public function execute($options = array())
     {

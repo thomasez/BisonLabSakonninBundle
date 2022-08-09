@@ -10,11 +10,6 @@ class Broadcast
 {
     use CommonFunctions;
 
-    public function __construct($container, $options = array())
-    {
-        $this->container = $container;
-    }
-
     public function execute($options = array())
     {
         $message = $options['message'];
