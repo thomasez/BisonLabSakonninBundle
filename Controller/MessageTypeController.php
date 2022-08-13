@@ -145,7 +145,7 @@ class MessageTypeController extends CommonController
     public function editAction(MessageType $messagetype)
     {
         $editForm = $this->createEditForm($messagetype);
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($messagetype->getId());
 
         return $this->render(
             '@BisonLabSakonnin/MessageType/edit.html.twig', array(
