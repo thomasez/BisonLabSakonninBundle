@@ -8,6 +8,8 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MessageIDValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
+use BisonLab\SakonninBundle\Entity\MessageType;
+
 /*
  */
 
