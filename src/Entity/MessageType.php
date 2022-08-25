@@ -717,6 +717,6 @@ class MessageType
 
     public function isDeleteable()
     {
-        return $this->getMessages()->count() == 0 && $this->getChildren() == 0;
+        return $this->getMessages()->count() == 0 && $this->getChildren()->count() == 0;
     }
 }
