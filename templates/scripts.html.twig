@@ -199,7 +199,7 @@ function submitSakonninFileForm(formname = '', reload_after_post = true) {
     return false;
 }
 
-function setStateOnSakonninMessage(message_id, state, hide = false) {
+function setStateOnSakonninMessage(message_id, state, hide = true) {
     cheat_url = "{{ path('message_state', { 'message_id': 'xxxxxxxxxxxxx', 'state': 'NONE', 'access': 'ajax' }) }}";
     c_url = cheat_url.replace("xxxxxxxxxxxxx", message_id);
     url = c_url.replace("NONE", state);
@@ -211,7 +211,7 @@ function setStateOnSakonninMessage(message_id, state, hide = false) {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            if (hide || state == "DELETED" || state == "ARCHIVED" || state == "READ" ) {
+            if (hide) {
                 $('#sakonninmessage_' + message_id).remove();
             }
       }).fail(function(xhr, status, error) {
