@@ -414,7 +414,8 @@ class MessageController extends CommonController
         }
 
         $data = $request->request->all();
-        $form = $this->sakonninMessages->getCreateForm($data);
+        if (!$form = $this->sakonninMessages->getCreateForm($data))
+            return $this->returnErrorResponse("Message create Error, Bad data", 400);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -434,6 +435,7 @@ class MessageController extends CommonController
                 else
                     $message->setFromType("EXTERNAL");
             }
+
             $this->sakonninMessages->postMessage($message);
 
             if ($this->isRest($access)) {

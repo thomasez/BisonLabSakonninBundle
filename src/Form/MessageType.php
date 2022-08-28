@@ -44,15 +44,20 @@ class MessageType extends AbstractType
                         },
                 ));
         } else {
-            if ($options['data']->getMessageType()->getBaseType() == "NOTE")
+            // We have a type.
+            $message_type = $options['data']->getMessageType();
+
+            if ($message_type->getBaseType() == "NOTE")
                 $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
             else
                 $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
 
-            if (count($options['data']->getMessageType()->getChildren()) > 0) {
-                $type_choices = $options['data']->getMessageType()->getChildren();
+            if (count($message_type->getChildren()) > 0) {
+                $type_choices = $message_type->getChildren();
+            } elseif ($mt_parent = $message_type->getparent()) { 
+                $type_choices = $mt_parent->getChildren();
             } else { 
-                $type_choices = array($options['data']->getMessageType());
+                $type_choices = array($message_type);
             }
             // Todo: Add default type.
             if (count($type_choices) == 1) {
@@ -82,8 +87,20 @@ class MessageType extends AbstractType
             $builder
                 ->add('to', HiddenType::class, array('required' => false));
         }
+        if ($in_reply_to = $options['data']->getInReplyTo()) {
+            $builder->add('in_reply_to', EntityType::class,
+                array(
+                    'label' => 'Type',
+                    'required' => true,
+                    'class' => Message::class,
+                    'choices' => [$in_reply_to],
+                ));
+        } else {
+            $builder ->add('in_reply_to', HiddenType::class,
+                    array('required' => false));
+        }
+
         $builder
-            ->add('in_reply_to', HiddenType::class, array('required' => false))
             ->add('state', ChoiceType::class, array('choices' => array_combine(Message::getStates(), Message::getStates())))
             ->add('expire_at', DateType::class, array(
                 'label' => "Expire at",

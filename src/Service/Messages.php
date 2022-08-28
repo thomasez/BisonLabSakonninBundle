@@ -97,12 +97,19 @@ class Messages
                 }
             }
 
-            if (isset($data['in_reply_to'])) {
-                if (!$reply_to = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $data['in_reply_to']))) {
-                    return false;
-                } else {
-                    $message->setInReplyTo($reply_to);
-                }
+            if ($reply_to = $data['in_reply_to'] ?? null) {
+                $in_reply_to = null;
+                if (is_numeric($reply_to))
+                    $in_reply_to = $entityManager->getRepository(Message::class)
+                    ->findOneBy(array('message_id' => $reply_to));
+                if (is_numeric($reply_to))
+                    $in_reply_to = $entityManager->getRepository(Message::class)
+                    ->find($reply_to);
+
+                if ($in_reply_to)
+                    $message->setInReplyTo($in_reply_to);
+                else
+                    return null;
             }
 
             // Get a default one?
@@ -193,31 +200,46 @@ class Messages
     public function getCreateForm($options = array())
     {
         $entityManager = $this->getDoctrineManager();
+
         $message = null;
-        $message_context = null;
         if (isset($options['message']) && $options['message'] instanceof Message) {
              $message =  $options['message'];
-        } elseif (isset($options['message_data']) && $data = $options['message_data']) {
-            if (isset($data['message_type']) && $message_type = $entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
-                $data['message_type'] = $message_type;
-            }
-            $message = new Message($data);
+        } elseif ($message_data = $options['message_data'] ?? null) {
+            if (isset($message_data['message_type'])
+                    && $message_type = $entityManager
+                        ->getRepository(MessageType::class)
+                        ->findOneByName($message_data['message_type']))
+                            $message_data['message_type'] = $message_type;
+            $message = new Message($message_data);
         } else {
             $message = new Message();
         }
 
-        if (isset($options['message_context'])) {
-            $message_context = new MessageContext($options['message_context']);
+        if ($message_type_name = $options['message_type'] ?? null) {
+            $message_type = $entityManager->getRepository(MessageType::class)
+                        ->findOneByName($message_type_name);
+            $message->setMessageType($message_type);
+        }
+
+        if ($message_context_data = $options['message_context'] ?? $options['context'] ?? null) {
+            $message_context = new MessageContext($message_context_data);
             $message->addContext($message_context);
         }
 
         // What does the form say?
-        if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
-                return false;
-            } else {
-                $message->setInReplyTo($reply_to);
-            }
+        if ($reply_to = $options['message_data']['in_reply_to'] ??
+                $options['in_reply_to'] ?? null) {
+            if (is_numeric($reply_to))
+                $in_reply_to = $entityManager->getRepository(Message::class)
+                ->findOneBy(array('message_id' => $reply_to));
+            if (is_numeric($reply_to))
+                $in_reply_to = $entityManager->getRepository(Message::class)
+                ->find($reply_to);
+
+            if ($in_reply_to)
+                $message->setInReplyTo($in_reply_to);
+            else
+                return null;
         }
 
         $form = $this->createCreateForm($message);
