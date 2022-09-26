@@ -211,7 +211,7 @@ function setStateOnSakonninMessage(message_id, state, hide = true) {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            if (hide) {
+            if (hide || state == "DELETED") {
                 $('#sakonninmessage_' + message_id).remove();
             }
       }).fail(function(xhr, status, error) {
