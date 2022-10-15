@@ -8,11 +8,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 class Builder
 {
-    private $router;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(
+        private RouterInterface $router)
     {
-        $this->router = $router;
     }
 
     public function messageMenu(FactoryInterface $factory, array $options): ItemInterface
