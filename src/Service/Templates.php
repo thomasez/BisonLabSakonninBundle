@@ -27,35 +27,37 @@ class Templates
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
+    private $entityManager;
+
     public function __construct(
         private ManagerRegistry $managerRegistry,
         private ParameterBagInterface $parameterBag,
         private TranslatorInterface $translator
     ) {
+        $this->entityManager = $this->getDoctrineManager();
     }
 
     public function getTemplate($name)
     {
-        $em = $this->getDoctrineManager();
         // Just the id, ok.
         if (is_numeric($name))
-            return $em->getRepository(SakonninTemplate::class)->find($name);
+            return $this->entityManager->getRepository(SakonninTemplate::class)->find($name);
 
         // Attempt #1
         $locale = $this->translator->getLocale();
-        if ($template = $em->getRepository(SakonninTemplate::class)->findOneBy(
+        if ($template = $this->entityManager->getRepository(SakonninTemplate::class)->findOneBy(
             ['name' => $name, 'lang_code' => $locale]))
                 return $template;
 
         // Attempt #2 - Fallback
         foreach ($this->translator->getFallbackLocales() as $fb) {
-            if ($template = $em->getRepository(SakonninTemplate::class)
+            if ($template = $this->entityManager->getRepository(SakonninTemplate::class)
                 ->findOneBy(['name' => $name, 'lang_code' => $fb]))
                     return $template;
         }
 
         // Whatever!
-        return $em->getRepository(SakonninTemplate::class)->findOneBy(
+        return $this->entityManager->getRepository(SakonninTemplate::class)->findOneBy(
             ['name' => $name]);
     }
 
@@ -68,8 +70,7 @@ class Templates
      */
     public function storeTemplate(SakonninTemplate $template, array $options)
     {
-        $entityManager = $this->getDoctrineManager();
-        $entityManager->persist($template);
+        $this->entityManager->persist($template);
         return $template;
     }
 

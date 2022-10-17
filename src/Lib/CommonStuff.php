@@ -14,20 +14,6 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 
 trait CommonStuff 
 {
-    private $entityManager;
-    private $sakonninMessages;
-    private $sakonninFunctions;
-
-    public function setSakonninMessages($sm)
-    {
-        $this->sakonninMessages = $sm;
-    }
-
-    public function setSakonninFunctions($sf)
-    {
-        $this->sakonninFunctions = $sf;
-    }
-
     public function getLoggedInUser()
     {
         // Note to whoever: Controllers have "$this->getUser()", but this is

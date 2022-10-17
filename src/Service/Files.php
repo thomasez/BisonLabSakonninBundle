@@ -27,23 +27,17 @@ class Files
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $router;
-    private $formBuilder;
-    private $parameterBag;
-    private $tokenStorage;
     private $entityManager;
-    private $managerRegistry;
-    private $sakonninFunctions;
 
-    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, ManagerRegistry $managerRegistry, ParameterBagInterface $parameterBag, SakonninFunctions $sakonninFunctions, FormFactoryInterface $formBuilder, RouterInterface $router)
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+        private ManagerRegistry $managerRegistry,
+        private ParameterBagInterface $parameterBag,
+        private SakonninFunctions $sakonninFunctions,
+        private FormFactoryInterface $formBuilder,
+        private RouterInterface $router)
     {
-        $this->router = $router;
-        $this->formBuilder = $formBuilder;
-        $this->tokenStorage = $tokenStorage;
-        $this->parameterBag = $parameterBag;
-        $this->entityManager = $entityManager;
-        $this->managerRegistry = $managerRegistry;
-        $this->sakonninFunctions = $sakonninFunctions;
+        $this->entityManager = $this->getDoctrineManager();
     }
 
     public function storeFile($data, $context_data = array())

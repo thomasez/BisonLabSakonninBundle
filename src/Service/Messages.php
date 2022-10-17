@@ -28,30 +28,23 @@ class Messages
 {
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $mailer;
-    private $router;
-    private $formBuilder;
-    private $parameterBag;
-    private $tokenStorage;
-    private $managerRegistry;
-    private $sakonninTemplates;
-    private $sakonninFunctions;
+    private $entityManager;
 
-    public function __construct(MailerInterface $mailer, FormFactoryInterface $formBuilder, RouterInterface $router, TokenStorageInterface $tokenStorage, ManagerRegistry $managerRegistry, ParameterBagInterface $parameterBag, SakonninTemplates $sakonninTemplates, SakonninFunctions $sakonninFunctions)
+    public function __construct(
+        private MailerInterface $mailer,
+        private FormFactoryInterface $formBuilder,
+        private RouterInterface $router,
+        private TokenStorageInterface $tokenStorage,
+        private ManagerRegistry $managerRegistry,
+        private ParameterBagInterface $parameterBag,
+        private SakonninTemplates $sakonninTemplates,
+        private SakonninFunctions $sakonninFunctions)
     {
-        $this->mailer = $mailer;
-        $this->router = $router;
-        $this->formBuilder = $formBuilder;
-        $this->tokenStorage = $tokenStorage;
-        $this->parameterBag = $parameterBag;
-        $this->managerRegistry = $managerRegistry;
-        $this->sakonninTemplates = $sakonninTemplates;
-        $this->sakonninFunctions = $sakonninFunctions;
+        $this->entityManager = $this->getDoctrineManager();
     }
 
     public function postMessage($data, $context_data = [])
     {
-        $entityManager = $this->getDoctrineManager();
         $message = null;
         if ($data instanceof Message) {
             $message = $data;
@@ -67,7 +60,7 @@ class Messages
             }
 
             if (isset($data['message_type']) 
-                    && $message_type = $entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
+                    && $message_type = $this->entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            
             } else {
                 throw new \InvalidArgumentException("No message type found or set.");
@@ -92,7 +85,7 @@ class Messages
                         && isset($context['external_id'])) {
                             $message_context = new MessageContext($context);
                             $message->addContext($message_context);
-                            $entityManager->persist($message_context);
+                            $this->entityManager->persist($message_context);
                     }
                 }
             }
@@ -100,10 +93,10 @@ class Messages
             if ($reply_to = $data['in_reply_to'] ?? null) {
                 $in_reply_to = null;
                 if (is_numeric($reply_to))
-                    $in_reply_to = $entityManager->getRepository(Message::class)
+                    $in_reply_to = $this->entityManager->getRepository(Message::class)
                     ->findOneBy(array('message_id' => $reply_to));
                 if (is_numeric($reply_to))
-                    $in_reply_to = $entityManager->getRepository(Message::class)
+                    $in_reply_to = $this->entityManager->getRepository(Message::class)
                     ->find($reply_to);
 
                 if ($in_reply_to)
@@ -182,7 +175,7 @@ class Messages
             if (!$message->getState())
                 $message->setFirstState();
         }
-        $entityManager->persist($message);
+        $this->entityManager->persist($message);
 
         // I planned to use an event listener to dispatch callback/forward
         // functions, but why? This postMessage functions shall be the only
@@ -193,20 +186,18 @@ class Messages
         $data['sakonninMessages'] = $this;
         $this->sakonninFunctions->dispatchMessageFunctions($message, $data);
 
-        $entityManager->flush();
+        $this->entityManager->flush();
         return $message;
     }
 
     public function getCreateForm($options = array())
     {
-        $entityManager = $this->getDoctrineManager();
-
         $message = null;
         if (isset($options['message']) && $options['message'] instanceof Message) {
              $message =  $options['message'];
         } elseif ($message_data = $options['message_data'] ?? null) {
             if (isset($message_data['message_type'])
-                    && $message_type = $entityManager
+                    && $message_type = $this->entityManager
                         ->getRepository(MessageType::class)
                         ->findOneByName($message_data['message_type']))
                             $message_data['message_type'] = $message_type;
@@ -216,7 +207,7 @@ class Messages
         }
 
         if ($message_type_name = $options['message_type'] ?? null) {
-            $message_type = $entityManager->getRepository(MessageType::class)
+            $message_type = $this->entityManager->getRepository(MessageType::class)
                         ->findOneByName($message_type_name);
             $message->setMessageType($message_type);
         }
@@ -230,10 +221,10 @@ class Messages
         if ($reply_to = $options['message_data']['in_reply_to'] ??
                 $options['in_reply_to'] ?? null) {
             if (is_numeric($reply_to))
-                $in_reply_to = $entityManager->getRepository(Message::class)
+                $in_reply_to = $this->entityManager->getRepository(Message::class)
                 ->findOneBy(array('message_id' => $reply_to));
             if (is_numeric($reply_to))
-                $in_reply_to = $entityManager->getRepository(Message::class)
+                $in_reply_to = $this->entityManager->getRepository(Message::class)
                 ->find($reply_to);
 
             if ($in_reply_to)
@@ -254,11 +245,10 @@ class Messages
 
     public function getCreatePmForm($options = array())
     {
-        $entityManager = $this->getDoctrineManager();
         $message = new Message();
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $this->entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);
@@ -333,8 +323,7 @@ class Messages
 
     public function getMessages($criterias = array())
     {
-        $entityManager = $this->getDoctrineManager();
-        $repo = $entityManager->getRepository(Message::class);
+        $repo = $this->entityManager->getRepository(Message::class);
 
         // There can be only one
         if (isset($criterias['id'])) {
@@ -349,7 +338,7 @@ class Messages
             $system      = $criterias['context']['system'];
             $object_name = $criterias['context']['object_name'];
             $external_id = $criterias['context']['external_id'];
-            $query = $entityManager->createQueryBuilder();
+            $query = $this->entityManager->createQueryBuilder();
             $query->select('m')
                 ->from(Message::class, 'm')
                 ->leftJoin('m.contexts', 'mc')
@@ -440,8 +429,7 @@ class Messages
 
     public function contextHasMessages($context, $with_contexts = false)
     {
-        $entityManager = $this->getDoctrineManager();
-        $repo = $entityManager->getRepository(MessageContext::class);
+        $repo = $this->entityManager->getRepository(MessageContext::class);
         return $repo->contextHasMessages($context, $with_contexts);
     }
 
