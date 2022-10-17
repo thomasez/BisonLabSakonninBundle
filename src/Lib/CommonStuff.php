@@ -14,6 +14,8 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 
 trait CommonStuff 
 {
+    private $entityManager;
+
     public function getLoggedInUser()
     {
         // Note to whoever: Controllers have "$this->getUser()", but this is
