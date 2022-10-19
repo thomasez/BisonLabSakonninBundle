@@ -21,16 +21,10 @@ use Symfony\Component\Mime\Email;
 trait CommonFunctions
 {
     protected $sakonninMessages;
-    protected $smsHandler;
 
     public function setSakonninMessages($sakonninMessages)
     {
         $this->sakonninMessages = $sakonninMessages;
-    } 
-
-    public function setSmsHandler($smsHandler)
-    {
-        $this->smsHandler = $smsHandler;
     } 
 
     public function getCallbackFunctions()
@@ -41,6 +35,11 @@ trait CommonFunctions
     public function getForwardFunctions()
     {
         return $this->forward_functions;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     public function sendMail($message, $mailto, $options = array())

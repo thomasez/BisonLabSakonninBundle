@@ -7,8 +7,6 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 use BisonLab\SakonninBundle\Entity\Message;
-use BisonLab\SakonninBundle\Service\SmsHandler;
-use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
 
 /*
  */

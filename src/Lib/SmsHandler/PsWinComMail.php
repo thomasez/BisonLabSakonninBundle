@@ -18,9 +18,18 @@ class PsWinComMail
     protected $mailaddress;
     protected $sender;
 
+    public $config = [
+        'name' => 'pswincom_mail',
+        'description' => "SMS via pswin.com old mailinterface",
+        'sends' => true,
+        'receives' => false,
+    ];
+
     public function __construct($options = array())
     {
-        // Let it just barf if the parameters are  missing.
+        // Cannot barf.
+        if (empty($options)) return;
+
         $this->username = $options['username'];
         $this->password = $options['password'];
         $this->smsfrom  = $options['smsfrom'];

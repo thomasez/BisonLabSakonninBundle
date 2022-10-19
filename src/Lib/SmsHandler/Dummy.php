@@ -9,9 +9,16 @@ namespace BisonLab\SakonninBundle\Lib\SmsHandler;
 
 class Dummy
 {
-//    use \BisonLab\SakonninBundle\Lib\Functions\CommonFunctions;
+    use \BisonLab\SakonninBundle\Lib\Functions\CommonFunctions;
 
-    public function __construct()
+    public $config = [
+        'name' => 'dummy',
+        'description' => "SMSes goes nowhere",
+        'sends' => true,
+        'receives' => false,
+    ];
+
+    public function __construct($options = array())
     {
     }
 

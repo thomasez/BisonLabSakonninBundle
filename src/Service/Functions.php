@@ -102,7 +102,6 @@ class Functions
         $sfunc = $this->locator->get($config['class']);
         // I prefer wrong and working.
         $sfunc->setSakonninMessages($options['sakonninMessages']);
-        $sfunc->setSmsHandler($options['smsHandler'] ?? null);
 
         // Add more if you need to.
         $options['message']    = $message;

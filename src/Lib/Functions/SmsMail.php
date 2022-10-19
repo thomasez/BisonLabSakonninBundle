@@ -2,10 +2,11 @@
 
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
+use BisonLab\SakonninBundle\Service\SmsHandler;
+
 /*
  *
  */
-
 class SmsMail
 {
     use CommonFunctions;
@@ -20,6 +21,11 @@ class SmsMail
             'needs_attributes' => false,
         ),
     ];
+
+    public function __construct(
+        private SmsHandler $smsHandler,
+    ) {
+    }
 
     public function execute($options = array())
     {
