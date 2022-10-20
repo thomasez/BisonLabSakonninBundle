@@ -1,7 +1,7 @@
 parameters:
     sakonnin.user:
         class: BisonLabUserBundle:User
-        entity: \BisonLab\UserBundle\Entity\User
+        entity: BisonLab\UserBundle\Entity\User
 
     # For the up/download of files attached to objects. This should not be
     # available from the web.
