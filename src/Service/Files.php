@@ -34,7 +34,7 @@ class Files
         private ManagerRegistry $managerRegistry,
         private ParameterBagInterface $parameterBag,
         private SakonninFunctions $sakonninFunctions,
-        private FormFactoryInterface $formBuilder,
+        private FormFactoryInterface $formFactory,
         private RouterInterface $router)
     {
         $this->entityManager = $this->getDoctrineManager();
@@ -128,7 +128,7 @@ class Files
         }
 
         $route = $this->router->generate('sakonninfile_new');
-        $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $file, array(
+        $form = $this->formFactory->create(\BisonLab\SakonninBundle\Form\SakonninFileType::class, $file, array(
             'action' => $route,
             'method' => 'POST',
             'attr' => ['id' => 'sakonninFileUploadForm' ]
@@ -312,7 +312,7 @@ class Files
     {
         $route = $this->router->generate('sakonninfile_delete', array(
                 'file_id' => $sfile->getFileId()));
-        return $this->formBuilder->createBuilder()
+        return $this->formFactory->createBuilder()
             ->setAction($route)
             ->getForm()
         ;

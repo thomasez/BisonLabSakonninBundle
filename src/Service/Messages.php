@@ -32,7 +32,7 @@ class Messages
 
     public function __construct(
         private MailerInterface $mailer,
-        private FormFactoryInterface $formBuilder,
+        private FormFactoryInterface $formFactory,
         private RouterInterface $router,
         private TokenStorageInterface $tokenStorage,
         private ManagerRegistry $managerRegistry,
@@ -255,7 +255,7 @@ class Messages
             }
         }
 
-        $form = $this->formBuilder
+        $form = $this->formFactory
                 ->create(\BisonLab\SakonninBundle\Form\PmType::class,
             $message, array(
                 'action' => $this->router->generate('pm_create'),
@@ -440,19 +440,19 @@ class Messages
     {
         $route = $this->router->generate('message_create');
         if ($message->getBaseType() == "CHECK") {
-            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\CheckType::class, $message, array(
+            $form = $this->formFactory->create(\BisonLab\SakonninBundle\Form\CheckType::class, $message, array(
                 'action' => $route,
                 'method' => 'POST',
             ));
             $form->add('submit', SubmitType::class, array('label' => 'Create'));
         } elseif ($message->getBaseType() == "NOTE") {
-            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
+            $form = $this->formFactory->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
                 'action' => $route,
                 'method' => 'POST',
             ));
             $form->add('submit', SubmitType::class, array('label' => 'Create'));
         } else {
-            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
+            $form = $this->formFactory->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message, array(
                 'action' => $route,
                 'method' => 'POST',
             ));
@@ -464,9 +464,9 @@ class Messages
     public function createEditForm(Message $message)
     {
         if ($message->getBaseType() == "CHECK") {
-            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\CheckType::class, $message);
+            $form = $this->formFactory->create(\BisonLab\SakonninBundle\Form\CheckType::class, $message);
         } else {
-            $form = $this->formBuilder->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message);
+            $form = $this->formFactory->create(\BisonLab\SakonninBundle\Form\MessageType::class, $message);
         }
         $form->add('submit', SubmitType::class, array('label' => 'Send'));
         return $form;
@@ -477,7 +477,7 @@ class Messages
         $route = $this->router->generate('message_delete', array(
                 'message_id' => $message->getMessageId(),
                 'access' => $access));
-        return $this->formBuilder->createBuilder()
+        return $this->formFactory->createBuilder()
             ->setAction($route)
             ->setMethod('DELETE')
             ->getForm()
