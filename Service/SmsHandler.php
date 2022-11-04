@@ -39,6 +39,10 @@ class SmsHandler
         'pswincom_post' => array(
             'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\PsWinComPost',
             'description' => "SMS via pswin.com old webservice like thingie",
+        ),
+        'dummy' => array(
+            'class' => 'BisonLab\SakonninBundle\Lib\SmsHandler\Dummy',
+            'description' => "SMSes goes nowhere",
         )
     );
 
