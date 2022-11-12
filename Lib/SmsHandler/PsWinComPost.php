@@ -76,7 +76,8 @@ EOMSG;
             $receivers = array($receivers);
 
         // First, they default to latin 1
-        $message = iconv("UTF-8", "ISO-8859-1", $message);
+        // Which means not all utf8 chars are accepted, alas, ignore, not die.
+        $message = iconv("UTF-8", "ISO-8859-1//IGNORE", $message);
         // Make the message xml-safe:
         $message = htmlspecialchars($message, ENT_XML1, 'ISO-8859-1');
 		
