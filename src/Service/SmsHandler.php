@@ -17,8 +17,10 @@ class SmsHandler
     protected $receiver;
     protected $options;
 
-    public function __construct(ServiceLocator $locator, ParameterBagInterface $parameterBag)
-    {
+    public function __construct(
+        private ServiceLocator $locator,
+        private ParameterBagInterface $parameterBag
+    ) {
         $this->locator = $locator;
         $options = $parameterBag->get('sakonnin.sms');
         $sender_name   = $options['sender'] ?? null;
@@ -38,12 +40,11 @@ class SmsHandler
     public function send($message, $receivers)
     {
         if ($this->sender) {
-            // This I may need.
-            // $sender->setSakonninMessages($this->sakonninMessages);
-            // I prefer wrong and working.
+            // This I annoyingly need.
+            $sender->setSakonninMessages($this->sakonninMessages);
             return $this->sender->send($message, $receivers);
         } else {
-            throw new \InvalidArgumentException("Cannot send SMS because no sender method is set");
+            throw new \InvalidArgumentException("Cannot send SMS because no sender method set");
         }
     }
 
@@ -53,9 +54,11 @@ class SmsHandler
     public function receive($data)
     {
         if ($this->receiver) {
+            // This I annoyingly need.
+            $sender->setSakonninMessages($this->sakonninMessages);
             return $this->receiver->receive($data);
         } else {
-            throw new \InvalidArgumentException("Cannot handle SMS reception because no method is set");
+            throw new \InvalidArgumentException("Cannot handle SMS reception because no method set");
         }
     }
 }

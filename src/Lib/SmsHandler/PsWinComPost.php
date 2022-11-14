@@ -3,6 +3,7 @@
 namespace BisonLab\SakonninBundle\Lib\SmsHandler;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use BisonLab\SakonninBundle\Entity\MessageType;
 
 /*
@@ -17,7 +18,7 @@ class PsWinComPost
     protected $username;
     protected $password;
     protected $mailaddress;
-    protected $sender;
+    protected $options;
 
     public $config = [
         'name' => 'pswincom_post',
@@ -26,20 +27,11 @@ class PsWinComPost
         'receives' => true,
     ];
 
-    public function __construct($options = array())
-    {
-        // Cannot barf.
-        if (empty($options)) return;
-
-        $this->username = $options['username'];
-        $this->password = $options['password'];
-        $this->smsfrom  = $options['smsfrom'];
-        $this->mailfrom = $options['mailfrom'];
-        $this->mailto   = $options['mailto'];
-        $this->sms_server_host = $options['sms_server_host'] ?? null;
-        $this->sms_server_port = $options['sms_server_port'] ?? null;
-        $this->default_country_prefix   = $options['default_country_prefix'];
-        $this->national_number_lenght   = $options['national_number_lenght'];
+    public function __construct(
+            ParameterBagInterface $parameterBag,
+    ) {
+        // I don't want to barf here.
+        $this->options = $parameterBag->get('sakonnin.sms');
     }
 
     public function receive($data)
@@ -50,11 +42,10 @@ class PsWinComPost
 
         // Sanitize it.
         $from = preg_replace("/\D/", "", $data['SND']);
-        if (strlen($from) < $this->national_number_lenght)
+        if (strlen($from) < $this->options['national_number_lenght'])
             return ['message' => 'ERROR', 'errcode' => Response::HTTP_FORBIDDEN];
 
         $body = $data['TXT'];
-        $sm = $this->container->get('sakonnin.messages');
         $message = [];
         $message['from'] = $from;
         $message['from_type'] = "SMS";
@@ -63,7 +54,7 @@ class PsWinComPost
         // Could be discussing if setting message type here is correct, but
         // something has to be set.
         $message['message_type'] = $data['messaage_type'] ?? "SMS";
-        $sm->postMessage($message);
+        $this->sakonninMessages->postMessage($message);
 
         return true;
     }
@@ -73,8 +64,8 @@ class PsWinComPost
         $msg = <<<EOMSG
 <?xml version="1.0"?>
 <SESSION>
-<CLIENT>$this->username</CLIENT>
-<PW>$this->password</PW>
+<CLIENT>$this->options['username']</CLIENT>
+<PW>$this->options['password']</PW>
 <MSGLST>
 EOMSG;
 
@@ -88,12 +79,12 @@ EOMSG;
         $message = htmlspecialchars($message, ENT_XML1, 'ISO-8859-1');
 		
         foreach ($receivers as $number) {
-            if (strlen((string)$number) == $this->national_number_lenght) $number = $this->default_country_prefix . $number;
+            if (strlen((string)$number) == $this->options['national_number_lenght']) $number = $this->options['default_country_prefix'] . $number;
             $msg .= <<<EOMSG
 <MSG>
 <TEXT>$message</TEXT>
 <RCV>$number</RCV>
-<SND>$this->smsfrom</SND>
+<SND>$this->options['smsfrom']</SND>
 </MSG>
 EOMSG;
         }
@@ -105,7 +96,7 @@ EOMSG;
          * it may have been for a reason. commets hints that curl was replaced
          * with fsockopen and friends..
          */
-        $pswincomsmsgateway = fsockopen ($this->sms_server_host, $this->sms_server_port, $errno, $errstr);
+        $pswincomsmsgateway = fsockopen ($this->options['sms_server_host'], $this->options['sms_server_port'], $errno, $errstr);
         if (!$pswincomsmsgateway) {
             error_log("SMS Gateway not responding, " . $errno . " " . $errstr);
             return false;

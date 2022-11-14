@@ -40,6 +40,7 @@ class Messages
         private SakonninTemplates $sakonninTemplates,
         private SakonninFunctions $sakonninFunctions)
     {
+        // Not nessesarily the default manager, this finds the right onw.
         $this->entityManager = $this->getDoctrineManager();
     }
 

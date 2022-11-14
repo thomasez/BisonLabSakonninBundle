@@ -24,10 +24,9 @@ use BisonLab\ContextBundle\Service\ExternalRetriever;
  */
 class SecurityModelVoter extends Voter
 {
-    private $external_retriever;
-    private $sakonnin_messages;
-
-    public function __construct(ExternalRetriever $external_retriever, SakonninMessages $sakonnin_messages)
+    public function __construct(
+        private ExternalRetriever $external_retriever,
+        private SakonninMessages $sakonnin_messages)
     {
         $this->external_retriever = $external_retriever;
         $this->sakonnin_messages  = $sakonnin_messages;

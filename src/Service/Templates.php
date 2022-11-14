@@ -34,6 +34,7 @@ class Templates
         private ParameterBagInterface $parameterBag,
         private TranslatorInterface $translator
     ) {
+        // Not nessesarily the default manager, this finds the right onw.
         $this->entityManager = $this->getDoctrineManager();
     }
 

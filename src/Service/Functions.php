@@ -16,19 +16,14 @@ use BisonLab\ContextBundle\Service\ExternalRetriever;
  */
 class Functions
 {
-    private $locator;
-    private $parameterBag;
-    private $external_retriever;
-
     private $forward_functions;
     private $callback_functions;
 
-    public function __construct(ServiceLocator $locator, ParameterBagInterface $parameterBag, ExternalRetriever $external_retriever)
+    public function __construct(
+        private ServiceLocator $locator,
+        private ParameterBagInterface $parameterBag,
+        private ExternalRetriever $externalRetriever)
     {
-        $this->locator = $locator;
-        $this->parameterBag = $parameterBag;
-        $this->external_retriever = $external_retriever;
-
         foreach ($this->locator->getProvidedServices() as $sclass) {
             $sf = $this->locator->get($sclass);
 
@@ -108,7 +103,7 @@ class Functions
         $options['attributes'] = $attributes;
         $options['function']   = $function;
         $options['config']     = $config;
-        $options['retriever']  = $this->external_retriever;
+        $options['retriever']  = $this->externalRetriever;
         return $sfunc->execute($options);
     }
 

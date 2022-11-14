@@ -3,20 +3,18 @@
 namespace BisonLab\SakonninBundle\Lib\SmsHandler;
 
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /*
  * The simplest way to send an SMS via pswin.com. Hopefully not lasting for
  * long. It's nicked from the old CrewCall and does not look good at all.
  */
-
 class PsWinComMail
 {
     use \BisonLab\SakonninBundle\Lib\Functions\CommonFunctions;
 
-    protected $username;
-    protected $password;
-    protected $mailaddress;
-    protected $sender;
+    protected $options;
 
     public $config = [
         'name' => 'pswincom_mail',
@@ -25,18 +23,11 @@ class PsWinComMail
         'receives' => false,
     ];
 
-    public function __construct($options = array())
-    {
-        // Cannot barf.
-        if (empty($options)) return;
-
-        $this->username = $options['username'];
-        $this->password = $options['password'];
-        $this->smsfrom  = $options['smsfrom'];
-        $this->mailfrom = $options['mailfrom'];
-        $this->mailto   = $options['mailto'];
-        $this->default_country_prefix   = $options['default_country_prefix'];
-        $this->national_number_lenght   = $options['national_number_lenght'];
+    public function __construct(
+            ParameterBagInterface $parameterBag,
+            MailerInterface $mailer
+    ) {
+        $this->options = $parameterBag->get('sakonnin.sms');
     }
 
     public function send($message, $receivers, $options = array())
@@ -44,8 +35,8 @@ class PsWinComMail
         $msg = <<<EOMSG
 <?xml version="1.0"?>
 <SESSION>
-<CLIENT>$this->username</CLIENT>
-<PW>$this->password</PW>
+<CLIENT>$this->options['username']</CLIENT>
+<PW>$this->options['password']</PW>
 <MSGLST>
 EOMSG;
 
@@ -54,12 +45,12 @@ EOMSG;
             $receivers = array($receivers);
 		
         foreach ($receivers as $number) {
-            if (strlen((string)$number) == $this->national_number_lenght) $number = $this->default_country_prefix . $number;
+            if (strlen((string)$number) == $this->options['national_number_lenght']) $number = $this->options['default_country_prefix'] . $number;
             $msg .= <<<EOMSG
 <MSG>
 <TEXT>$message</TEXT>
 <RCV>$number</RCV>
-<SND>$this->smsfrom</SND>
+<SND>$this->options['smsfrom']</SND>
 </MSG>
 EOMSG;
         }
@@ -68,17 +59,17 @@ EOMSG;
 	
         $mail = (new Email())
             ->subject("SMS")
-            ->from($this->mailfrom)
-            ->to($this->mailto)
+            ->from($this->options['mailfrom'])
+            ->to($this->options['mailto'])
             ->text($msg)
         ;
 
         $headers = $mail->getHeaders();
-        $headers->addTextHeader('Return-Path', $this->mailfrom);
-        $headers->addTextHeader('X-Sender', $this->mailfrom);
+        $headers->addTextHeader('Return-Path', $this->options['mailfrom']);
+        $headers->addTextHeader('X-Sender', $this->options['mailfrom']);
         // $headers->addTextHeader('Content-Disposition', 'inline');
         $headers->removeAll('Content-Transfer-Encoding');
         $headers->addTextHeader('Content-Transfer-Encoding',  '8bit');
-        $this->container->get('mailer')->send($mail);
+        $this->mailer->send($mail);
     }
 }

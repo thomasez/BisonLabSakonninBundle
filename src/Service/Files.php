@@ -37,6 +37,7 @@ class Files
         private FormFactoryInterface $formFactory,
         private RouterInterface $router)
     {
+        // Not nessesarily the default manager, this finds the right onw.
         $this->entityManager = $this->getDoctrineManager();
     }
 
