@@ -95,11 +95,10 @@ class Messages
                 $in_reply_to = null;
                 if (is_numeric($reply_to))
                     $in_reply_to = $this->entityManager->getRepository(Message::class)
-                    ->findOneBy(array('message_id' => $reply_to));
-                if (is_numeric($reply_to))
+                        ->find($reply_to);
+                else
                     $in_reply_to = $this->entityManager->getRepository(Message::class)
-                    ->find($reply_to);
-
+                        ->findOneBy(array('message_id' => $reply_to));
                 if ($in_reply_to)
                     $message->setInReplyTo($in_reply_to);
                 else

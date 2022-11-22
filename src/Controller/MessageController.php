@@ -410,6 +410,7 @@ class MessageController extends CommonController
             if ($message) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
+            // This is so the wrong error to return.
             return $this->returnErrorResponse("Validation Error", 400);
         }
 
