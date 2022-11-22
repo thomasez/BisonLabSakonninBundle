@@ -1,6 +1,6 @@
 <div id="sakonninmessage_{{ entity.messageid}}">
   <div class="row">
-      <div class="col-sm-4">
+      <div class="col-3">
         <table class="messageTable">
           <tr>
             <th valign="top">Subject:</th>
@@ -58,7 +58,7 @@
   </table>
   </div>
 
-  <div class="col-sm-6 ">
+  <div class="col-8">
   {% if entity.basetype == 'CHECK' %}
     {# OK, are we checked or not? #}
     {% set checked = false %}
@@ -94,7 +94,7 @@
 {% endif %}
 
   </div>
-  <div class="col-sm-1">
+  <div class="col-1">
 {% if is_granted('edit', entity) and entity.editable %}
     <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');"><button class="btn btn-link edit_glyph"></button></a>
 {% endif %}
