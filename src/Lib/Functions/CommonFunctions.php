@@ -130,6 +130,9 @@ trait CommonFunctions
 
     public function sendSms($message, $receiver, $options = array())
     {
+        // Argh!
+        $this->smsHandler->setSakonninMessages($this->sakonninMessages);
+
         if (is_array($receiver))
             $this->smsHandler->send($message->getBody(), $receiver, $options);
         elseif (is_numeric($receiver))

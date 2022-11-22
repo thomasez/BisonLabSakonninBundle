@@ -25,11 +25,9 @@ use BisonLab\ContextBundle\Service\ExternalRetriever;
 class SecurityModelVoter extends Voter
 {
     public function __construct(
-        private ExternalRetriever $external_retriever,
-        private SakonninMessages $sakonnin_messages)
-    {
-        $this->external_retriever = $external_retriever;
-        $this->sakonnin_messages  = $sakonnin_messages;
+        private ExternalRetriever $externalRetriever,
+        private SakonninMessages $sakonninMessages
+    ) {
     }
 
     protected function supports($attribute, $subject): bool
@@ -182,7 +180,7 @@ class SecurityModelVoter extends Voter
         // Then, how do I get the object the context is pointing at?
         // Answer: "The ExternalRetriever" in my ContextBundle.
         foreach ($subject->getContexts() as $context) {
-            if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
+            if ($object = $this->externalRetriever->getExternalDataFromContext($context)) {
                 // The question now is. How do I know that the object is
                 // what I am looking for?
                 // For now, I presume it's within the same application and
@@ -221,7 +219,7 @@ class SecurityModelVoter extends Voter
             return false;
 
         if ($from = $subject->getFrom()) {
-            if ($from_user = $this->sakonnin_messages->getUserFromUserName($from)) {
+            if ($from_user = $this->sakonninMessages->getUserFromUserName($from)) {
                 foreach($from_user->getGroupNames() as $gn) {
                     if (in_array($gn, $user->getGroupNames()))
                         return true;
@@ -237,7 +235,7 @@ class SecurityModelVoter extends Voter
          * same group(s) as the use trying to mess with.
          */
         foreach ($subject->getContexts() as $context) {
-            if ($object = $this->external_retriever->getExternalDataFromContext($context)) {
+            if ($object = $this->externalRetriever->getExternalDataFromContext($context)) {
                 // The question now is. How do I know that the object is
                 // what I am looking for?
                 // For now, I presume it's within the same application and

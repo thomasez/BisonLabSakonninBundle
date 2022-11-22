@@ -15,6 +15,7 @@ use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Service\SmsHandler;
+use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
 
 /**
  * SMS receive controller.
@@ -37,8 +38,9 @@ class SmsController extends CommonController
      *
      * @Route("/post", name="sms_create", methods={"POST"})
      */
-    public function createAction(Request $request, SmsHandler $smsHandler)
+    public function createAction(Request $request, SmsHandler $smsHandler, SakonninMessages $sakonninMessages)
     {
+        $smsHandler->setSakonninMessages($sakonninMessages);
         $data = [];
         // Is it Json?
         if ($parsed = json_decode($request->getContent(), true)) {

@@ -15,6 +15,7 @@ class SmsHandler
 {
     protected $sender;
     protected $receiver;
+    protected $sakonninMessages;
     protected $options;
 
     public function __construct(
@@ -37,11 +38,19 @@ class SmsHandler
         }
     }
 
+    /*
+     * This is sooo bloody bad.
+     */
+    public function setSakonninMessages($sakonninMessages)
+    {
+        $this->sakonninMessages = $sakonninMessages;
+    }
+
     public function send($message, $receivers)
     {
         if ($this->sender) {
             // This I annoyingly need.
-            $sender->setSakonninMessages($this->sakonninMessages);
+            $this->sender->setSakonninMessages($this->sakonninMessages);
             return $this->sender->send($message, $receivers);
         } else {
             throw new \InvalidArgumentException("Cannot send SMS because no sender method set");
@@ -55,7 +64,7 @@ class SmsHandler
     {
         if ($this->receiver) {
             // This I annoyingly need.
-            $sender->setSakonninMessages($this->sakonninMessages);
+            $this->receiver->setSakonninMessages($this->sakonninMessages);
             return $this->receiver->receive($data);
         } else {
             throw new \InvalidArgumentException("Cannot handle SMS reception because no method set");
