@@ -2,8 +2,9 @@
 
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
-/*
- */
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class MailAndNotifyOnErrorSubject
 {
@@ -19,6 +20,12 @@ class MailAndNotifyOnErrorSubject
 
     public $forward_functions = [
     ];
+
+    public function __construct(
+        private MailerInterface $mailer,
+        private RouterInterface $router
+    ) {
+    }
 
     /* You may call this lazyness, just having an options array, but it's also
      * more future proof. */

@@ -2,6 +2,10 @@
 
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\RouterInterface;
+
 /*
  *
  */
@@ -20,6 +24,12 @@ class MailCopy
             'needs_attributes' => false,
         ),
     ];
+
+    public function __construct(
+        private MailerInterface $mailer,
+        private RouterInterface $router
+    ) {
+    }
 
     /* You may call this lazyness, jkust having an options array, but it's also
      * more future proof. */

@@ -26,13 +26,10 @@ class ForwardOnErrorSubject
     public $forward_functions = [
     ];
 
-    protected $router;
-    protected $mailer;
-
-    public function __construct(MailerInterface $mailer, RouterInterface $router)
-    {
-        $this->mailer = $mailer;
-        $this->router = $router;
+    public function __construct(
+        private MailerInterface $mailer,
+        private RouterInterface $router
+    ) {
     }
 
     /* 

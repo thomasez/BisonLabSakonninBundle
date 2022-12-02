@@ -3,6 +3,9 @@
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
 use BisonLab\SakonninBundle\Service\SmsHandler;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /*
  *
@@ -24,6 +27,8 @@ class PmSmsMailCopy
 
     public function __construct(
         private SmsHandler $smsHandler,
+        private MailerInterface $mailer,
+        private RouterInterface $router
     ) {
     }
 

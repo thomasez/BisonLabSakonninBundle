@@ -3,6 +3,8 @@
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
 use BisonLab\SakonninBundle\Entity\Message;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /*
@@ -23,11 +25,10 @@ class NotifyiOnReceptionMailOnErrorSubject
     public $forward_functions = [
     ];
 
-    protected $router;
-
-    public function __construct(RouterInterface $router)
-    {
-        $this->router = $router;
+    public function __construct(
+        private MailerInterface $mailer,
+        private RouterInterface $router
+    ) {
     }
 
     public function execute($options = array())
