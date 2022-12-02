@@ -172,10 +172,10 @@ class SecurityModelVoter extends Voter
         }
 
         if (('INTERNAL' == $subject->getFromType()) && 
-            ($subject->getFrom() == $user->getId() || $subject->getFrom() == $user->getUsername()))
+            ($subject->getFrom() == $user->getId() || $subject->getFrom() == $user->getUserIdentifier()))
                 return true;
         if (('INTERNAL' == $subject->getToType()) &&
-            ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUsername()))
+            ($subject->getTo() == $user->getId() || $subject->getTo() == $user->getUserIdentifier()))
                 return true;
         // Then, how do I get the object the context is pointing at?
         // Answer: "The ExternalRetriever" in my ContextBundle.

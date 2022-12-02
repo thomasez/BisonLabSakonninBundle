@@ -148,9 +148,9 @@ class Message
     /*
      * These two are not meant to be stored. They are just for convenience.
      * It's meant for user objects.
-     * I could make this require the FOS UserInterface but will try without.
+     * I could make this require the UserInterface but will try without.
      * For being useful at all, they should have the function "getEmail".
-     * "getUsername" and "getMobilePhoneNumber" is useful aswell.  But do a
+     * "getUserIdentifier" and "getMobilePhoneNumber" is useful aswell.  But do a
      * method_exists on the object to make sure the functions are there
      * when you're gonna use it.
      *

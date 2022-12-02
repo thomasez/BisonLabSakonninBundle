@@ -46,16 +46,24 @@ trait CommonStuff
             return $this->getUserFromUserIdentifier($username);
     }
 
-    public function getUserNameFromUserId($userid)
+    public function getUsernameFromUserId($userid)
     {
         // It may just not be an ID.
         if (!is_numeric($userid)) return $userid;
         $user = $this->getUserFromUserId($userid);
         if (!$user) return $userid;
-        if (method_exists($user, 'getUserName'))
-            return $user->getUserName();
+        if (method_exists($user, 'getUsername'))
+            return $user->getUsername();
         else
             return $user->getUserIdentifier();
+    }
+
+    public function getUserIdentifierFromUserId($userid)
+    {
+        // It may just not be an ID.
+        if (!is_numeric($userid)) return $userid;
+        $user = $this->getUserFromUserId($userid);
+        return $user->getUserIdentifier();
     }
 
     public function getEmailFromUser($user = null)

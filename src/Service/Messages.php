@@ -314,7 +314,7 @@ class Messages
     public function getMessagesForUser($user, $criterias = array())
     {
         $criterias['userid'] = $user->getId();
-        if (method_exists($user, 'getUserName'))
+        if (method_exists($user, 'getUsername'))
             $criterias['username'] = $user->getUsername();
         else
             $criterias['username'] = $user->getUserIdentifier();
