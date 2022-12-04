@@ -105,8 +105,8 @@ class Templates
         // I wonder if this hack works..
         // (It does. And I like it.)
         $template_data['twigparser'] = $this;
-
         $parsed = $twig->render('message_template', $template_data);
+
         // First, just strip whitespaces.
         if (isset($options['strip_empty_lines'])) {
             // Not running per line means we have to strip away the newline and

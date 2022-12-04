@@ -2,9 +2,13 @@
 
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
+<<<<<<< Updated upstream
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\RouterInterface;
+=======
+use Symfony\Component\Mailer\MailerInterface;
+>>>>>>> Stashed changes
 
 /*
  *

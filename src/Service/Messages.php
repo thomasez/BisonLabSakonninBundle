@@ -125,6 +125,22 @@ class Messages
                 $message->setToType($data['to_type']);
         }
 
+        /*
+         * Just add the hopefuly obvious.
+         */
+        if ($message->getToType() == "EXTERNAL") {
+            // Gotta be able to have multiple receivers/to.
+            $toers = [];
+            if (preg_match("/,/", $message->getTo())) {
+                $toers = explode(",", $message->getTo());
+            } elseif (!empty($message->getTo())) {
+                $toers = [$message->getTo()];
+            }
+            foreach ($toers as $toer) {
+                $message->addReceiver($toer);
+            }
+        }
+
         // All this is a hack, but it's gotta be somewhere and this works 
         // for now.
         if ($message->getToType() == "INTERNAL") {
