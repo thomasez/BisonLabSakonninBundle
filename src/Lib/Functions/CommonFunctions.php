@@ -44,6 +44,8 @@ trait CommonFunctions
 
     public function sendMail($message, $mailto, $options = array())
     {
+error_log("Sender mail");
+return true;
         /*
          * This is odd, why not just have the receiver address in the message
          * before it's sent to this function?
