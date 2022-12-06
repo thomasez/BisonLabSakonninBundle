@@ -52,15 +52,15 @@ class Messages
             $data = [];
         } else {
             $message = new Message($data);
-            if (isset($data['template'])) {
+            if ($template_name = $data['template'] ?? null) {
                 $template_data = $data['template_data'];
                 $template_data['user'] = $this->getLoggedInUser();
-                if (!$template = $this->sakonninTemplates->getTemplate($data['template']))
+                if (!$template = $this->sakonninTemplates->getTemplate($template_name))
                     throw new \InvalidArgumentException("There is no template named " . $data['template']);
                 $message->setBody($this->sakonninTemplates->parse($template->getTemplate(), $template_data));
             }
 
-            if (isset($data['message_type']) 
+            if (isset($data['message_type'])
                     && $message_type = $this->entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            
             } else {
@@ -129,6 +129,19 @@ class Messages
          * Just add the hopefuly obvious.
          */
         if ($message->getToType() == "EXTERNAL") {
+            // Gotta be able to have multiple receivers/to.
+            $toers = [];
+            if (preg_match("/,/", $message->getTo())) {
+                $toers = explode(",", $message->getTo());
+            } elseif (!empty($message->getTo())) {
+                $toers = [$message->getTo()];
+            }
+            foreach ($toers as $toer) {
+                $message->addReceiver($toer);
+            }
+        }
+
+        if (in_array($message->getToType(), ['EMAIL', 'SMS'])) {
             // Gotta be able to have multiple receivers/to.
             $toers = [];
             if (preg_match("/,/", $message->getTo())) {
