@@ -8,6 +8,14 @@
               {{ entity.subject }}
             </td>
           </tr>
+{% if entity.inreplyto %}
+        <tr>
+            <th valign="top">In reply to:</th>
+            <td valign="top">
+                  <a href="{{ path('message_show', { 'message_id': entity.inreplyto.messageid }) }}">{{ entity.inreplyto.subject }}</a>
+            </td>
+        </tr>
+{% endif %}
           <tr>
 {% if entity.from %}
             <th valign="top">From:</th>
