@@ -4,6 +4,7 @@ namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
-use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Entity\MessageContext;
@@ -24,19 +24,16 @@ use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
  *
  * @Route("/{access}/sakonnin_message", defaults={"access": "web"}, requirements={"access": "web|rest|ajax"})
  */
-class MessageController extends CommonController
+class MessageController extends AbstractController
 {
+    use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $managerRegistry;
-    private $sakonninMessages;
-
-    public function __construct(ManagerRegistry $managerRegistry, SakonninMessages $sakonninMessages, SerializerInterface $serializer)
-    {
-        $this->managerRegistry = $managerRegistry;
-        $this->sakonninMessages = $sakonninMessages;
-        // Push this "back to" the RestTrait included in CommonController.
-        $this->serializer = $serializer;
+    public function __construct(
+        protected ManagerRegistry $managerRegistry,
+        protected SakonninMessages $sakonninMessages,
+        protected SerializerInterface $serializer
+    ) {
     }
 
     /**
@@ -533,6 +530,7 @@ class MessageController extends CommonController
     {
         $messages = $this->sakonninMessages
             ->getMessagesForLoggedIn(array('state' => 'UNREAD'));
+
         if ($messages) {
             return $this->returnRestData($request, array('amount' => count($messages)));
         }

@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -11,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Doctrine\Persistence\ManagerRegistry;
 
-use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Form\MessageTypeType;
 use BisonLab\SakonninBundle\Form\FunctionAttributeType;
@@ -22,8 +22,9 @@ use BisonLab\SakonninBundle\Service\Functions as SakonninFunctions;
  *
  * @Route("/sakonnin_messagetype")
  */
-class MessageTypeController extends CommonController
+class MessageTypeController extends AbstractController
 {
+    use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $managerRegistry;

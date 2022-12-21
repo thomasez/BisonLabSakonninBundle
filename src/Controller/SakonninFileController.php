@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
-use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 use BisonLab\SakonninBundle\Service\Files as SakonninFiles;
 
@@ -26,8 +26,9 @@ use BisonLab\SakonninBundle\Service\Files as SakonninFiles;
  *
  * @Route("/{access}/sakonnin_file", defaults={"access": "web"}, requirements={"access": "web|rest|ajax"})
  */
-class SakonninFileController extends CommonController
+class SakonninFileController extends AbstractController
 {
+    use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $managerRegistry;

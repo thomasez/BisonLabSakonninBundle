@@ -2,12 +2,12 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
-use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\SakonninTemplate;
 
 /**
@@ -15,8 +15,9 @@ use BisonLab\SakonninBundle\Entity\SakonninTemplate;
  *
  * @Route("sakonnin_template")
  */
-class SakonninTemplateController extends CommonController
+class SakonninTemplateController extends AbstractController
 {
+    use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $managerRegistry;

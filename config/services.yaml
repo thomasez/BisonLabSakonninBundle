@@ -9,6 +9,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Lib/'
 
+    BisonLab\SakonninBundle\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
     BisonLab\SakonninBundle\Lib\Functions\:
         resource: '../src/Lib/Functions/'
         exclude:

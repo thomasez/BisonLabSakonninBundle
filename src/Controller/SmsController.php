@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Psr\Log\LoggerInterface;
 
-use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Service\SmsHandler;
@@ -28,8 +28,9 @@ use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
  *
  * @Route("/sms")
  */
-class SmsController extends CommonController
+class SmsController extends AbstractController
 {
+    use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     /**
      * Tries it's best to handle whatever being thrown at it and forward the
      * content to the configured default receiver.
