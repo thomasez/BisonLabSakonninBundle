@@ -4,6 +4,7 @@ namespace BisonLab\SakonninBundle\Lib\Functions;
 
 use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
+use BisonLab\SakonninBundle\Entity\MessageContext;
 use Symfony\Component\Mime\Email;
 
 /*
@@ -12,7 +13,7 @@ use Symfony\Component\Mime\Email;
  * Symfony\Component\Mailer\MailerInterface $this->mailer;
  * Symfony\Component\Routing\RouterInterface $this->router;
  *
- * Crculartypehinting is not really working.
+ * Cicular typehinting is not really working.
  * Which is why it's setters further down.
  * BisonLab\SakonninBundle\Service\Messages as SakonninMessages $this->sakonninMessages;
  * BisonLab\SakonninBundle\Service\SmsHandler $this->smsHandler
@@ -42,7 +43,7 @@ trait CommonFunctions
         return $this->config;
     }
 
-    public function sendMail($message, $mailto, $options = array())
+    public function sendMail(Message $message, $mailto, $options = array())
     {
         /*
          * This is odd, why not just have the receiver address in the message
@@ -122,6 +123,11 @@ trait CommonFunctions
         $from = $this->sakonninMessages->getLoggedInUser();
         $message->setFrom($from);
         $message->setFromType('INTERNAL');
+
+        if ($context_data = $options['context'] ?? null) {
+            $message_context = new MessageContext($context_data);
+            $message->addContext($message_context);
+        }
 
         $this->sakonninMessages->postMessage($message);
 
