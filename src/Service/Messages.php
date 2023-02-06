@@ -398,24 +398,18 @@ class Messages
         }
 
         if (isset($criterias['base_type'])) {
-            $types = $this->getMessageTypes(['base_type' => $criterias['base_type']]);
-            $query->andWhere("m.message_type in (:message_types)")
-                ->setParameter('message_types', $types);
+            $query->andWhere("m.message_type in (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.base_type = :base_type)")
+                ->setParameter('base_type', $criterias['base_type']);
         }
 
         if (isset($criterias['message_type'])) {
-            $mt = $this->getMessageType($criterias['message_type']);
-            $query->andWhere("m.message_type = :message_type")
-                ->setParameter('message_type', $mt);
+            $query->andWhere("m.message_type = (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name = message_type)")
+                ->setParameter('message_types', $criterias['message_type']);
         }
 
         if (isset($criterias['message_types'])) {
-            $types = [];
-            foreach ($criterias['message_types'] as $mt) {
-                $types[] = $this->getMessageType($mt);
-            }
-            $query->andWhere("m.message_type in (:message_types)")
-                ->setParameter('message_types', $types);
+            $query->andWhere("m.message_type in (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name in (:message_types))")
+                ->setParameter('message_types', $criterias['message_types']);
         }
 
         if (isset($criterias['message_group'])) {
@@ -427,9 +421,8 @@ class Messages
         }
 
         if (isset($criterias['not_message_type'])) {
-            $mt = $this->getMessageType($criterias['not_message_type']);
-            $query->andWhere("m.message_type != :message_type")
-                ->setParameter('message_type', $mt);
+            $query->andWhere("m.message_type != (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name = message_type)")
+                ->setParameter('message_types', $criterias['message_type']);
         }
 
         if (!isset($criterias['with_replies'])) {

@@ -222,7 +222,7 @@ class Files
         $query = $repo->createQueryBuilder('f');
 
         if (isset($criterias['context'])) {
-            $query->innerJoin('f.contexts', 'fc')
+            $query->leftJoin('f.contexts', 'fc')
                 ->where('fc.system = :system')
                 ->andWhere('fc.object_name = :object_name')
                 ->andWhere('fc.external_id = :external_id')
