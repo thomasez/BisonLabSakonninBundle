@@ -31,6 +31,7 @@ use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
 class SmsController extends AbstractController
 {
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
+
     /**
      * Tries it's best to handle whatever being thrown at it and forward the
      * content to the configured default receiver.

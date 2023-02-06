@@ -31,18 +31,12 @@ class SakonninFileController extends AbstractController
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $managerRegistry;
-    private $sakonninFiles;
-    private $parameterBag;
-
-    public function __construct(ManagerRegistry $managerRegistry, SakonninFiles $sakonninFiles, ParameterBagInterface $parameterBag, SerializerInterface $serializer)
-    {
-        $this->managerRegistry = $managerRegistry;
-        $this->sakonninFiles = $sakonninFiles;
-        $this->parameterBag = $parameterBag;
-
-        // Push this "back to" the RestTrait included in CommonController.
-        $this->serializer = $serializer;
+    public function __construct(
+        private ManagerRegistry $managerRegistry,
+        private SakonninFiles $sakonninFiles,
+        private ParameterBagInterface $parameterBag,
+        private SerializerInterface $serializer
+    ) {
     }
 
 
@@ -57,7 +51,8 @@ class SakonninFileController extends AbstractController
         $sfiles = $this->sakonninFiles->getFilesForLoggedIn();
 
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $sfiles, array('html' =>'file/_index.html.twig'));
+            return $this->returnRestData($request, $sfiles,
+                array('html' =>'file/_index.html.twig'));
         }
         return $this->render('@BisonLabSakonnin/SakonninFile/index.html.twig',
             array('files' => $sfiles));

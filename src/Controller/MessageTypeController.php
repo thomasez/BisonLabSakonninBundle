@@ -27,14 +27,10 @@ class MessageTypeController extends AbstractController
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $managerRegistry;
-    private $entityManager;
-    private $sakonninFunctions;
-
-    public function __construct(ManagerRegistry $managerRegistry, SakonninFunctions $sakonninFunctions)
-    {
-        $this->sakonninFunctions = $sakonninFunctions;
-        $this->managerRegistry = $managerRegistry;
+    public function __construct(
+        private ManagerRegistry $managerRegistry,
+        private SakonninFunctions $sakonninFunctions
+    ) {
     }
 
     /**

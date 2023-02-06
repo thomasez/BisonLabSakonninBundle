@@ -9,6 +9,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\SakonninBundle\Entity\SakonninTemplate;
+use BisonLab\SakonninBundle\Form\SakonninTemplateType;
 
 /**
  * Sakonnintemplate controller.
@@ -20,11 +21,9 @@ class SakonninTemplateController extends AbstractController
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
-    private $managerRegistry;
-
-    public function __construct(ManagerRegistry $managerRegistry)
-    {
-        $this->managerRegistry = $managerRegistry;
+    public function __construct(
+        private ManagerRegistry $managerRegistry
+    ) {
     }
 
     /**
@@ -50,7 +49,7 @@ class SakonninTemplateController extends AbstractController
         $sakonninTemplate = new Sakonnintemplate();
         $default_lang_code = $translator->getLocale();
         $sakonninTemplate->setLangCode($default_lang_code);
-        $form = $this->createForm('BisonLab\SakonninBundle\Form\SakonninTemplateType', $sakonninTemplate);
+        $form = $this->createForm(SakonninTemplateType::class, $sakonninTemplate);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -88,7 +87,7 @@ class SakonninTemplateController extends AbstractController
      */
     public function editAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
-        $editForm = $this->createForm('BisonLab\SakonninBundle\Form\SakonninTemplateType', $sakonninTemplate);
+        $editForm = $this->createForm(SakonninTemplateType::class, $sakonninTemplate);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {

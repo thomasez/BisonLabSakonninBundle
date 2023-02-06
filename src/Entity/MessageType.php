@@ -143,7 +143,7 @@ class MessageType
     private $expire_method;
 
     /**
-     * @ORM\ManyToOne(targetEntity="SakonninTemplate", inversedBy="message_types")
+     * @ORM\ManyToOne(targetEntity="SakonninTemplate", inversedBy="message_types", fetch="EAGER")
      * @ORM\JoinColumn(name="sakonnin_template_id", referencedColumnName="id", nullable=true)
      **/
     private $sakonnin_template;
@@ -158,7 +158,7 @@ class MessageType
     protected $children;
 
     /**
-     * @ORM\ManyToOne(targetEntity="MessageType", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="MessageType", inversedBy="children", fetch="EAGER")
      * @ORM\JoinColumn(name="parent_message_type_id", referencedColumnName="id")
      */
     protected $parent;
