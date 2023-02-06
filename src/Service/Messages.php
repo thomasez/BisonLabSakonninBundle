@@ -403,8 +403,8 @@ class Messages
         }
 
         if (isset($criterias['message_type'])) {
-            $query->andWhere("m.message_type = (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name = message_type)")
-                ->setParameter('message_types', $criterias['message_type']);
+            $query->andWhere("m.message_type = (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name = :message_type)")
+                ->setParameter('message_type', $criterias['message_type']);
         }
 
         if (isset($criterias['message_types'])) {
@@ -421,8 +421,8 @@ class Messages
         }
 
         if (isset($criterias['not_message_type'])) {
-            $query->andWhere("m.message_type != (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name = message_type)")
-                ->setParameter('message_types', $criterias['message_type']);
+            $query->andWhere("m.message_type != (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name = :message_type)")
+                ->setParameter('message_type', $criterias['message_type']);
         }
 
         if (!isset($criterias['with_replies'])) {
