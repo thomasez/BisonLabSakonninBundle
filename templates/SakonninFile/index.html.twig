@@ -14,6 +14,7 @@
         </thead>
         <tbody>
         {% for file in files %}
+          {% if is_granted('show', file) %}
             <tr>
                 <td><a href="{{ path('sakonninfile_show', { 'file_id': file.fileid }) }}">{{ file.name }}</a></td>
                 <td>{{ file.fileId }}</td>
@@ -29,6 +30,7 @@
                     </ul>
                 </td>
             </tr>
+          {% endif %}
         {% endfor %}
         </tbody>
     </table>
