@@ -379,6 +379,16 @@ class Messages
                 ->setParameter('external_id', $external_id);
         }
 
+        if (isset($criterias['to'])) {
+            $query->andWhere("m.to = :to")
+                ->setParameter('to', $criterias['to']);
+        }
+
+        if (isset($criterias['from'])) {
+            $query->andWhere("m.from = :from")
+                ->setParameter('from', $criterias['from']);
+        }
+
         if (isset($criterias['userid'])) {
             $query->andWhere('m.to in (:userid, :username)');
             if (isset($criterias['include_from']))
