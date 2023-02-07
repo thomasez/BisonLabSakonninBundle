@@ -75,7 +75,7 @@ class SakonninFile
 
     /**
      * @var string
-     * A uniquue ID, as also use byt message.
+     * uniqid()
      *
      * @ORM\Column(name="file_id", type="string", length=100, unique=true)
      */
@@ -151,20 +151,17 @@ class SakonninFile
      *
      * @return Product
      */
-    public function setFile(File $file = null)
+    public function setFile(?File $file = null): void
     {
         $this->file = $file;
-        // Until php7/uploaderbundle 1.7
         if ($file instanceof UploadedFile) {
             $this->setMimeType($file->getMimeType());
             $this->setName($file->getClientOriginalName());
             $this->setSize($file->getSize());
         }
-        
-        return $this;
     }
 
-    public function getFile()
+    public function getFile(): ?File
     {
         return $this->file;
     }
@@ -176,11 +173,9 @@ class SakonninFile
      *
      * @return File
      */
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -188,7 +183,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -198,7 +193,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -210,11 +205,9 @@ class SakonninFile
      *
      * @return File
      */
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
     /**
@@ -222,7 +215,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getStoredAs()
+    public function getStoredAs(): ?string
     {
         return $this->storedAs;
     }
@@ -234,11 +227,9 @@ class SakonninFile
      *
      * @return File
      */
-    public function setStoredAs($storedAs)
+    public function setStoredAs(?string $storedAs): void
     {
         $this->storedAs = $storedAs;
-
-        return $this;
     }
 
     /**
@@ -248,11 +239,9 @@ class SakonninFile
      *
      * @return File
      */
-    public function setFileId($fileId)
+    public function setFileId(?string $fileId): void
     {
         $this->fileId = $fileId;
-
-        return $this;
     }
 
     /**
@@ -260,7 +249,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getFileId()
+    public function getFileId(): ?string
     {
         return $this->fileId;
     }
@@ -272,11 +261,9 @@ class SakonninFile
      *
      * @return File
      */
-    public function setSize($size)
+    public function setSize(?int $size): void
     {
         $this->size = $size;
-
-        return $this;
     }
 
     /**
@@ -284,7 +271,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }
@@ -295,22 +282,21 @@ class SakonninFile
      * @param string $
      * @return Message
      */
-    public function setFileType($fileType)
+    public function setFileType(?string $fileType): void
     {
-        if ($fileType == $this->fileType) return $this;
+        if ($fileType == $this->fileType) return;
         if (!isset(self::getFileTypes()[$fileType])) {
             throw new \InvalidArgumentException(sprintf('"%s" is not a valid file type.', $fileType));
         }
 
         $this->fileType = $fileType;
-        return $this;
     }
 
     /**
      * Get fileType
      * @return string
      */
-    public function getFileType()
+    public function getFileType(): ?string
     {
         return $this->fileType;
     }
@@ -319,9 +305,9 @@ class SakonninFile
      * Get fileType
      * @return string
      */
-    public function getThumbnailable()
+    public function getThumbnailable(): bool
     {
-        return self::getFileTypes()[$this->fileType]['thumbnailable'];
+        return self::getFileTypes()[$this->fileType]['thumbnailable'] ?? false;
     }
 
     /**
@@ -331,11 +317,9 @@ class SakonninFile
      *
      * @return File
      */
-    public function setMimeType($mimeType)
+    public function setMimeType(?string $mimeType): void
     {
         $this->mimeType = $mimeType;
-
-        return $this;
     }
 
     /**
@@ -343,7 +327,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getMimeType()
+    public function getMimeType(): ?string
     {
         return $this->mimeType;
     }
@@ -355,11 +339,9 @@ class SakonninFile
      *
      * @return File
      */
-    public function setEncoding($encoding)
+    public function setEncoding(?string $encoding): void
     {
         $this->encoding = $encoding;
-
-        return $this;
     }
 
     /**
@@ -367,7 +349,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getEncoding()
+    public function getEncoding(): ?string
     {
         return $this->encoding;
     }
@@ -415,14 +397,13 @@ class SakonninFile
      *
      * @return array
      */
-    public function setTags($tags)
+    public function setTags(string|array $tags): void
     {
         if (is_array($tags)) {
             $this->tags = $tags;
         } else {
             $this->tags = array_map('trim', explode(",", $tags));
         }
-        return $this->tags;
     }
 
     /**
@@ -430,7 +411,7 @@ class SakonninFile
      *
      * @return array
      */
-    public function getTags()
+    public function getTags(): ?array
     {
         return $this->tags;
     }
@@ -440,7 +421,7 @@ class SakonninFile
      *
      * @return string
      */
-    public function getRealPath()
+    public function getRealPath(): ?string
     {
         // Not sure which one is the best one for now, but this seemed logical.
         // Yeah, read the docs stupid.
@@ -448,11 +429,11 @@ class SakonninFile
     }
 
     /**
-     * Get Address Types (For use by FromType and ToType)
+     * Get File Types
      *
      * @return array
      */
-    public static function getFileTypes()
+    public static function getFileTypes(): array
     {
         return ExternalEntityConfig::getFileTypes();
     }
@@ -467,7 +448,7 @@ class SakonninFile
      */
     public function isImage(): bool
     {
-        return strpos($this->mimeType, 'image') !== FALSE;
+        return strpos($this->mimeType, 'image') !== false;
     }
 
     /*
@@ -475,6 +456,6 @@ class SakonninFile
      */
     public function isText(): bool
     {
-        return strpos($this->mimeType, 'text') !== FALSE;
+        return strpos($this->mimeType, 'text') !== false;
     }
 }
