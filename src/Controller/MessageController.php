@@ -490,7 +490,7 @@ class MessageController extends AbstractController
         if (!$this->isCsrfTokenValid('message-messages', $request->request->get('_token')))
             return $this->redirect($request->headers->get('referer'));
 
-        $msglist = $request->request->get('message_list');
+        $msglist = $request->request->all('message_list');
         $submit = $request->request->get('submit');
         if (!is_array($msglist))
              return $this->redirect($request->headers->get('referer'));
