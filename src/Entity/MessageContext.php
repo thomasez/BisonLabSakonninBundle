@@ -32,13 +32,6 @@ class MessageContext
         return true;
     }
 
-    public function __construct($options = array())
-    {
-        if (isset($options['message'])) 
-            $this->setMessage($options['message']);
-        return $this->traitConstruct($options);
-    }
-
     /** 
      * Set message
      *
