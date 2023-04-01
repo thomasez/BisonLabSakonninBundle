@@ -24,18 +24,41 @@ class SmsHandler
     ) {
         $this->locator = $locator;
         $options = $parameterBag->get('sakonnin.sms');
-        $sender_name   = $options['sender'] ?? null;
-        $receiver_name = $options['receiver'] ?? null;
+        if (isset($options['sender']))
+            $this->setSender($options['sender']);
+        if (isset($options['receiver']))
+            $this->setReceiver($options['receiver']);
+    }
+
+    /*
+     * Yeah, looking odd, but some times you just want to change the sender and
+     * reciever in the middle of a request/job/run.
+     *
+     * Typically for just disabling sendingo anything just there and then.
+     * And I'll do the same with receiver to keep consistency.
+     */
+    public function setSender($sender)
+    {
         foreach ($this->locator->getProvidedServices() as $sclass) {
             $smshandler = $this->locator->get($sclass);
             $config = $smshandler->getConfig();
-            if ($config['sends'] && $config['name'] == $sender_name) {
+            if ($config['sends'] && $config['name'] == $sender) {
                 $this->sender = $smshandler;
             }
-            if ($config['receives'] && $config['name'] == $receiver_name) {
+        }
+        if (!$this->sender)
+            throw new \InvalidArgumentException("The SMS sender specified does not exist.");
+    }
+
+    public function setReceiver($receiver)
+    {
+        foreach ($this->locator->getProvidedServices() as $sclass) {
+            if ($config['receives'] && $config['name'] == $receiver) {
                 $this->receiver = $smshandler;
             }
         }
+        if (!$this->receiver)
+            throw new \InvalidArgumentException("The SMS sender specified does not exist.");
     }
 
     /*
