@@ -46,6 +46,25 @@ class SmsHandler
         )
     );
 
+    /*
+     * Yeah, looking odd, but some times you just want to change the sender and
+     * reciever in the middle of a request/job/run.
+     *
+     * Typically for just disabling sending anything just there and then.
+     */
+    public function setSender($sender)
+    {
+        if (!isset($this->senders[$sender]))
+            throw new \InvalidArgumentException("The SMS sender specified does not exist.");
+        $this->sender_class = $this->senders[$sender]['class'];
+    }
+    public function setReceiver($receiver)
+    {
+        if (!isset($this->receivers[$receiver]))
+            throw new \InvalidArgumentException("The SMS receiver specified does not exist.");
+        $this->receiver_class = $this->receivers[$receiver]['class'];
+    }
+
     public function __construct($container, $options = array())
     {
         $this->container = $container;
