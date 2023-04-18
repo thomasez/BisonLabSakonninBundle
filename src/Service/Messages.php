@@ -52,14 +52,6 @@ class Messages
             $data = [];
         } else {
             $message = new Message($data);
-            if ($template_name = $data['template'] ?? null) {
-                $template_data = $data['template_data'];
-                $template_data['user'] = $this->getLoggedInUser();
-                if (!$template = $this->sakonninTemplates->getTemplate($template_name))
-                    throw new \InvalidArgumentException("There is no template named " . $data['template']);
-                $message->setBody($this->sakonninTemplates->parse($template->getTemplate(), $template_data));
-            }
-
             if (isset($data['message_type'])
                     && $message_type = $this->entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            
@@ -123,6 +115,16 @@ class Messages
 
             if (isset($data['to_type']))
                 $message->setToType($data['to_type']);
+
+            // Finally, and eventually set Body from a template
+            if ($template_name = $data['template'] ?? null) {
+                $template_data = $data['template_data'];
+                $template_data['user'] = $this->getLoggedInUser();
+                $template_data['message'] = $message;
+                if (!$template = $this->sakonninTemplates->getTemplate($template_name))
+                    throw new \InvalidArgumentException("There is no template named " . $data['template']);
+                $message->setBody($this->sakonninTemplates->parse($template->getTemplate(), $template_data));
+            }
         }
 
         /*
