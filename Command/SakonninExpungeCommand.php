@@ -13,7 +13,8 @@ use BisonLab\SakonninBundle\Entity\MessageType as MessageType;
 use BisonLab\SakonninBundle\Entity\Message;
 
 /**
- * Imports message types. Either for fixtures or just install for prod.
+ * Removes messages after a set time period, if the period is set on the
+ * message type.
  *
  * @author Thomas Lundquist <thomasez@bisonlab.no>
  */
