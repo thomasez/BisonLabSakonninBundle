@@ -44,14 +44,6 @@ class Messages
             $message = $data;
         } else {
             $message = new Message($data);
-            if (isset($data['template'])) {
-                $template_data = $data['template_data'];
-                $template_data['user'] = $this->getLoggedInUser();
-                if (!$template = $this->stemplates->getTemplate($data['template']))
-                    throw new \InvalidArgumentException("There is no template named " . $data['template']);
-                $message->setBody($this->stemplates->parse($template->getTemplate(), $template_data));
-            }
-
             if (isset($data['message_type']) 
                     && $message_type = $em->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
                 $message->setMessageType($message_type);            
@@ -109,6 +101,16 @@ class Messages
 
             if (isset($data['to_type']))
                 $message->setToType($data['to_type']);
+
+            // Finally, parse and set body.
+            if (isset($data['template'])) {
+                $template_data = $data['template_data'];
+                $template_data['user'] = $this->getLoggedInUser();
+                $template_data['message'] = $message;
+                if (!$template = $this->stemplates->getTemplate($data['template']))
+                    throw new \InvalidArgumentException("There is no template named " . $data['template']);
+                $message->setBody($this->stemplates->parse($template->getTemplate(), $template_data));
+            }
         }
 
         // All this is a hack, but it's gotta be somewhere and this works 
