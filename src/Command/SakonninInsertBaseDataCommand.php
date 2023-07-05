@@ -84,7 +84,7 @@ class SakonninInsertBaseDataCommand extends Command
                 ),
     );
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp(<<<EOT
@@ -102,7 +102,7 @@ EOT
         parent::__construct();
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
     }

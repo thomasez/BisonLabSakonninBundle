@@ -33,7 +33,7 @@ class SakonninExpungeCommand extends Command
     private $entityManager;
     private $mt_cache = array();
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
            ->addOption('doit', '', InputOption::VALUE_REQUIRED, 'And you have to set it with --doit=yes to make it happen')
@@ -56,7 +56,7 @@ EOT
         parent::__construct();
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
         $this->doit = $input->getOption('doit');

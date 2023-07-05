@@ -14,7 +14,7 @@ class SakonninTemplateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, array('label' => "Name", 'required' => true, "attr" => array("size" => "50")))
@@ -50,7 +50,7 @@ class SakonninTemplateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'data_class' => 'BisonLab\SakonninBundle\Entity\SakonninTemplate'

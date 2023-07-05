@@ -17,7 +17,7 @@ class SakonninFileType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $sfile = $options['data'];
         if (isset($options['data']) && $options['data']->getDescription()) {
@@ -58,7 +58,7 @@ class SakonninFileType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'data_class' => 'BisonLab\SakonninBundle\Entity\SakonninFile'

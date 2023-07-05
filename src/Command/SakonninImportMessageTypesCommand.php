@@ -31,7 +31,7 @@ class SakonninImportMessageTypesCommand extends Command
     private $entityManager;
     private $mt_cache = array();
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption('delimiter', '', InputOption::VALUE_REQUIRED, 'Field delimiter, defaults to ; semicolon')
@@ -57,7 +57,7 @@ EOT
         parent::__construct();
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
 

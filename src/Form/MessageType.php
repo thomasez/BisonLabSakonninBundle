@@ -25,7 +25,7 @@ class MessageType extends AbstractType
      * @param FormBuilderInterface $builder
      * @param array $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $type_choices = array();
         if (!$options['data']->getMessageType()) {
@@ -113,7 +113,7 @@ class MessageType extends AbstractType
     /**
      * @param OptionsResolverInterface $resolver
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'full_edit' => false,
