@@ -2,11 +2,10 @@
 
 namespace BisonLab\SakonninBundle\EventListener;
 
-use Doctrine\ORM\Events;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
 
@@ -14,27 +13,17 @@ use BisonLab\SakonninBundle\Entity\SakonninFile;
  * Listen to the remove event to delete files accordingly.
  * The VichUploader handles the file itself, but this is for thumbnails.
  */
-class SakonninFileListener implements EventSubscriberInterface
+#[AsDoctrineListener('preRemove')]
+#[AsDoctrineListener('postRemove')]
+class SakonninFileListener
 {
     private $file_storage;
     private $removes = array();
 
-    public function __construct(ParameterBagInterface $parameterBag)
-    {
+    public function __construct(
+        privateParameterBagInterface $parameterBag
+    ) {
         $this->file_storage = $parameterBag->get('sakonnin.file_storage');;
-    }
-
-    /**
-     * The events the listener is subscribed to.
-     *
-     * @return array The array of events.
-     */
-    public function getSubscribedEvents(): array
-    {
-        return array(
-            Events::preRemove,
-            Events::postRemove,
-        );
     }
 
     /**
