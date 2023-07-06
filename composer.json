@@ -18,8 +18,8 @@
         }
     ],
     "require": {
-        "bisonlab/common-bundle": "dev-sf6",
-        "bisonlab/context-bundle": "dev-sf6",
+        "bisonlab/common-bundle": "^4.0",
+        "bisonlab/context-bundle": "^1.0",
         "symfony/framework-bundle": "^6.2",
         "vich/uploader-bundle": "dev-master",
         "imagine/imagine": "^1.3",
