@@ -21,8 +21,8 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
  *
  * @ORM\Table(name="sakonnin_file")
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninFileRepository")
- * @Vich\Uploadable
  */
+#[Vich\Uploadable]
 class SakonninFile
 {
     use \BisonLab\ContextBundle\Entity\ContextOwnerTrait;
@@ -42,10 +42,9 @@ class SakonninFile
      * NOTE: This is not a mapped field of entity metadata, just a simple
      * property.
      * 
-     * @Vich\UploadableField(mapping="sakonnin_file", fileNameProperty="storedAs", size="size", mimeType="mimeType", originalName="name")
-     * 
      * @var File
      */
+    #[Vich\UploadableField(mapping: "sakonnin_file", fileNameProperty: "storedAs", size: "size", mimeType: "mimeType", originalName: "name")]
     private $file;
 
     /**
