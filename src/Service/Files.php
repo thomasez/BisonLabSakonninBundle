@@ -297,14 +297,22 @@ class Files
         $filename = $path . "/" . $sfile->getStoredAs();
         $thumbdir = $filename . "_thumbs";
         $thumbname = $thumbdir . "/" . $x . "_" . $y . "_" . $sfile->getStoredAs();
+        if ($sfile->getMimeType() == "image/heic") {
+            $thumbname = preg_replace("/heic$/i", "jpg", $thumbname);
+        }
         if (file_exists($thumbname))
             return $thumbname;
         if (!file_exists($thumbdir))
             mkdir ($thumbdir);
-        $imagine = new \Imagine\Gd\Imagine();
-        $image = $imagine->open($filename);
-        $thumb = $image->thumbnail(new \Imagine\Image\Box($x, $y));
-        $thumb->save($thumbname);
+
+        $thumb = new \Imagick();
+        $thumb->setSize($x, $y);
+        $thumb->readImage($filename);
+        if ($sfile->getMimeType() == "image/heic")
+            $thumb->setFormat("jpg");
+        $thumb->cropThumbnailImage($x, $y);
+        $thumb->writeImage($thumbname);
+        $thumb->destroy();
 
         return $thumbname;
     }
