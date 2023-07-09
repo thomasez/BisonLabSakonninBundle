@@ -19,8 +19,8 @@
     ],
     "require": {
         "ext-imagick": "*",
-        "bisonlab/common-bundle": "^4.0",
-        "bisonlab/context-bundle": "^2.0",
+        "bisonlab/common-bundle": "dev-attributes",
+        "bisonlab/context-bundle": "dev-attributes",
         "symfony/framework-bundle": "^6.2",
         "vich/uploader-bundle": "dev-master",
         "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
