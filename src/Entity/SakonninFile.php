@@ -18,11 +18,10 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
 
 /**
  * SakonninFile
- *
- * @ORM\Table(name="sakonnin_file")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninFileRepository")
  */
 #[Vich\Uploadable]
+#[ORM\Table(name: 'sakonnin_file')]
+#[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\SakonninFileRepository')]
 class SakonninFile
 {
     use \BisonLab\ContextBundle\Entity\ContextOwnerTrait;
@@ -31,11 +30,10 @@ class SakonninFile
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     /**
@@ -49,81 +47,70 @@ class SakonninFile
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 255)]
     private $name;
 
     /**
      * @var string
      * I am not adding notes to this, too complex and can be done by whoever
      * really needing it, in their code.
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     private $description;
 
     /**
      * @var string
      * This is the filename it's stored as in the file system. It's most
      * probably a combination of fileId and extension.
-     *
-     * @ORM\Column(name="stored_as", type="string", length=255)
      */
+    #[ORM\Column(name: 'stored_as', type: 'string', length: 255)]
     private $storedAs;
 
     /**
      * @var string
      * uniqid()
-     *
-     * @ORM\Column(name="file_id", type="string", length=100, unique=true)
      */
+    #[ORM\Column(name: 'file_id', type: 'string', length: 100, unique: true)]
     private $fileId;
 
     /**
      * @var integer $size
      *
      * Simplest form, just a raw hint at what the files is or contains.
-     *
-     * @ORM\Column(name="size", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'size', type: 'integer', nullable: true)]
     private $size;
 
     /**
      * @var string $file_type
      *
      * Simplest form, just a raw hint at what the files is or contains.
-     *
-     * @ORM\Column(name="file_type", type="string", length=40, nullable=false)
      */
+    #[ORM\Column(name: 'file_type', type: 'string', length: 40, nullable: false)]
     private $fileType;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="mime_type", type="string", length=100, nullable=true)
      */
+    #[ORM\Column(name: 'mime_type', type: 'string', length: 100, nullable: true)]
     private $mimeType;
 
     /**
      * @var string
      * The encoding from finfo / mime type. As specific as possible.
-     *
-     * @ORM\Column(name="encoding", type="string", length=100, nullable=true)
      */
+    #[ORM\Column(name: 'encoding', type: 'string', length: 100, nullable: true)]
     private $encoding;
 
     /**
      * @var array
      * Tags, the simplest way (No, not simple_array).
-     *
-     * @ORM\Column(name="tags", type="array", nullable=true)
      */
+    #[ORM\Column(name: 'tags', type: 'array', nullable: true)]
     private $tags = [];
 
-    /**
-     * @ORM\OneToMany(targetEntity="SakonninFileContext", mappedBy="owner", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: 'SakonninFileContext', mappedBy: 'owner', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $contexts;
 
     public function __construct($options = array())

@@ -6,20 +6,18 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * BisonLab\SakonninBundle\Entity\MessageContext
- *
- * @ORM\Table(name="sakonnin_messagecontext")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\MessageContextRepository")
  */
+#[ORM\Table(name: 'sakonnin_messagecontext')]
+#[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\MessageContextRepository')]
 class MessageContext
 {
     use \BisonLab\ContextBundle\Entity\ContextBaseTrait;
 
     /**
      * @var mixed
-     *
-     * @ORM\ManyToOne(targetEntity="Message", inversedBy="contexts")
-     * @ORM\JoinColumn(name="message_id", referencedColumnName="id", nullable=false)
      */
+    #[ORM\ManyToOne(targetEntity: 'Message', inversedBy: 'contexts')]
+    #[ORM\JoinColumn(name: 'message_id', referencedColumnName: 'id', nullable: false)]
     private $message;
 
     /*

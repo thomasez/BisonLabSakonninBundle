@@ -25,9 +25,8 @@ use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
  * The main issue here is authentication and authorization. Not yet decided on
  * how to handle that. Make sure you tie as much as possible down in the
  * applications firewall configuration.
- *
- * @Route("/sms")
  */
+#[Route(path: '/sms')]
 class SmsController extends AbstractController
 {
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
@@ -37,9 +36,8 @@ class SmsController extends AbstractController
      * content to the configured default receiver.
      *
      * But if it does not, make separate receivers below.
-     *
-     * @Route("/post", name="sms_create", methods={"POST"})
      */
+    #[Route(path: '/post', name: 'sms_create', methods: ['POST'])]
     public function createAction(Request $request, SmsHandler $smsHandler, SakonninMessages $sakonninMessages)
     {
         $smsHandler->setSakonninMessages($sakonninMessages);

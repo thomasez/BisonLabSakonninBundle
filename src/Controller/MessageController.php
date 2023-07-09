@@ -21,9 +21,8 @@ use BisonLab\SakonninBundle\Service\Messages as SakonninMessages;
 
 /**
  * Message controller.
- *
- * @Route("/{access}/sakonnin_message", defaults={"access": "web"}, requirements={"access": "web|rest|ajax"})
  */
+#[Route(path: '/{access}/sakonnin_message', defaults: ['access' => 'web'], requirements: ['access' => 'web|rest|ajax'])]
 class MessageController extends AbstractController
 {
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
@@ -42,8 +41,8 @@ class MessageController extends AbstractController
      * don't like this. Using just "/" which would be logical makes the
      * routecomponent match every GET below this one.
      * Another option is to put this one as the last one.
-     * @Route("/list", name="messages_list", methods={"GET"})
      */
+    #[Route(path: '/list', name: 'messages_list', methods: ['GET'])]
     public function listAction(Request $request, $access)
     {
         $this->denyAccessUnlessGranted('index', new Message());
@@ -74,8 +73,8 @@ class MessageController extends AbstractController
 
     /**
      * So wrong path name.
-     * @Route("/me", name="message", methods={"GET"})
      */
+    #[Route(path: '/me', name: 'message', methods: ['GET'])]
     public function myMessagesAction(Request $request, $access)
     {
         // Todo: paging or just show the last 20
@@ -89,9 +88,8 @@ class MessageController extends AbstractController
 
     /**
      * Lists all Message entities.
-     *
-     * @Route("/unread", name="message_unread")
      */
+    #[Route(path: '/unread', name: 'message_unread')]
     public function unreadAction(Request $request, $access)
     {
         $messages = $this->sakonninMessages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
@@ -106,9 +104,8 @@ class MessageController extends AbstractController
 
     /**
      * Lists all Message entities.
-     *
-     * @Route("/pm", name="pm_list", methods={"GET"})
      */
+    #[Route(path: '/pm', name: 'pm_list', methods: ['GET'])]
     public function pmAction(Request $request, $access)
     {
         $messages = $this->sakonninMessages->getMessagesForLoggedIn(array('message_type' => 'PM'));
@@ -135,9 +132,8 @@ class MessageController extends AbstractController
     /**
      * Lists all Message entities of a certain type.
      * Warning: This can be *a lot* of messages.
-     *
-     * @Route("/messagetype/{id}", name="message_messagetype", methods={"GET"})
      */
+    #[Route(path: '/messagetype/{id}', name: 'message_messagetype', methods: ['GET'])]
     public function listByTypeAction(Request $request, $access, MessageType $messageType)
     {
         $messages = $messageType->getMessages(true);
@@ -150,9 +146,8 @@ class MessageController extends AbstractController
 
     /**
      * Finds and displays a Message.
-     *
-     * @Route("/{message_id}", name="message_show", methods={"GET"}, requirements={"message_id"="\w{13}"})
      */
+    #[Route(path: '/{message_id}', name: 'message_show', methods: ['GET'], requirements: ['message_id' => '\w{13}'])]
     public function showAction(Request $request, $access, $message_id)
     {
         $entityManager = $this->getDoctrineManager();
@@ -185,9 +180,8 @@ class MessageController extends AbstractController
 
     /**
      * Displays a form to edit an existing message.
-     *
-     * @Route("/{message_id}/edit", name="message_edit", methods={"GET", "POST"})
      */
+    #[Route(path: '/{message_id}/edit', name: 'message_edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, $access, $message_id)
     {
         $message = $this->_getMessage($message_id);
@@ -256,9 +250,8 @@ class MessageController extends AbstractController
 
     /**
      * Displays a form to edit an existing message.
-     *
-     * @Route("/{message_id}/state/{state}", name="message_state", methods={"POST"})
      */
+    #[Route(path: '/{message_id}/state/{state}', name: 'message_state', methods: ['POST'])]
     public function stateAction(Request $request, $access, $message_id, $state)
     {
         $message = $this->_getMessage($message_id);
@@ -277,9 +270,8 @@ class MessageController extends AbstractController
 
     /**
      * Lists all Messages with that context, filtered if requested.
-     *
-     * @Route("/search_context/system/{system}/object_name/{object_name}/external_id/{external_id}", name="message_context_search", methods={"GET"})
      */
+    #[Route(path: '/search_context/system/{system}/object_name/{object_name}/external_id/{external_id}', name: 'message_context_search', methods: ['GET'])]
     public function searchContextGetAction(Request $request, $access, $system, $object_name, $external_id)
     {
         // Search/Index - basically same same. For now at least.
@@ -320,9 +312,8 @@ class MessageController extends AbstractController
     /**
      * Creates a new PM
      * (Which does look more and more like the usual createMessage.)
-     *
-     * @Route("/pm", name="pm_create", methods={"POST"})
      */
+    #[Route(path: '/pm', name: 'pm_create', methods: ['POST'])]
     public function createPmAction(Request $request, $access)
     {
         $data = $request->request->all();
@@ -382,9 +373,8 @@ class MessageController extends AbstractController
 
     /**
      * Creates a new Message
-     *
-     * @Route("/create", name="message_create", methods={"POST"})
      */
+    #[Route(path: '/create', name: 'message_create', methods: ['POST'])]
     public function createAction(Request $request, $access)
     {
         $entityManager = $this->getDoctrineManager();
@@ -454,9 +444,8 @@ class MessageController extends AbstractController
 
     /**
      * Deletes a message.
-     *
-     * @Route("/{message_id}", name="message_delete", methods={"DELETE"}, requirements={"message_id"="\w{13}"})
      */
+    #[Route(path: '/{message_id}', name: 'message_delete', methods: ['DELETE'], requirements: ['message_id' => '\w{13}'])]
     public function deleteAction(Request $request, $access, $message_id)
     {
         $message = $this->_getMessage($message_id);
@@ -482,9 +471,8 @@ class MessageController extends AbstractController
 
     /**
      * Does stuff on a list of messages.
-     *
-     * @Route("/messages", name="message_messages", methods={"POST", "DELETE"})
      */
+    #[Route(path: '/messages', name: 'message_messages', methods: ['POST', 'DELETE'])]
     public function messsagesAction(Request $request, $access)
     {
         if (!$this->isCsrfTokenValid('message-messages', $request->request->get('_token')))
@@ -523,9 +511,8 @@ class MessageController extends AbstractController
 
     /**
      * Check for unread messages
-     *
-     * @Route("/check_unread", name="check_unread", methods={"GET"})
      */
+    #[Route(path: '/check_unread', name: 'check_unread', methods: ['GET'])]
     public function checkUnreadAction(Request $request, $access)
     {
         $messages = $this->sakonninMessages
@@ -539,9 +526,8 @@ class MessageController extends AbstractController
 
     /**
      * Creates a new message.
-     *
-     * @Route("/new", name="message_new", methods={"GET", "POST"})
      */
+    #[Route(path: '/new', name: 'message_new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, $access)
     {
         $message = new Message();
@@ -611,9 +597,8 @@ class MessageController extends AbstractController
 
     /**
      * Adding a context to an existing message.
-     *
-     * @Route("/{message_id}/add_context", name="message_add_context", methods={"POST"})
      */
+    #[Route(path: '/{message_id}/add_context', name: 'message_add_context', methods: ['POST'])]
     public function addContextAction(Request $request, $access, $message_id)
     {
         $message = $this->_getMessage($message_id);
@@ -644,9 +629,8 @@ class MessageController extends AbstractController
 
     /**
      * Remove just the context
-     *
-     * @Route("/{id}/remove_context", name="message_remove_context", methods={"POST", "DELETE"})
      */
+    #[Route(path: '/{id}/remove_context', name: 'message_remove_context', methods: ['POST', 'DELETE'])]
     public function removeContextAction(Request $request, $access, MessageContext $message_context)
     {
         // Is "delete" more correct? Should I just do thee check directly on

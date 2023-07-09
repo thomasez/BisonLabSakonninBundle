@@ -6,52 +6,45 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * SakonninTemplate
- *
- * @ORM\Table(name="sakonnin_template", uniqueConstraints={@ORM\UniqueConstraint(name="sakonnin_template_tuple_idx", columns={"name", "lang_code"})})
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninTemplateRepository")
  */
+#[ORM\Table(name: 'sakonnin_template')]
+#[ORM\UniqueConstraint(name: 'sakonnin_template_tuple_idx', columns: ['name', 'lang_code'])]
+#[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\SakonninTemplateRepository')]
 class SakonninTemplate
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=50)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 50)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     private $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="lang_code", type="string", length=7)
      */
+    #[ORM\Column(name: 'lang_code', type: 'string', length: 7)]
     private $lang_code;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="template", type="text")
      */
+    #[ORM\Column(name: 'template', type: 'text')]
     private $template;
 
-    /**
-     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="sakonnin_template", fetch="EXTRA_LAZY")
-     **/
+    #[ORM\OneToMany(targetEntity: 'MessageType', mappedBy: 'sakonnin_template', fetch: 'EXTRA_LAZY')]
     private $message_types;
 
     /**

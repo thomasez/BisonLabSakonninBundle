@@ -17,10 +17,9 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
  *
  * Mainly coherent with RFC 5322. When extending functionality we SHOULD comply
  * with the RFC where it adresses the functionality.
- *
- * @ORM\Table(name="sakonnin_message")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\MessageRepository")
  */
+#[ORM\Table(name: 'sakonnin_message')]
+#[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\MessageRepository')]
 class Message
 {
     use \BisonLab\ContextBundle\Entity\ContextOwnerTrait;
@@ -29,39 +28,31 @@ class Message
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="message_id", type="string", length=100, nullable=false, unique=true)
      */
+    #[ORM\Column(name: 'message_id', type: 'string', length: 100, nullable: false, unique: true)]
     private $message_id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Message", inversedBy="replies")
-     * @ORM\JoinColumn(name="in_reply_to_message_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Message', inversedBy: 'replies')]
+    #[ORM\JoinColumn(name: 'in_reply_to_message_id', referencedColumnName: 'id')]
     private $in_reply_to;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="in_reply_to", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
-     * Ordering by createdat does not work. "Unrecognized field".
-     * @ORM\OrderBy({"id" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: 'Message', mappedBy: 'in_reply_to', fetch: 'EXTRA_LAZY', cascade: ['persist', 'remove', 'merge'], orphanRemoval: true)]
+    #[ORM\OrderBy(['id' => 'ASC'])]
     private $replies;
 
     /**
      * @var string
      * This is the from address. I am using "From" because standard.
-     *
-     * @ORM\Column(name="`from`", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: '`from`', type: 'string', length: 255, nullable: true)]
     private $from;
 
     /**
@@ -71,78 +62,66 @@ class Message
      * to_type is address_types in the config.
      *
      * Confusing? Well, now it's at least explained here.
-     *
-     * @ORM\Column(name="from_type", type="string", length=40, nullable=false)
      */
+    #[ORM\Column(name: 'from_type', type: 'string', length: 40, nullable: false)]
     private $from_type = "NONE";
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="`to`", type="text", nullable=true)
      */
+    #[ORM\Column(name: '`to`', type: 'text', nullable: true)]
     private $to;
 
     /**
      * @var string $to_type
-     *
-     * @ORM\Column(name="to_type", type="string", length=40, nullable=true)
      */
+    #[ORM\Column(name: 'to_type', type: 'string', length: 40, nullable: true)]
     private $to_type = "NONE";
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="subject", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'subject', type: 'string', length: 255, nullable: true)]
     private $subject;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="content_type", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'content_type', type: 'text', nullable: true)]
     private $content_type;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="header", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'header', type: 'text', nullable: true)]
     private $header;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="body", type="text", nullable=true)
      */
+    #[ORM\Column(name: 'body', type: 'text', nullable: true)]
     private $body;
 
     /**
      * @var string $state
-     *
-     * @ORM\Column(name="state", type="string", length=50, nullable=true)
-     * @Assert\Choice(callback = "getStates")
      */
+    #[ORM\Column(name: 'state', type: 'string', length: 50, nullable: true)]
+    #[Assert\Choice(callback: 'getStates')]
     private $state;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="MessageType", inversedBy="messages")
-     * @ORM\JoinColumn(name="message_type_id", referencedColumnName="id", nullable=false)
-     **/
+    #[ORM\ManyToOne(targetEntity: 'MessageType', inversedBy: 'messages')]
+    #[ORM\JoinColumn(name: 'message_type_id', referencedColumnName: 'id', nullable: false)]
     private $message_type;
 
     /**
      * This is on top of/under expunge on message types. This is for
      * individual setting  of when to set state DELETED or plainly delete the
      * message.
-     * @ORM\Column(name="expire_at", type="datetime", * nullable=true)
      **/
+    #[ORM\Column(name: 'expire_at', type: 'datetime', nullable: true)]
     private $expire_at;
 
-    /**
-     * @ORM\OneToMany(targetEntity="MessageContext", mappedBy="message", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: 'MessageContext', mappedBy: 'message', cascade: ['persist', 'remove'])]
     private $contexts;
 
     /*

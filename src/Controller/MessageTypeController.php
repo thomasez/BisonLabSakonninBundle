@@ -19,9 +19,8 @@ use BisonLab\SakonninBundle\Service\Functions as SakonninFunctions;
 
 /**
  * MessageType controller.
- *
- * @Route("/sakonnin_messagetype")
  */
+#[Route(path: '/sakonnin_messagetype')]
 class MessageTypeController extends AbstractController
 {
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
@@ -35,9 +34,8 @@ class MessageTypeController extends AbstractController
 
     /**
      * Lists all MessageType entities.
-     *
-     * @Route("/", name="messagetype", methods={"GET"})
      */
+    #[Route(path: '/', name: 'messagetype', methods: ['GET'])]
     public function indexAction()
     {
         $em = $this->getDoctrineManager();
@@ -64,9 +62,8 @@ class MessageTypeController extends AbstractController
 
     /**
      * Creates a new MessageType.
-     *
-     * @Route("/", name="messagetype_create", methods={"POST"})
      */
+    #[Route(path: '/', name: 'messagetype_create', methods: ['POST'])]
     public function createAction(Request $request)
     {
         $messagetype = new MessageType();
@@ -113,9 +110,8 @@ class MessageTypeController extends AbstractController
 
     /**
      * Displays a form to create a new MessageType.
-     *
-     * @Route("/new", name="messagetype_new", methods={"GET"})
      */
+    #[Route(path: '/new', name: 'messagetype_new', methods: ['GET'])]
     public function newAction()
     {
         $messagetype = new MessageType();
@@ -130,9 +126,8 @@ class MessageTypeController extends AbstractController
 
     /**
      * Finds and displays a MessageType.
-     *
-     * @Route("/{id}", name="messagetype_show", methods={"GET"}, requirements={"id"="\d+"})
      */
+    #[Route(path: '/{id}', name: 'messagetype_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function showAction(MessageType $messagetype)
     {
         $em = $this->getDoctrineManager();
@@ -145,9 +140,8 @@ class MessageTypeController extends AbstractController
 
     /**
      * Displays a form to edit an existing MessageType entity.
-     *
-     * @Route("/{id}/edit", name="messagetype_edit", methods={"GET"})
      */
+    #[Route(path: '/{id}/edit', name: 'messagetype_edit', methods: ['GET'])]
     public function editAction(MessageType $messagetype)
     {
         $editForm = $this->createEditForm($messagetype);
@@ -179,9 +173,8 @@ class MessageTypeController extends AbstractController
 
     /**
      * Edits an existing MessageType.
-     *
-     * @Route("/{id}/update", name="messagetype_update", methods={"POST"})
      */
+    #[Route(path: '/{id}/update', name: 'messagetype_update', methods: ['POST'])]
     public function updateAction(Request $request, MessageType $messagetype)
     {
         $em = $this->getDoctrineManager();
@@ -203,9 +196,8 @@ class MessageTypeController extends AbstractController
 
     /**
      * Deletes a MessageType.
-     *
-     * @Route("/{id}/delete", name="messagetype_delete", methods={"POST"})
      */
+    #[Route(path: '/{id}/delete', name: 'messagetype_delete', methods: ['POST'])]
     public function deleteAction(Request $request, $messagetype)
     {
         if ($this->isCsrfTokenValid('delete'.$messagetype->getId(), $request->request->get('_token')) && $messagetype->isDeleteable()) {

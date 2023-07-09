@@ -12,10 +12,9 @@ use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
  * TODO: This will probably become MesageGroup or something like it.
  *       Why? I added "Type" here..
  *       Which is "Base Type" for now.
- *
- * @ORM\Table(name="sakonnin_messagetype")
- * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\MessageTypeRepository")
  */
+#[ORM\Table(name: 'sakonnin_messagetype')]
+#[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\MessageTypeRepository')]
 class MessageType
 {
     /*
@@ -46,33 +45,29 @@ class MessageType
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false, unique=true)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: false, unique: true)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: true)]
     private $description;
 
     /**
      * @var string $base_type
-     *
-     * @ORM\Column(name="base_type", type="string", length=50, nullable=true)
-     * @Assert\Choice(callback = "getBaseTypes")
      */
+    #[ORM\Column(name: 'base_type', type: 'string', length: 50, nullable: true)]
+    #[Assert\Choice(callback: 'getBaseTypes')]
     private $base_type;
 
     /**
@@ -82,9 +77,8 @@ class MessageType
      * And BTW; How do you know which function the attributes are for?
      * Definately adding complexity by adding more than one function.
      * @var string
-     *
-     * @ORM\Column(name="security_model", type="string", length=40, nullable=false, options={"default"="PRIVATE"})
      */
+    #[ORM\Column(name: 'security_model', type: 'string', length: 40, nullable: false, options: ['default' => 'PRIVATE'])]
     private $security_model;
 
     /**
@@ -94,78 +88,63 @@ class MessageType
      * And BTW; How do you know which function the attributes are for?
      * Definately adding complexity by adding more than one function.
      * @var string
-     *
-     * @ORM\Column(name="callback_function", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'callback_function', type: 'string', length: 255, nullable: true)]
     private $callbackFunction;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="callback_attributes", type="json", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'callback_attributes', type: 'json', length: 255, nullable: true)]
     private $callbackAttributes = array();
 
     /**
      * Same here, this could have been an array, but it's complicated.
      * @var string
-     *
-     * @ORM\Column(name="forward_function", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'forward_function', type: 'string', length: 255, nullable: true)]
     private $forwardFunction;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="forward_attributes", type="json", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'forward_attributes', type: 'json', length: 255, nullable: true)]
     private $forwardAttributes = array();
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="expunge_days", type="integer")
      */
+    #[ORM\Column(name: 'expunge_days', type: 'integer')]
     private $expunge_days = 0;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="expunge_method", type="string", length=10, nullable=false, options={"default"="DELETE"})
      */
+    #[ORM\Column(name: 'expunge_method', type: 'string', length: 10, nullable: false, options: ['default' => 'DELETE'])]
     private $expunge_method;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="expire_method", type="string", length=10, nullable=false, options={"default"="DELETE"})
      */
+    #[ORM\Column(name: 'expire_method', type: 'string', length: 10, nullable: false, options: ['default' => 'DELETE'])]
     private $expire_method;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="SakonninTemplate", inversedBy="message_types", fetch="EAGER")
-     * @ORM\JoinColumn(name="sakonnin_template_id", referencedColumnName="id", nullable=true)
-     **/
+    #[ORM\ManyToOne(targetEntity: 'SakonninTemplate', inversedBy: 'message_types', fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'sakonnin_template_id', referencedColumnName: 'id', nullable: true)]
     private $sakonnin_template;
 
     /* This is a tree structure while in the UI it's just to show a group.
      * I've chosen to do this in case of more advanced functionality is needed
      * one day.
      */
-    /**
-     * @ORM\OneToMany(targetEntity="MessageType", mappedBy="parent", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: 'MessageType', mappedBy: 'parent', fetch: 'EAGER', cascade: ['persist', 'remove', 'merge'], orphanRemoval: true)]
     protected $children;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="MessageType", inversedBy="children", fetch="EAGER")
-     * @ORM\JoinColumn(name="parent_message_type_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'MessageType', inversedBy: 'children', fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'parent_message_type_id', referencedColumnName: 'id')]
     protected $parent;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="message_type", fetch="EXTRA_LAZY")
-     **/
+    #[ORM\OneToMany(targetEntity: 'Message', mappedBy: 'message_type', fetch: 'EXTRA_LAZY')]
     private $messages;
 
     public function __construct($options = array())

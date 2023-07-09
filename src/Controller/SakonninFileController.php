@@ -23,9 +23,8 @@ use BisonLab\SakonninBundle\Service\Files as SakonninFiles;
 
 /**
  * SakonninFile controller.
- *
- * @Route("/{access}/sakonnin_file", defaults={"access": "web"}, requirements={"access": "web|rest|ajax"})
  */
+#[Route(path: '/{access}/sakonnin_file', defaults: ['access' => 'web'], requirements: ['access' => 'web|rest|ajax'])]
 class SakonninFileController extends AbstractController
 {
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
@@ -42,9 +41,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * Lists all file entities.
-     *
-     * @Route("/", name="sakonninfile_index", methods={"GET"})
      */
+    #[Route(path: '/', name: 'sakonninfile_index', methods: ['GET'])]
     public function indexAction($access)
     {
         // Todo: paging or just show the last 20
@@ -60,9 +58,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * Creates a new file.
-     *
-     * @Route("/new", name="sakonninfile_new", methods={"GET", "POST"})
      */
+    #[Route(path: '/new', name: 'sakonninfile_new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, $access)
     {
         $max_filesize = UploadedFile::getMaxFilesize();
@@ -136,9 +133,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * Finds and displays a file.
-     *
-     * @Route("/{file_id}", name="sakonninfile_show", methods={"GET"}, requirements={"file_id"="\w{13}"})
      */
+    #[Route(path: '/{file_id}', name: 'sakonninfile_show', methods: ['GET'], requirements: ['file_id' => '\w{13}'])]
     public function showAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
@@ -154,9 +150,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * Download a file.
-     *
-     * @Route("/{file_id}/download", name="sakonninfile_download", methods={"GET"})
      */
+    #[Route(path: '/{file_id}/download', name: 'sakonninfile_download', methods: ['GET'])]
     public function downloadAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
@@ -171,9 +166,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * View a file.
-     *
-     * @Route("/{file_id}/view", name="sakonninfile_view", methods={"GET"})
      */
+    #[Route(path: '/{file_id}/view', name: 'sakonninfile_view', methods: ['GET'])]
     public function viewAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
@@ -187,9 +181,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * Create/cache thumbnail.
-     *
-     * @Route("/{file_id}/thumbnail/{x}/{y}", name="sakonninfile_thumbnail", methods={"GET"})
      */
+    #[Route(path: '/{file_id}/thumbnail/{x}/{y}', name: 'sakonninfile_thumbnail', methods: ['GET'])]
     public function thumbnailAction(Request $request, $access, $file_id, $x, $y)
     {
         $sfile = $this->_getFile($file_id);
@@ -207,9 +200,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * Displays a form to edit an existing file.
-     *
-     * @Route("/{file_id}/edit", name="sakonninfile_edit", methods={"GET", "POST"})
      */
+    #[Route(path: '/{file_id}/edit', name: 'sakonninfile_edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);
@@ -257,9 +249,8 @@ class SakonninFileController extends AbstractController
 
     /**
      * Deletes a file.
-     *
-     * @Route("/{file_id}/delete", name="sakonninfile_delete", methods={"POST", "DELETE"})
      */
+    #[Route(path: '/{file_id}/delete', name: 'sakonninfile_delete', methods: ['POST', 'DELETE'])]
     public function deleteAction(Request $request, $file_id, $access)
     {
         $sfile = $this->_getFile($file_id);

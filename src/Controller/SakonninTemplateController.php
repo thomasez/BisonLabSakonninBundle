@@ -13,9 +13,8 @@ use BisonLab\SakonninBundle\Form\SakonninTemplateType;
 
 /**
  * Sakonnintemplate controller.
- *
- * @Route("sakonnin_template")
  */
+#[Route(path: 'sakonnin_template')]
 class SakonninTemplateController extends AbstractController
 {
     use \BisonLab\CommonBundle\Controller\CommonControllerTrait;
@@ -28,9 +27,8 @@ class SakonninTemplateController extends AbstractController
 
     /**
      * Lists all sakonninTemplate entities.
-     *
-     * @Route("/", name="sakonnintemplate_index", methods={"GET"})
      */
+    #[Route(path: '/', name: 'sakonnintemplate_index', methods: ['GET'])]
     public function indexAction()
     {
         $em = $this->getDoctrineManager();
@@ -41,9 +39,8 @@ class SakonninTemplateController extends AbstractController
 
     /**
      * Creates a new sakonninTemplate entity.
-     *
-     * @Route("/new", name="sakonnintemplate_new", methods={"GET", "POST"})
      */
+    #[Route(path: '/new', name: 'sakonnintemplate_new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, TranslatorInterface $translator)
     {
         $sakonninTemplate = new Sakonnintemplate();
@@ -69,9 +66,8 @@ class SakonninTemplateController extends AbstractController
 
     /**
      * Finds and displays a sakonninTemplate entity.
-     *
-     * @Route("/{id}", name="sakonnintemplate_show", methods={"GET"}, requirements={"id"="\d+"})
      */
+    #[Route(path: '/{id}', name: 'sakonnintemplate_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function showAction(SakonninTemplate $sakonninTemplate)
     {
         return $this->render('@BisonLabSakonnin/SakonninTemplate/show.html.twig',
@@ -82,9 +78,8 @@ class SakonninTemplateController extends AbstractController
 
     /**
      * Displays a form to edit an existing sakonninTemplate entity.
-     *
-     * @Route("/{id}/edit", name="sakonnintemplate_edit", methods={"GET", "POST"})
      */
+    #[Route(path: '/{id}/edit', name: 'sakonnintemplate_edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
         $editForm = $this->createForm(SakonninTemplateType::class, $sakonninTemplate);
@@ -105,9 +100,8 @@ class SakonninTemplateController extends AbstractController
 
     /**
      * Deletes a sakonninTemplate entity.
-     *
-     * @Route("/{id}/delete", name="sakonnintemplate_delete", methods={"POST", "DELETE"})
      */
+    #[Route(path: '/{id}/delete', name: 'sakonnintemplate_delete', methods: ['POST', 'DELETE'])]
     public function deleteAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
         if ($this->isCsrfTokenValid('delete'.$sakonninTemplate->getId(), $request->request->get('_token')) && $sakonninTemplate->isDeleteable()) {
