@@ -17,9 +17,9 @@ class BisonLabSakonninBundle extends Bundle
         return \dirname(__DIR__);
     }
 
-    public function boot()
+    public function boot(): void
     {
-        // Do I need states? "Sendt", "Queued", "Deleted" (Should be deleted
+        // Do I need states? "Sent", "Queued", "Deleted" (Should be deleted
         // then anyway.), "Read" and so on?
         // It's defined in the Message entity for now.
         ExternalEntityConfig::setStatesConfig($this->container->getParameter('sakonnin.states'));
