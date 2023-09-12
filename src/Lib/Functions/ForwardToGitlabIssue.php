@@ -2,12 +2,11 @@
 
 namespace BisonLab\SakonninBundle\Lib\Functions;
 
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-use BisonLab\SakonninBundle\Entity\Message;
-
 /*
+ * If you want to use this, you have to add the environment variables mentioned
+ * in the constructor.
  */
 class ForwardToGitlabIssue
 {
@@ -24,23 +23,19 @@ class ForwardToGitlabIssue
         ),
     ];
 
+    private ?string $gitlab_url;
+    private ?string $gitlab_access_token;
+    private ?string $gitlab_project_id;
+    private ?string $gitlab_labels;
+
     public function __construct(
-        private RouterInterface $router,
-        #[Autowire('%env(GITLAB_URL)%')]
-        private string $gitlab_url,
-        #[Autowire('%env(GITLAB_ACCESS_TOKEN)%')]
-        private string $gitlab_access_token,
-        #[Autowire('%env(GITLAB_PROJECT_ID)%')]
-        private string $gitlab_project_id,
-        #[Autowire('%env(GITLAB_LABELS)%')]
-        private string $gitlab_labels,
     ) {
+        $this->gitlab_url = $_ENV['GITLAB_URL'] ?? null;
+        $this->gitlab_access_token = $_ENV['GITLAB_ACCESS_TOKEN'] ?? null;
+        $this->gitlab_project_id = $_ENV['GITLAB_PROJECT_ID'] ?? null;
+        $this->gitlab_labels = $_ENV['GITLAB_LABELS'] ?? null;
     }
 
-    /* 
-     * You may call this lazyness, just having an options array, but it's
-     * also more future proof.
-     */
     public function execute($options = array())
     {
         $message = $options['message'];
