@@ -46,6 +46,16 @@ trait CommonStuff
             return $this->getUserFromUserIdentifier($username);
     }
 
+    public function getUserFromEmail($email)
+    {
+        $user_repo = $this->getUserRepository();
+        $c = $user_repo->getClassName();
+        if (property_exists($c, 'email'))
+            return $user_repo->findOneBy(array('email' => $email));
+        else
+            return $this->getUserFromUserIdentifier($email);
+    }
+
     public function getUsernameFromUserId($userid)
     {
         // It may just not be an ID.

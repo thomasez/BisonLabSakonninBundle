@@ -74,7 +74,7 @@ class SecurityModelVoter extends Voter
             return false;
         }
 
-        // It hurts, but how can I do without?
+        // It hurts, but how can I vote without?
         if (!method_exists($subject, 'getSecurityModel'))
             return true;
 
@@ -219,7 +219,12 @@ class SecurityModelVoter extends Voter
             return false;
 
         if ($from = $subject->getFrom()) {
-            if ($from_user = $this->sakonninMessages->getUserFromUserName($from)) {
+            $from_user = null;
+
+            if (!$from_user = $this->sakonninMessages->getUserFromUserName($from))
+                $from_user = $this->sakonninMessages->getUserFromEmail($from);
+
+            if ($from_user) {
                 foreach($from_user->getGroupNames() as $gn) {
                     if (in_array($gn, $user->getGroupNames()))
                         return true;
@@ -233,8 +238,20 @@ class SecurityModelVoter extends Voter
         /*
          * Point here is to check if the object this message is about is in the
          * same group(s) as the use trying to mess with.
+         *
+         * This might be a reply to, which means we would like to use the
+         * parent message contexts aswell.
          */
-        foreach ($subject->getContexts() as $context) {
+        $contexts = $subject->getContexts()->toArray();
+        if ($parent = $subject->getInReplyTo()) {
+            $top = false;
+            while (!$top) {
+                $contexts = array_merge($contexts, $parent->getContexts()->toArray());
+                if (!$parent = $parent->getInReplyTo())
+                    $top = true;
+            }
+        }
+        foreach ($contexts as $context) {
             if ($object = $this->externalRetriever->getExternalDataFromContext($context)) {
                 // The question now is. How do I know that the object is
                 // what I am looking for?
