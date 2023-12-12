@@ -94,7 +94,7 @@ trait CommonFunctions
         return true;
     }
 
-    public function sendNotification($to, $body, $options = array())
+    public function sendNotification($to, $body, $options = array()): ?Message
     {
         // Receiver should/could be userid, username or user object.
         if (!is_object($to)) {
@@ -104,7 +104,7 @@ trait CommonFunctions
                 $to = $this->sakonninMessages->getUserFromUserName($to);
             }
             if (!$to)
-                return false;
+                return null;
         }
         $message = new Message();
 
@@ -131,7 +131,7 @@ trait CommonFunctions
 
         $this->sakonninMessages->postMessage($message);
 
-        return true;
+        return $message;
     }
 
     public function sendSms($message, $receiver, $options = array())
