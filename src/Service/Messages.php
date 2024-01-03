@@ -434,7 +434,7 @@ class Messages
 
         if (isset($criterias['not_message_type'])) {
             $query->andWhere("m.message_type != (select mt.id from BisonLab\SakonninBundle\Entity\MessageType mt where mt.name = :message_type)")
-                ->setParameter('message_type', $criterias['message_type']);
+                ->setParameter('message_type', $criterias['not_message_type']);
         }
 
         if (!isset($criterias['with_replies'])) {
