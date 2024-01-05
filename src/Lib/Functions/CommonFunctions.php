@@ -61,7 +61,6 @@ trait CommonFunctions
             $body .= "Link to this message: " . $url  . "\n\n";
         }
 
-
         $body .= $message->getBody();
         if (!$from = $message->getFrom()) {
             $from = $this->sakonninMessages->getEmailFromUser();
