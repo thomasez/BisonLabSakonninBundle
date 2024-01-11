@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Table(name: 'sakonnin_messagecontext')]
 #[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\MessageContextRepository')]
-#[ORM\Index(name: "search_context_idx", columns: ["system", "object_name", "external_id"])]
+#[ORM\Index(name: "search_messagecontext_idx", columns: ["system", "object_name", "external_id"])]
 class MessageContext
 {
     use \BisonLab\ContextBundle\Entity\ContextBaseTrait;
