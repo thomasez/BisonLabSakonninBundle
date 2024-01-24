@@ -7,8 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BisonLab\SakonninBundle\Entity\MessageContext
  *
- * @ORM\Table(name="sakonnin_messagecontext")
+ * @ORM\Table(name="sakonnin_messagecontext", indexes={
+ * @ORM\Index(name="search_messagecontext_idx", columns={"system", "object_name", "external_id"})
+ * })
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\MessageContextRepository")
+
  */
 class MessageContext
 {

@@ -18,7 +18,9 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
  * Mainly coherent with RFC 5322. When extending functionality we SHOULD comply
  * with the RFC where it adresses the functionality.
  *
- * @ORM\Table(name="sakonnin_message")
+ * @ORM\Table(name="sakonnin_message", indexes={
+ * @ORM\Index(name="sakonnin_message_id_idx", columns={"message_id"})
+ * })
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\MessageRepository")
  */
 class Message

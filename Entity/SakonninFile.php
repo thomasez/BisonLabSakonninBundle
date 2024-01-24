@@ -19,7 +19,9 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
 /**
  * SakonninFile
  *
- * @ORM\Table(name="sakonnin_file")
+ * @ORM\Table(name="sakonnin_file", indexes={
+ * @ORM\Index(name="sakonnin_file_id_idx", columns={"file_id"})
+ * })
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninFileRepository")
  * @Vich\Uploadable
  */

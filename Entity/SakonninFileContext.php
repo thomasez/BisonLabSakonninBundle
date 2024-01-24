@@ -7,7 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BisonLab\SakonninBundle\Entity\SakonninFileContext
  *
- * @ORM\Table(name="sakonnin_filecontext")
+ * @ORM\Table(name="sakonnin_filecontext", indexes={
+ * @ORM\Index(name="search_filecontext_idx", columns={"system", "object_name", "external_id"})
+ * })
  * @ORM\Entity(repositoryClass="BisonLab\SakonninBundle\Repository\SakonninFileContextRepository")
  */
 class SakonninFileContext
