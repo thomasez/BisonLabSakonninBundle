@@ -21,6 +21,7 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
  */
 #[Vich\Uploadable]
 #[ORM\Table(name: 'sakonnin_file')]
+#[ORM\Index(name: "sakonnin_file_id_idx", columns: ["file_id"])]
 #[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\SakonninFileRepository')]
 class SakonninFile
 {

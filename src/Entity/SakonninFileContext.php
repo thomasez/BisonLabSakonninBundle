@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Table(name: 'sakonnin_filecontext')]
 #[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\SakonninFileContextRepository')]
-#[ORM\Index(name: "search_sakonnin_filecontext_idx", columns: ["system", "object_name", "external_id"])]
+#[ORM\Index(name: "sakonnin_filecontext_idx", columns: ["system", "object_name", "external_id"])]
 class SakonninFileContext
 {
     use \BisonLab\ContextBundle\Entity\ContextBaseTrait;

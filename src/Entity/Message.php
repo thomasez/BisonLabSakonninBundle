@@ -19,6 +19,7 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
  * with the RFC where it adresses the functionality.
  */
 #[ORM\Table(name: 'sakonnin_message')]
+#[ORM\Index(name: "sakonnin_message_id_idx", columns: ["message_id"])]
 #[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\MessageRepository')]
 class Message
 {
