@@ -172,9 +172,27 @@ class SakonninFileController extends AbstractController
     {
         $sfile = $this->_getFile($file_id);
         $this->denyAccessUnlessGranted('show', $sfile);
-        // TODO: Add access control.
+        // Too many browers do not support Apple HEIC, which is why the
+        // thumbnails is jpeg. But that does not help here. Which means we have
+        // to convert for viewing. I'll put the converted file in _thumbs
+        // aswell. TODO: Configureable option?
         $path = $this->getFilePath();
-        $response = new BinaryFileResponse($path . "/" . $sfile->getStoredAs());
+        $view_file = $path . "/" . $sfile->getStoredAs();
+        if ($sfile->getMimeType() == "image/heic") {
+            $jpegfile = $path . "/" . $sfile->getStoredAs() . "_thumbs/" . $sfile->getStoredAs();
+            $jpegname = preg_replace("/heic$/i", "jpg", $jpegfile);
+
+            $jpeg = new \Imagick();
+            $jpeg->readImage($view_file);
+            if ($sfile->getMimeType() == "image/heic")
+                $jpeg->setFormat("jpg");
+            $jpeg->writeImage($jpegname);
+            $jpeg->destroy();
+            // We changed our mind, will show the converted:
+            $view_file = $jpegname;
+        }
+
+        $response = new BinaryFileResponse($view_file);
         $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         return $response;
     }
