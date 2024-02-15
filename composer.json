@@ -21,7 +21,7 @@
         "ext-imagick": "*",
         "bisonlab/common-bundle": "dev-attributes",
         "bisonlab/context-bundle": "dev-attributes",
-        "symfony/framework-bundle": "^6.2",
+        "symfony/framework-bundle": "^6.3 || ^7.0",
         "vich/uploader-bundle": "dev-master",
         "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
         "stof/doctrine-extensions-bundle": "^1.6",
