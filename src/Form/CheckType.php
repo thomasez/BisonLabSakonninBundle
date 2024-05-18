@@ -28,7 +28,7 @@ class CheckType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "40")));
+            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => true, "attr" => array("size" => "30")));
         $type_choices = array();
         if (!$options['data']->getMessageType()) {
             $builder->add('message_type', EntityType::class,

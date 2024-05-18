@@ -25,9 +25,9 @@ class PmType extends AbstractType
     {
         $builder
             ->add('to', TextType::class, array('label' => "To:", 'required' => true))
-            // ->add('to', TextType::class, array('label' => "To:", 'required' => true, "attr" => array("size" => "40")))
+            // ->add('to', TextType::class, array('label' => "To:", 'required' => true, "attr" => array("size" => "30")))
             ->add('in_reply_to', HiddenType::class, array('required' => false))
-            ->add('body', TextareaType::class, array('label' => "Message content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
+            ->add('body', TextareaType::class, array('label' => "Message content", 'required' => true, "attr" => array("cols" => "30", "rows" => 5)))
         ;
     }
     

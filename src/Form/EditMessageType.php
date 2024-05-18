@@ -29,9 +29,9 @@ class EditMessageType extends AbstractType
         $type_choices = array();
         $message = $options['data'];
         if (!$options['no_subject'] && $message->getMessageType()->getBaseType() != "CHECK")
-            $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
+            $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "30")));
 
-        $builder->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "40", "rows" => 5)));
+        $builder->add('body', TextareaType::class, array('label' => "Content", 'required' => true, "attr" => array("cols" => "30", "rows" => 5)));
 
         if ($options['with_expire'] ?? false) {
             $builder->add('expire_at', DateType::class, array(

@@ -30,7 +30,7 @@ class MessageType extends AbstractType
         $type_choices = array();
         if (!$options['data']->getMessageType()) {
             $builder
-            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")))
+            ->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "30")))
             ->add('message_type', EntityType::class,
                 array(
                     'label' => 'Type',
@@ -48,9 +48,9 @@ class MessageType extends AbstractType
             $message_type = $options['data']->getMessageType();
 
             if ($message_type->getBaseType() == "NOTE")
-                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
+                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "30")));
             else
-                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "40")));
+                $builder->add('subject', TextType::class, array('label' => "Subject:", 'required' => false, "attr" => array("size" => "30")));
 
             if (count($message_type->getChildren()) > 0) {
                 $type_choices = $message_type->getChildren();
@@ -106,7 +106,7 @@ class MessageType extends AbstractType
                 'label' => "Expire at",
                 'required' => false,
                 'widget' => "single_text"))
-            ->add('body', TextareaType::class, array('label' => false, 'required' => true, "attr" => array("cols" => "40", "rows" => 5)))
+            ->add('body', TextareaType::class, array('label' => 'Content', 'required' => true, "attr" => array("cols" => "30", "rows" => 5)))
         ;
     }
     
