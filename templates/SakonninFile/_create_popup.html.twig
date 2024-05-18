@@ -28,7 +28,7 @@ document
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">{{ sfconfig.title | default("Add File") }}</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-dismiss="modal"><span class="fas fa-times-circle"></span></button>
         </div>
         <div class="modal-body">
         {% set sfform = sakonnin_files.getUploadForm({'file_data': sfconfig, 'file_context': sfconfig.context, 'create_view': true, 'formname': formname }) %}
