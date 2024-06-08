@@ -33,7 +33,7 @@ class SakonninFileListener
      */
     public function preRemove(EventArgs $args)
     {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
         if ($entity instanceof SakonninFile) {
            // VichUploader removes this property when it removes the file,
            // alas I need to store it somehow.

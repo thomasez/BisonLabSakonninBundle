@@ -456,7 +456,7 @@ class MessageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrineManager();
             $entityManager->remove($message);
-            $entityManager->flush($message);
+            $entityManager->flush();
             if ($this->isRest($access))
                 return new JsonResponse(array("status" => "DELETED"),
                     Response::HTTP_OK);
@@ -490,7 +490,7 @@ class MessageController extends AbstractController
                 if (!$this->isGranted('delete', $message))
                     return $this->redirect($request->headers->get('referer'));
                 $entityManager->remove($message);
-                $entityManager->flush($message);
+                $entityManager->flush();
             }
             if ($submit == "Archive" && $message->isArchiveable()) {
                 // To be honest, archiving is more like delete than edit.
@@ -498,7 +498,7 @@ class MessageController extends AbstractController
                 if (!$this->isGranted('delete', $message))
                     return $this->redirect($request->headers->get('referer'));
                 $message->setState("ARCHIVED");
-                $entityManager->flush($message);
+                $entityManager->flush();
             }
         }
 
