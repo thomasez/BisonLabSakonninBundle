@@ -27,7 +27,10 @@ class SendNotificationToUserList
         $message = $options['message'];
         $receivers = isset($options['attributes']) ? $options['attributes'] : array();
         foreach ($receivers as $receiver) {
-            $this->sendNotification($receiver, $message->getBody());
+            $this->sendNotification($receiver, $message->getBody(), [
+                'message_type' => 'PM',
+                'original_message' => $message,
+                ]);
         }
     }
 }

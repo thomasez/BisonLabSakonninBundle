@@ -2,12 +2,13 @@
   <div class="row">
       <div class="col-3">
         <table class="messageTable">
+{% if entity.subject is not empty %}
           <tr>
             <th valign="top">Subject:</th>
             <td valign="top">
-            {{ entity.subject}}
             </td>
           </tr>
+{% endif %}
 {% if entity.inreplyto %}
         <tr>
             <th valign="top">In reply to:</th>
@@ -63,9 +64,17 @@
             </td>
           </tr>
 {% endif %}
-  </table>
+          <tr>
+            <th valign="top">
+              <a href="{{ path('message_show', { 'message_id': entity.messageid }) }}">
+                {% if entity.subject is empty %}Go to message{% else %}{{ entity.subject}}{% endif %}
+            </a>
+            </th>
+            <td valign="top">
 {% if is_granted('edit', entity) and entity.editable %}
     <a href="#" onClick="return grabEditSakonninMessageForm('{{ entity.messageid }}');"><button class="btn btn-link edit_glyph"></button></a>
+{% else %}
+            &nbsp;
 {% endif %}
 {% if is_granted('delete', entity) %}
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(entity, true) %}
@@ -74,7 +83,12 @@
     {# Should use message.deleteable here. Reason I don't is that it needs to use the security model, voter and tags on message type. Which must be a TODO #}
         <button id="delarchived_{{ entity.messageid }}" type="submit" class="btn btn-link remove_glyph"></button>
     </form>
+{% else %}
+            &nbsp;
 {% endif %}
+            </td>
+          </tr>
+  </table>
   </div>
 
   <div class="col-8">
@@ -111,7 +125,6 @@
 {{ entity.body }}
 </pre>
 {% endif %}
-
   </div>
  </div>
 <hr>

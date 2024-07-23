@@ -28,8 +28,10 @@ class Broadcast
 
         foreach ($user_repo->findAll() as $receiver) {
             if ($receiver->getEnabled())
-                $this->sendNotification($receiver, $message->getBody(),
-                    array('message_type' => 'PM'));
+                $this->sendNotification($receiver, $message->getBody(), [
+                    'message_type' => 'PM',
+                    'original_message' => $message,
+                    ]);
         }
     }
 }

@@ -1,0 +1,13 @@
+{% if entities is not defined and data is defined %}
+{% set entities = data %}
+{% endif %}
+
+{% if entities | length == 0 %}
+<p>You've got zilch.</p>
+{% else %}
+{% for entity in entities %}
+ {% if is_granted('show', entity) %}
+    {% include "@BisonLabSakonnin/Message/_rest_show.html.twig" %}
+{% endif %}
+{% endfor %}
+{% endif %}

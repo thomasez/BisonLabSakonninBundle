@@ -46,7 +46,10 @@ class PmSmsMailCopy
                 $sms_numbers[] = $number;
             if ($email = $this->extractEmailFromReceiver($receiver))
                 $this->sendMail($message, $email, $options);
-            $this->sendNotification($receiver, $message->getBody(), array('message_type' => 'PM'));
+            $this->sendNotification($receiver, $message->getBody(), [
+                'message_type' => 'PM',
+                'original_message' => $message,
+                ]);
         }
         $this->sendSms($message, $sms_numbers, $options);
     }

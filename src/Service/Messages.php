@@ -73,7 +73,15 @@ class Messages
                 }
                 foreach ($context_data as $context) {
                     // TODO: Start getting rid of isset.
-                    if (isset($context['system'])
+                    if ($context instanceOf MessageContext) {
+                        $message_context = new MessageContext([
+                            'system' => $context->getSystem(),
+                            'object_name' => $context->getObjectName(),
+                            'external_id' => $context->getExternalId(),
+                            ]);
+                        $message->addContext($message_context);
+                        $this->entityManager->persist($message_context);
+                    } elseif (isset($context['system'])
                         && isset($context['object_name'])
                         && isset($context['external_id'])) {
                             $message_context = new MessageContext($context);

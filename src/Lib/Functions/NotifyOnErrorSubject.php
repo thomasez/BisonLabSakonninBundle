@@ -36,7 +36,9 @@ class NotifyOnErrorSubject
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendNotification($receiver, $message->getBody());
+            $this->sendNotification($receiver, $message->getBody(), [
+                'original_message' => $message,
+                ]);
         }
 
         return true;

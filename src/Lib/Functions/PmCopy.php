@@ -30,7 +30,10 @@ class PmCopy
 
         $options['provide_link'] = true;
         foreach ($receivers as $receiver) {
-            $this->sendNotification($receiver, $message->getBody(), array('message_type' => 'PM'));
+            $this->sendNotification($receiver, $message->getBody(), [
+                'message_type' => 'PM',
+                'original_message' => $message,
+                ]);
         }
     }
 }

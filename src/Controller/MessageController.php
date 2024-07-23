@@ -94,12 +94,13 @@ class MessageController extends AbstractController
     {
         $messages = $this->sakonninMessages->getMessagesForLoggedIn(array('state' => 'UNREAD'));
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages,
-                array('html' =>'@BisonLabSakonnin/Message/_index.html.twig'));
+            return $this->returnRestData($request, $messages, [
+                'html' =>'@BisonLabSakonnin/Message/_rest_index.html.twig',
+            ]);
         }
-        return $this->render('@BisonLabSakonnin/Message/index.html.twig',
-            array('entities' => $messages, 
-                  'unread_starts_at' => $unread_starts_at));
+        return $this->render('@BisonLabSakonnin/Message/index.html.twig', [
+            'entities' => $messages,
+            ]);
     }
 
     /**

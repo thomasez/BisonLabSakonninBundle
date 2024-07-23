@@ -113,7 +113,18 @@ trait CommonFunctions
             ->getMessageType($message_type));
         // I'll let it contain HTML. This is a security risk if the message
         // contains the wrong HTML or includes something from the outside.
-        $message->setContentType('text/html');
+        // $message->setContentType('text/html');
+        // mime_content_type only does files. Guessing al by myself is hard
+        // aswell.
+
+        $original_message = $options['original_message'] ?? null;
+        $content_type = $options['content_type'] ?? null;
+        if ($content_type)
+            $message->setContentType($content_type);
+        elseif ($original_message)
+            $message->setContentType($original_message->getContentType());
+        else
+            $message->setContentType("text/plain");
 
         $message->setTo($to);
         $message->setToType('INTERNAL');

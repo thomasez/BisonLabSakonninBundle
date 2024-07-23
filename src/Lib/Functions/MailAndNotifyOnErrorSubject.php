@@ -48,7 +48,10 @@ class MailAndNotifyOnErrorSubject
         foreach ($receivers as $receiver) {
             if ($email = $this->extractEmailFromReceiver($receiver))
                 $this->sendMail($message, $email, $options);
-            $this->sendNotification($receiver, $message->getBody());
+
+             $this->sendNotification($receiver, $message->getBody(), [
+                 'original_message' => $message,
+                 ]);
         }
     }
 }
