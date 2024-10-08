@@ -449,6 +449,11 @@ class Messages
             $query->andWhere("m.in_reply_to is null");
         }
 
+        if (isset($criterias['in_subject'])) {
+            $query->andWhere('m.subject like :subject');
+            $query->setParameter('subject', '%' . $criterias['in_subject'] . '%');
+        }
+
         if (isset($criterias['not_message_group'])) {
             $mg = $this->getMessageType($criterias['not_message_group']);
             $types = $mg->getChildren();
