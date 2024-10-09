@@ -305,14 +305,24 @@ class Files
         if (!file_exists($thumbdir))
             mkdir ($thumbdir);
 
-        $thumb = new \Imagick();
-        $thumb->setSize($x, $y);
-        $thumb->readImage($filename);
-        if ($sfile->getMimeType() == "image/heic")
-            $thumb->setFormat("jpg");
-        $thumb->cropThumbnailImage($x, $y);
-        $thumb->writeImage($thumbname);
-        $thumb->destroy();
+        /*
+         * We have a new situation.
+         * A jpeg with size 16320x9180 made this throw an exception on
+         * readImage. "ImagickException: width or height exceeds limit"
+         * Alas, try/catch.
+         */
+        try {
+            $thumb = new \Imagick();
+            $thumb->setSize($x, $y);
+            $thumb->readImage($filename);
+            if ($sfile->getMimeType() == "image/heic")
+                $thumb->setFormat("jpg");
+            $thumb->cropThumbnailImage($x, $y);
+            $thumb->writeImage($thumbname);
+            $thumb->destroy();
+        } catch (\ImagickException $e) {
+            return null;
+        }
 
         return $thumbname;
     }
