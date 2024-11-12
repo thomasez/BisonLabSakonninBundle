@@ -20,6 +20,7 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
  */
 #[ORM\Table(name: 'sakonnin_message')]
 #[ORM\Index(name: "sakonnin_message_id_idx", columns: ["message_id"])]
+#[ORM\Index(name: "sakonnin_state_idx", columns: ["state"])]
 #[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\MessageRepository')]
 class Message
 {
