@@ -21,6 +21,7 @@ use BisonLab\SakonninBundle\Entity\MessageContext as Context;
 #[ORM\Table(name: 'sakonnin_message')]
 #[ORM\Index(name: "sakonnin_message_id_idx", columns: ["message_id"])]
 #[ORM\Index(name: "sakonnin_state_idx", columns: ["state"])]
+#[ORM\Index(name: "sakonnin_to_idx", columns: ["to"])]
 #[ORM\Entity(repositoryClass: 'BisonLab\SakonninBundle\Repository\MessageRepository')]
 class Message
 {
@@ -71,7 +72,7 @@ class Message
     /**
      * @var string
      */
-    #[ORM\Column(name: '`to`', type: 'text', nullable: true)]
+    #[ORM\Column(name: '`to`', type: 'string', length: 255, nullable: true)]
     private $to;
 
     /**
@@ -111,7 +112,7 @@ class Message
     #[Assert\Choice(callback: 'getStates')]
     private $state;
 
-    #[ORM\ManyToOne(targetEntity: 'MessageType', inversedBy: 'messages')]
+    #[ORM\ManyToOne(targetEntity: 'MessageType', inversedBy: 'messages', fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'message_type_id', referencedColumnName: 'id', nullable: false)]
     private $message_type;
 
@@ -486,6 +487,16 @@ class Message
     public function getMessageType()
     {
         return $this->message_type;
+    }
+
+    /**
+     * Get message_type_name
+     *
+     * @return string
+     */
+    public function getMessageTypeName(): ?string
+    {
+        return $this->message_type?->getName();
     }
 
     /**

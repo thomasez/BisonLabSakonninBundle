@@ -337,7 +337,7 @@ class Messages
             $criterias['context'] = [
                 'system' => $criterias['system'],
                 'object_name' => $criterias['object_name'],
-                'external_id' => $criterias['external_id'],
+                'external_id' => (string)$criterias['external_id'],
                 ];
         }
         return $this->getMessages($criterias);
@@ -376,7 +376,7 @@ class Messages
         if (isset($criterias['context'])) {
             $system      = $criterias['context']['system'];
             $object_name = $criterias['context']['object_name'];
-            $external_id = $criterias['context']['external_id'];
+            $external_id = (string)$criterias['context']['external_id'];
             $query = $this->entityManager->createQueryBuilder();
             $query->select('m')
                 ->from(Message::class, 'm')
@@ -391,19 +391,19 @@ class Messages
 
         if (isset($criterias['to'])) {
             $query->andWhere("m.to = :to")
-                ->setParameter('to', $criterias['to']);
+                ->setParameter('to', (string)$criterias['to']);
         }
 
         if (isset($criterias['from'])) {
             $query->andWhere("m.from = :from")
-                ->setParameter('from', $criterias['from']);
+                ->setParameter('from', (string)$criterias['from']);
         }
 
         if (isset($criterias['userid'])) {
             $query->andWhere('m.to in (:userid, :username)');
             if (isset($criterias['include_from']))
                 $query->orWhere('m.from in (:userid, :username)');
-            $query->setParameter('userid', $criterias['userid']);
+            $query->setParameter('userid', (string)$criterias['userid']);
             $query->setParameter('username', $criterias['username']);
         }
 

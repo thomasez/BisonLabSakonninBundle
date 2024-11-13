@@ -38,9 +38,11 @@ class MessageContextRepository extends ContextBaseRepository
               ->andWhere('mc.external_id = :external_id')
               ->setParameter("system", $context_data['system'])
               ->setParameter("object_name", $context_data['object_name'])
-              ->setParameter("external_id", $context_data['external_id']);
+              ->setParameter("external_id", (string)$context_data['external_id']);
 
         if ($with_contexts) {
+            // I presume the message is wanted aswell.
+            $qb->leftJoin('mc.message', 'm');
             return $qb->getQuery()->getResult();
         } else {
             $qb->setMaxResults(1);

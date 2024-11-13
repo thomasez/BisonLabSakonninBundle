@@ -37,7 +37,7 @@ class SakonninFileRepository extends ServiceEntityRepository
               ->andWhere('sfc.external_id = :external_id')
               ->setParameter("system", $system)
               ->setParameter("object_name", $object_name)
-              ->setParameter("external_id", $external_id)
+              ->setParameter("external_id", (string)$external_id)
               ->setMaxResults(1);
 
         $file_context = $qb2->getQuery()->getResult();
@@ -59,7 +59,7 @@ class SakonninFileRepository extends ServiceEntityRepository
               ->andWhere('sfc.external_id = :external_id')
               ->setParameter("system", $system)
               ->setParameter("object_name", $object_name)
-              ->setParameter("external_id", $external_id);
+              ->setParameter("external_id", (string)$external_id);
 
         $files = new ArrayCollection();
         foreach($qb2->getQuery()->getResult() as $sfc) {

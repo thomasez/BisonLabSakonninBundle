@@ -228,7 +228,7 @@ class Files
                 ->andWhere('fc.external_id = :external_id')
                 ->setParameter('system', $criterias['context']['system'])
                 ->setParameter('object_name', $criterias['context']['object_name'])
-                ->setParameter('external_id', $criterias['context']['external_id'])
+                ->setParameter('external_id', (string)$criterias['context']['external_id'])
             ;
         }
 

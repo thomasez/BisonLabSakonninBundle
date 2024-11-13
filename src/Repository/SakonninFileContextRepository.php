@@ -38,7 +38,7 @@ class SakonninFileContextRepository extends ContextBaseRepository
               ->andWhere('fc.external_id = :external_id')
               ->setParameter("system", $context_data['system'])
               ->setParameter("object_name", $context_data['object_name'])
-              ->setParameter("external_id", $context_data['external_id'])
+              ->setParameter("external_id", (string)$context_data['external_id'])
               ->setMaxResults(1);
 
         if ($with_contexts) {
