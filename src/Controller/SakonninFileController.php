@@ -208,12 +208,14 @@ class SakonninFileController extends AbstractController
 
         if (!$sfile->getThumbnailable())
             $this->returnError($request, 'Not an image');
-        // TODO: Add access control.
+
         // Gotta get the thumbnail then.
-        $thumbfile = $this->sakonninFiles->getThumbnailFilename($sfile, $x, $y);
-        $response = new BinaryFileResponse($thumbfile);
-        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
-        return $response;
+        if ($thumbfile = $this->sakonninFiles->getThumbnailFilename($sfile, $x, $y)) {
+            $response = new BinaryFileResponse($thumbfile);
+            $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
+            return $response;
+        }
+        $this->returnError($request, 'Not an image');
     }
 
     /**
