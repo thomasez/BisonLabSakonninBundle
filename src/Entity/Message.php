@@ -204,7 +204,7 @@ class Message
      */
     public function setMessageId($messageId)
     {
-        $this->message_id = $messageId;
+        $this->message_id = (string)$messageId;
 
         return $this;
     }
@@ -214,9 +214,9 @@ class Message
      *
      * @return string
      */
-    public function getMessageId()
+    public function getMessageId(): string
     {
-        return $this->message_id;
+        return (string)$this->message_id;
     }
 
     /**

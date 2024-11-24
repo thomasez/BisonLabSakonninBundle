@@ -98,7 +98,7 @@ class Messages
                         ->find($reply_to);
                 else
                     $in_reply_to = $this->entityManager->getRepository(Message::class)
-                        ->findOneBy(array('message_id' => $reply_to));
+                        ->findOneBy(array('message_id' => (string)$reply_to));
                 if ($in_reply_to)
                     $message->setInReplyTo($in_reply_to);
                 else
@@ -261,7 +261,7 @@ class Messages
                 $options['in_reply_to'] ?? null) {
             if (is_numeric($reply_to))
                 $in_reply_to = $this->entityManager->getRepository(Message::class)
-                ->findOneBy(array('message_id' => $reply_to));
+                ->findOneBy(array('message_id' => (string)$reply_to));
             if (is_numeric($reply_to))
                 $in_reply_to = $this->entityManager->getRepository(Message::class)
                 ->find($reply_to);
@@ -287,7 +287,9 @@ class Messages
         $message = new Message();
         // What does the form say?
         if (isset($options['message_data']['in_reply_to'])) {
-            if (!$reply_to = $this->entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $options['message_data']['in_reply_to']))) {
+            if (!$reply_to = $this->entityManager->getRepository(Message::class)
+                    ->findOneBy(array('message_id' =>
+                    (string)$options['message_data']['in_reply_to']))) {
                 return false;
             } else {
                 $message->setInReplyTo($reply_to);
@@ -369,7 +371,7 @@ class Messages
             return $repo->find($criterias['id']);
         }
         if (isset($criterias['message_id'])) {
-            return $repo->findOneBy(['message_id' => $criterias['message_id']]);
+            return $repo->findOneBy(['message_id' => (string)$criterias['message_id']]);
         }
         $query = $repo->createQueryBuilder('m');
 

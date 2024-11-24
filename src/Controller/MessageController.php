@@ -342,7 +342,7 @@ class MessageController extends AbstractController
              * TODO: Maybe put the test in other places aswell?
              */
             if ($irt = $request->query->get('in_reply_to')) {
-                if (!$irt_msg = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => $irt)))
+                if (!$irt_msg = $entityManager->getRepository(Message::class)->findOneBy(array('message_id' => (string)$irt)))
                     throw $this->createAccessDeniedException('No or bad reply .');
                 if ($irt_msg->getTo() != $user->getId())
                     throw $this->createAccessDeniedException('No or bad reply .');
@@ -720,7 +720,7 @@ class MessageController extends AbstractController
     {
         $entityManager = $this->getDoctrineManager();
         if (!$message = $entityManager->getRepository(Message::class)
-                ->findOneBy(array('message_id' => $message_id)))
+                ->findOneBy(array('message_id' => (string)$message_id)))
             throw $this->createNotFoundException('Message not found');
         return $message;
     }
