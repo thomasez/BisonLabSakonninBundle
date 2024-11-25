@@ -94,7 +94,7 @@ class Messages
             if ($reply_to = $data['in_reply_to'] ?? null) {
                 $in_reply_to = null;
                 // Need to avoid messageid like 6743973e67352 being used as id.
-                if (is_numeric($reply_to) && strlen((string)$reply_to) > 12)
+                if (is_numeric($reply_to) && strlen((string)$reply_to) < 12)
                     $in_reply_to = $this->entityManager->getRepository(Message::class)
                         ->find($reply_to);
                 else
