@@ -260,7 +260,7 @@ class Messages
         // What does the form say?
         if ($reply_to = $options['message_data']['in_reply_to'] ??
                 $options['in_reply_to'] ?? null) {
-            if (is_numeric($reply_to) && strlen((string)$reply_to) > 12)
+            if (is_numeric($reply_to) && strlen((string)$reply_to) < 12)
                 $in_reply_to = $this->entityManager->getRepository(Message::class)
                 ->find($reply_to);
             else
