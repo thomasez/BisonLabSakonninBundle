@@ -19,12 +19,12 @@
     ],
     "require": {
         "ext-imagick": "*",
-        "bisonlab/common-bundle": "dev-attributes",
-        "bisonlab/context-bundle": "dev-attributes",
-        "symfony/framework-bundle": "^6.3 || ^7.0",
+        "bisonlab/common-bundle": "dev-master",
+        "bisonlab/context-bundle": "dev-main",
+        "symfony/framework-bundle": "^7.0",
         "vich/uploader-bundle": "dev-master",
         "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
-        "stof/doctrine-extensions-bundle": "^1.6",
+        "stof/doctrine-extensions-bundle": "^1.11",
         "twig/markdown-extra": "^3.3"
     },
     "suggest": {
