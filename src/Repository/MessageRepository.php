@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 
 use BisonLab\SakonninBundle\Entity\Message;
+use BisonLab\SakonninBundle\Entity\MessageContext;
 
 /**
  * MessageRepository
@@ -28,10 +29,10 @@ class MessageRepository extends ServiceEntityRepository
     public function getOneByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
-        $qb2 = $this->createQueryBuilder();
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
 
         $qb2->select('mc')
-              ->from('BisonLab\SakonninBundle\Entity\MessageContext', 'mc')
+              ->from(MessageContext::class, 'mc')
               ->where('mc.system = :system')
               ->andWhere('mc.object_name = :object_name')
               ->andWhere('mc.external_id = :external_id')
@@ -50,10 +51,10 @@ class MessageRepository extends ServiceEntityRepository
     public function findByContext($system, $object_name, $external_id, $criterias = array())
     {
         // This is so annoyng! I Just did not get subselects working, at all.
-        $qb2 = $this->createQueryBuilder();
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
 
         $qb2->select('mc')
-              ->from('BisonLab\SakonninBundle\Entity\MessageContext', 'mc')
+              ->from(MessageContext::class, 'mc')
               ->where('mc.system = :system')
               ->andWhere('mc.object_name = :object_name')
               ->andWhere('mc.external_id = :external_id')

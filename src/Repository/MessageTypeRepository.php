@@ -32,7 +32,7 @@ FROM BisonLab\SakonninBundle\Entity\MessageType mt
 WHERE mt.parent is null
 ';
 
-        $query = $this->_em->createQuery($dql);
+        $query = $this->getEntityManager()->createQuery($dql);
         $groups = array();
         $res = $query->getResult();
         foreach ($res as $r) {

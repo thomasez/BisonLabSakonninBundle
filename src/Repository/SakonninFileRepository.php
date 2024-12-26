@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
+use BisonLab\SakonninBundle\Entity\SakonninFileContext;
 
 /**
  * SakonninFileRepository
@@ -28,10 +29,10 @@ class SakonninFileRepository extends ServiceEntityRepository
     public function getOneByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
-        $qb2 = $this->createQueryBuilder();
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
 
         $qb2->select('sfc')
-              ->from('BisonLab\SakonninBundle\Entity\SakonninFileContext', 'sfc')
+              ->from(SakonninFileContext::class, 'sfc')
               ->where('sfc.system = :system')
               ->andWhere('sfc.object_name = :object_name')
               ->andWhere('sfc.external_id = :external_id')
@@ -50,10 +51,10 @@ class SakonninFileRepository extends ServiceEntityRepository
     public function findByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
-        $qb2 = $this->createQueryBuilder();
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
 
         $qb2->select('sfc')
-              ->from('BisonLab\SakonninBundle\Entity\SakonninFileContext', 'sfc')
+              ->from(SakonninFileContext::class, 'sfc')
               ->where('sfc.system = :system')
               ->andWhere('sfc.object_name = :object_name')
               ->andWhere('sfc.external_id = :external_id')
