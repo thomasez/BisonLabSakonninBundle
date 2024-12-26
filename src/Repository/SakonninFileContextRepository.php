@@ -30,7 +30,7 @@ class SakonninFileContextRepository extends ContextBaseRepository
      */
     public function contextHasFiles($context_data, $with_contexts = false)
     {
-        $qb = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->select('fc')
               ->from($this->_entityName, 'fc')
               ->where('fc.system = :system')

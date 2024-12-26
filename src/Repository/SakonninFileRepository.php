@@ -28,7 +28,7 @@ class SakonninFileRepository extends ServiceEntityRepository
     public function getOneByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
-        $qb2 = $this->_em->createQueryBuilder();
+        $qb2 = $this->createQueryBuilder();
 
         $qb2->select('sfc')
               ->from('BisonLab\SakonninBundle\Entity\SakonninFileContext', 'sfc')
@@ -50,7 +50,7 @@ class SakonninFileRepository extends ServiceEntityRepository
     public function findByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.
-        $qb2 = $this->_em->createQueryBuilder();
+        $qb2 = $this->createQueryBuilder();
 
         $qb2->select('sfc')
               ->from('BisonLab\SakonninBundle\Entity\SakonninFileContext', 'sfc')

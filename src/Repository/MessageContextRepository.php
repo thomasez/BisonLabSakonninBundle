@@ -30,7 +30,7 @@ class MessageContextRepository extends ContextBaseRepository
      */
     public function contextHasMessages($context_data, $with_contexts = false)
     {
-        $qb = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->select('mc')
               ->from($this->_entityName, 'mc')
               ->where('mc.system = :system')
