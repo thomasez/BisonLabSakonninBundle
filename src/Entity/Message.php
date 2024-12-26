@@ -47,7 +47,7 @@ class Message
     #[ORM\JoinColumn(name: 'in_reply_to_message_id', referencedColumnName: 'id')]
     private $in_reply_to;
 
-    #[ORM\OneToMany(targetEntity: 'Message', mappedBy: 'in_reply_to', fetch: 'EXTRA_LAZY', cascade: ['persist', 'remove', 'merge'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: 'Message', mappedBy: 'in_reply_to', fetch: 'EXTRA_LAZY', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\OrderBy(['id' => 'ASC'])]
     private $replies;
 

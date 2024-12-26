@@ -137,7 +137,7 @@ class MessageType
      * I've chosen to do this in case of more advanced functionality is needed
      * one day.
      */
-    #[ORM\OneToMany(targetEntity: 'MessageType', mappedBy: 'parent', fetch: 'EAGER', cascade: ['persist', 'remove', 'merge'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: 'MessageType', mappedBy: 'parent', fetch: 'EAGER', cascade: ['persist', 'remove'], orphanRemoval: true)]
     protected $children;
 
     #[ORM\ManyToOne(targetEntity: 'MessageType', inversedBy: 'children', fetch: 'EAGER')]
