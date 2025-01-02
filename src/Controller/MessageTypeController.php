@@ -3,7 +3,9 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -128,7 +130,8 @@ class MessageTypeController extends AbstractController
      * Finds and displays a MessageType.
      */
     #[Route(path: '/{id}', name: 'messagetype_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function showAction(MessageType $messagetype)
+    public function showAction(
+        #[MapEntity(expr: 'repository.findOneByIdOrName(id)')] MessageType $messagetype): Response
     {
         $em = $this->getDoctrineManager();
 
@@ -142,7 +145,8 @@ class MessageTypeController extends AbstractController
      * Displays a form to edit an existing MessageType entity.
      */
     #[Route(path: '/{id}/edit', name: 'messagetype_edit', methods: ['GET'])]
-    public function editAction(MessageType $messagetype)
+    public function editAction(
+        #[MapEntity(expr: 'repository.findOneByIdOrName(id)')] MessageType $messagetype): Response
     {
         $editForm = $this->createEditForm($messagetype);
 
@@ -175,7 +179,8 @@ class MessageTypeController extends AbstractController
      * Edits an existing MessageType.
      */
     #[Route(path: '/{id}/update', name: 'messagetype_update', methods: ['POST'])]
-    public function updateAction(Request $request, MessageType $messagetype)
+    public function updateAction(Request $request,
+        #[MapEntity(expr: 'repository.findOneByIdOrName(id)')] MessageType $messagetype): Response
     {
         $em = $this->getDoctrineManager();
 
@@ -198,7 +203,8 @@ class MessageTypeController extends AbstractController
      * Deletes a MessageType.
      */
     #[Route(path: '/{id}/delete', name: 'messagetype_delete', methods: ['POST'])]
-    public function deleteAction(Request $request, $messagetype)
+    public function deleteAction(Request $request,
+        #[MapEntity(expr: 'repository.findOneByIdOrName(id)')] MessageType $messagetype): Response
     {
         if ($this->isCsrfTokenValid('delete'.$messagetype->getId(), $request->request->get('_token')) && $messagetype->isDeleteable()) {
             $entityManager = $this->getDoctrineManager();

@@ -3,6 +3,7 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,6 @@ class SakonninFileController extends AbstractController
         private SerializerInterface $serializer
     ) {
     }
-
 
     /**
      * Lists all file entities.
@@ -135,9 +135,9 @@ class SakonninFileController extends AbstractController
      * Finds and displays a file.
      */
     #[Route(path: '/{file_id}', name: 'sakonninfile_show', methods: ['GET'], requirements: ['file_id' => '\w{13}'])]
-    public function showAction(Request $request, $file_id, $access)
+    public function showAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
     {
-        $sfile = $this->_getFile($file_id);
         $this->denyAccessUnlessGranted('show', $sfile);
         $deleteForm = $this->createDeleteForm($sfile);
 
@@ -152,9 +152,9 @@ class SakonninFileController extends AbstractController
      * Download a file.
      */
     #[Route(path: '/{file_id}/download', name: 'sakonninfile_download', methods: ['GET'])]
-    public function downloadAction(Request $request, $file_id, $access)
+    public function downloadAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
     {
-        $sfile = $this->_getFile($file_id);
         $this->denyAccessUnlessGranted('show', $sfile);
         // TODO: Add access control.
         $path = $this->getFilePath();
@@ -168,9 +168,9 @@ class SakonninFileController extends AbstractController
      * View a file.
      */
     #[Route(path: '/{file_id}/view', name: 'sakonninfile_view', methods: ['GET'])]
-    public function viewAction(Request $request, $file_id, $access)
+    public function viewAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
     {
-        $sfile = $this->_getFile($file_id);
         $this->denyAccessUnlessGranted('show', $sfile);
         // Too many browers do not support Apple HEIC, which is why the
         // thumbnails is jpeg. But that does not help here. Which means we have
@@ -201,9 +201,9 @@ class SakonninFileController extends AbstractController
      * Create/cache thumbnail.
      */
     #[Route(path: '/{file_id}/thumbnail/{x}/{y}', name: 'sakonninfile_thumbnail', methods: ['GET'])]
-    public function thumbnailAction(Request $request, $access, $file_id, $x, $y)
+    public function thumbnailAction(Request $request, $access, $x, $y,
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
     {
-        $sfile = $this->_getFile($file_id);
         $this->denyAccessUnlessGranted('show', $sfile);
 
         if (!$sfile->getThumbnailable())
@@ -222,7 +222,8 @@ class SakonninFileController extends AbstractController
      * Displays a form to edit an existing file.
      */
     #[Route(path: '/{file_id}/edit', name: 'sakonninfile_edit', methods: ['GET', 'POST'])]
-    public function editAction(Request $request, $file_id, $access)
+    public function editAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
     {
         $sfile = $this->_getFile($file_id);
         $this->denyAccessUnlessGranted('edit', $sfile);
@@ -271,7 +272,8 @@ class SakonninFileController extends AbstractController
      * Deletes a file.
      */
     #[Route(path: '/{file_id}/delete', name: 'sakonninfile_delete', methods: ['POST', 'DELETE'])]
-    public function deleteAction(Request $request, $file_id, $access)
+    public function deleteAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
     {
         $sfile = $this->_getFile($file_id);
         $form = $this->createDeleteForm($sfile);

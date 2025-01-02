@@ -3,8 +3,10 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -67,7 +69,7 @@ class SakonninTemplateController extends AbstractController
     /**
      * Finds and displays a sakonninTemplate entity.
      */
-    #[Route(path: '/{id}', name: 'sakonnintemplate_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route(path: '/{id:sakonninTemplate}', name: 'sakonnintemplate_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function showAction(SakonninTemplate $sakonninTemplate)
     {
         return $this->render('@BisonLabSakonnin/SakonninTemplate/show.html.twig',
@@ -79,7 +81,7 @@ class SakonninTemplateController extends AbstractController
     /**
      * Displays a form to edit an existing sakonninTemplate entity.
      */
-    #[Route(path: '/{id}/edit', name: 'sakonnintemplate_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id:sakonninTemplate}/edit', name: 'sakonnintemplate_edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
         $editForm = $this->createForm(SakonninTemplateType::class, $sakonninTemplate);
@@ -101,7 +103,7 @@ class SakonninTemplateController extends AbstractController
     /**
      * Deletes a sakonninTemplate entity.
      */
-    #[Route(path: '/{id}/delete', name: 'sakonnintemplate_delete', methods: ['POST', 'DELETE'])]
+    #[Route(path: '/{id:sakonninTemplate}/delete', name: 'sakonnintemplate_delete', methods: ['POST', 'DELETE'])]
     public function deleteAction(Request $request, SakonninTemplate $sakonninTemplate)
     {
         if ($this->isCsrfTokenValid('delete'.$sakonninTemplate->getId(), $request->request->get('_token')) && $sakonninTemplate->isDeleteable()) {

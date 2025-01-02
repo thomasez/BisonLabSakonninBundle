@@ -5,6 +5,7 @@ namespace BisonLab\SakonninBundle\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -135,7 +136,8 @@ class MessageController extends AbstractController
      * Warning: This can be *a lot* of messages.
      */
     #[Route(path: '/messagetype/{id}', name: 'message_messagetype', methods: ['GET'])]
-    public function listByTypeAction(Request $request, $access, MessageType $messageType)
+    public function listByTypeAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrName(id)')] MessageType $messagetype): Response
     {
         $messages = $messageType->getMessages(true);
         if ($this->isRest($access)) {
@@ -149,20 +151,10 @@ class MessageController extends AbstractController
      * Finds and displays a Message.
      */
     #[Route(path: '/{message_id}', name: 'message_show', methods: ['GET'], requirements: ['message_id' => '\w{13}'])]
-    public function showAction(Request $request, $access, $message_id)
+    public function showAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrMessageId(message_id)')] Message $message): Response
     {
         $entityManager = $this->getDoctrineManager();
-        // Hack. The contextGetAction in CommonBundle is not as smart as it
-        // looks.
-        $message = null;
-        if ($message_id instanceof Message) {
-            $message = $message_id;
-        } else {
-            $message = $this->_getMessage($message_id);
-        }
-        if (!$message) {
-            return $this->returnNotFound($request, 'Unable to find Message.');
-        }
         $this->denyAccessUnlessGranted('show', $message);
         // If it's shown to receiver, it's read.
         $user = $this->getUser();
@@ -183,9 +175,9 @@ class MessageController extends AbstractController
      * Displays a form to edit an existing message.
      */
     #[Route(path: '/{message_id}/edit', name: 'message_edit', methods: ['GET', 'POST'])]
-    public function editAction(Request $request, $access, $message_id)
+    public function editAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrMessageId(message_id)')] Message $message): Response
     {
-        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
         $action = $this->generateUrl('message_edit', array(
             'message_id' => $message->getMessageId(),
@@ -253,9 +245,9 @@ class MessageController extends AbstractController
      * Displays a form to edit an existing message.
      */
     #[Route(path: '/{message_id}/state/{state}', name: 'message_state', methods: ['POST'])]
-    public function stateAction(Request $request, $access, $message_id, $state)
+    public function stateAction(Request $request, $access, $state,
+        #[MapEntity(expr: 'repository.findOneByIdOrMessageId(message_id)')] Message $message): Response
     {
-        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
         $message->setState($state);
         $this->getDoctrineManager()->flush();
@@ -447,9 +439,9 @@ class MessageController extends AbstractController
      * Deletes a message.
      */
     #[Route(path: '/{message_id}', name: 'message_delete', methods: ['DELETE'], requirements: ['message_id' => '\w{13}'])]
-    public function deleteAction(Request $request, $access, $message_id)
+    public function deleteAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrMessageId(message_id)')] Message $message): Response
     {
-        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('delete', $message);
         $form = $this->createDeleteForm($message);
         $form->handleRequest($request);
@@ -600,9 +592,9 @@ class MessageController extends AbstractController
      * Adding a context to an existing message.
      */
     #[Route(path: '/{message_id}/add_context', name: 'message_add_context', methods: ['POST'])]
-    public function addContextAction(Request $request, $access, $message_id)
+    public function addContextAction(Request $request, $access,
+        #[MapEntity(expr: 'repository.findOneByIdOrMessageId(message_id)')] Message $message): Response
     {
-        $message = $this->_getMessage($message_id);
         $this->denyAccessUnlessGranted('edit', $message);
 
         if (!$system = $request->get('system'))
@@ -631,7 +623,7 @@ class MessageController extends AbstractController
     /**
      * Remove just the context
      */
-    #[Route(path: '/{id}/remove_context', name: 'message_remove_context', methods: ['POST', 'DELETE'])]
+    #[Route(path: '/{id:message_contect}/remove_context', name: 'message_remove_context', methods: ['POST', 'DELETE'])]
     public function removeContextAction(Request $request, $access, MessageContext $message_context)
     {
         // Is "delete" more correct? Should I just do thee check directly on
@@ -714,14 +706,5 @@ class MessageController extends AbstractController
             ->setMethod('DELETE')
             ->getForm()
         ;
-    }
-
-    private function _getMessage($message_id)
-    {
-        $entityManager = $this->getDoctrineManager();
-        if (!$message = $entityManager->getRepository(Message::class)
-                ->findOneBy(array('message_id' => (string)$message_id)))
-            throw $this->createNotFoundException('Message not found');
-        return $message;
     }
 }

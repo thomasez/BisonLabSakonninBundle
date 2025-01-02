@@ -94,13 +94,7 @@ class Messages
             if ($reply_to = $data['in_reply_to'] ?? null) {
                 $in_reply_to = null;
                 // Need to avoid messageid like 6743973e67352 being used as id.
-                if (is_numeric($reply_to) && strlen((string)$reply_to) < 12)
-                    $in_reply_to = $this->entityManager->getRepository(Message::class)
-                        ->find($reply_to);
-                else
-                    $in_reply_to = $this->entityManager->getRepository(Message::class)
-                        ->findOneBy(array('message_id' => (string)$reply_to));
-                if ($in_reply_to)
+                if ($in_reply_to = $this->entityManager->getRepository(Message::class)->findOneByIdOrMessageId($reply_to))
                     $message->setInReplyTo($in_reply_to);
                 else
                     return null;
@@ -260,14 +254,7 @@ class Messages
         // What does the form say?
         if ($reply_to = $options['message_data']['in_reply_to'] ??
                 $options['in_reply_to'] ?? null) {
-            if (is_numeric($reply_to) && strlen((string)$reply_to) < 12)
-                $in_reply_to = $this->entityManager->getRepository(Message::class)
-                ->find($reply_to);
-            else
-                $in_reply_to = $this->entityManager->getRepository(Message::class)
-                ->findOneBy(array('message_id' => (string)$reply_to));
-
-            if ($in_reply_to)
+            if ($in_reply_to = $this->entityManager->getRepository(Message::class)->findOneByIdOrMessageId($reply_to))
                 $message->setInReplyTo($in_reply_to);
             else
                 return null;

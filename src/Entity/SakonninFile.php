@@ -38,13 +38,11 @@ class SakonninFile
     private $id;
 
     /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple
-     * property.
-     * 
-     * @var File
+     * @var string
+     * uniqid()
      */
-    #[Vich\UploadableField(mapping: "sakonnin_file", fileNameProperty: "storedAs", size: "size", mimeType: "mimeType", originalName: "name")]
-    private $file;
+    #[ORM\Column(name: 'file_id', type: 'string', length: 100, unique: true)]
+    private $fileId;
 
     /**
      * @var string
@@ -67,13 +65,6 @@ class SakonninFile
      */
     #[ORM\Column(name: 'stored_as', type: 'string', length: 255)]
     private $storedAs;
-
-    /**
-     * @var string
-     * uniqid()
-     */
-    #[ORM\Column(name: 'file_id', type: 'string', length: 100, unique: true)]
-    private $fileId;
 
     /**
      * @var integer $size
@@ -113,6 +104,15 @@ class SakonninFile
 
     #[ORM\OneToMany(targetEntity: 'SakonninFileContext', mappedBy: 'owner', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $contexts;
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple
+     * property.
+     * 
+     * @var File
+     */
+    #[Vich\UploadableField(mapping: "sakonnin_file", fileNameProperty: "storedAs", size: "size", mimeType: "mimeType", originalName: "name")]
+    private $file;
 
     public function __construct($options = array())
     {

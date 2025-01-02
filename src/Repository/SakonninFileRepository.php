@@ -26,6 +26,17 @@ class SakonninFileRepository extends ServiceEntityRepository
         parent::__construct($managerRegistry, SakonninFile::class);
     }
 
+    public function findOneByIdOrFileId($value)
+    {
+        $qb = $this->createQueryBuilder('f')
+              ->where('f.file_id = :file_id')
+              ->setParameter("file_id", (string)$value);
+        // Check if lenght is below 12? Should not relly need it.
+        if (is_numeric($value))
+            $qb->orWhere('f.id = :id')->setParameter("id", $value);
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
     public function getOneByContext($system, $object_name, $external_id)
     {
         // This is so annoyng! I Just did not get subselects working, at all.

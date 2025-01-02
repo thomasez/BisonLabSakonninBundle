@@ -23,6 +23,16 @@ class MessageTypeRepository extends ServiceEntityRepository
         parent::__construct($managerRegistry, MessageType::class);
     }
 
+    public function findOneByIdOrName($value)
+    {
+        $qb = $this->createQueryBuilder('mt')
+              ->where('mt.name = :name')
+              ->setParameter("name", (string)$value);
+        if (is_numeric($value))
+            $qb->orWhere('mt.id = :id')->setParameter("id", $value);
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
     public function getTypesAsChoiceArray($preferred = array())
     {
 
