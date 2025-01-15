@@ -31,8 +31,8 @@ class MessageRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('m')
               ->where('m.message_id = :message_id')
               ->setParameter("message_id", (string)$value);
-        // Check if lenght is below 12? Should not relly need it.
-        if (is_numeric($value))
+        // Check if lenght is below 10, that long and integer it is not.
+        if (is_numeric($value) && (strlen((string)$value) < 10))
             $qb->orWhere('m.id = :id')->setParameter("id", $value);
         return $qb->getQuery()->getOneOrNullResult();
     }
