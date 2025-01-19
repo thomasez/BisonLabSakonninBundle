@@ -178,7 +178,7 @@ class Message
 
         $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
         $this->receivers = new \Doctrine\Common\Collections\ArrayCollection();
-        return $this->traitConstruct($options);
+        $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
