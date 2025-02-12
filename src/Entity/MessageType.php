@@ -4,6 +4,7 @@ namespace BisonLab\SakonninBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 use BisonLab\SakonninBundle\Lib\ExternalEntityConfig;
 
@@ -149,8 +150,8 @@ class MessageType
 
     public function __construct($options = array())
     {
-        $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     public function __toString()

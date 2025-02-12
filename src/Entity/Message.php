@@ -3,6 +3,7 @@
 namespace BisonLab\SakonninBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -176,9 +177,9 @@ class Message
             $this->setInReplyTo($options['in_reply_to']);
         }
 
-        $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->receivers = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->replies   = new ArrayCollection();
+        $this->receivers = new ArrayCollection();
+        $this->contexts  = new ArrayCollection();
     }
 
     public function __toString()

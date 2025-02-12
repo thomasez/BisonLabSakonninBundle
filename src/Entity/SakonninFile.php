@@ -5,6 +5,7 @@ namespace BisonLab\SakonninBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -120,7 +121,7 @@ class SakonninFile
         if (isset($options['file_type']))
             $this->setFileType($options['file_type']);
         $this->setFileId(uniqid());
-        $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contexts = new ArrayCollection();
     }
 
     /**
