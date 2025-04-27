@@ -87,8 +87,8 @@ class Files
             && isset($context_data['external_id'])) {
 
             $file_context = new SakonninFileContext($context_data);
-            $file->addContext($file_context);
             $this->entityManager->persist($file_context);
+            $file->addContext($file_context);
         }
 
         /*

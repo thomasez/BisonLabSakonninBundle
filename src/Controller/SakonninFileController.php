@@ -136,7 +136,7 @@ class SakonninFileController extends AbstractController
      */
     #[Route(path: '/{file_id}', name: 'sakonninfile_show', methods: ['GET'], requirements: ['file_id' => '\w{13}'])]
     public function showAction(Request $request, $access,
-        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFile $sfile): Response
     {
         $this->denyAccessUnlessGranted('show', $sfile);
         $deleteForm = $this->createDeleteForm($sfile);
@@ -153,7 +153,7 @@ class SakonninFileController extends AbstractController
      */
     #[Route(path: '/{file_id}/download', name: 'sakonninfile_download', methods: ['GET'])]
     public function downloadAction(Request $request, $access,
-        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFile $sfile): Response
     {
         $this->denyAccessUnlessGranted('show', $sfile);
         // TODO: Add access control.
@@ -169,7 +169,7 @@ class SakonninFileController extends AbstractController
      */
     #[Route(path: '/{file_id}/view', name: 'sakonninfile_view', methods: ['GET'])]
     public function viewAction(Request $request, $access,
-        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFile $sfile): Response
     {
         $this->denyAccessUnlessGranted('show', $sfile);
         // Too many browers do not support Apple HEIC, which is why the
@@ -202,7 +202,7 @@ class SakonninFileController extends AbstractController
      */
     #[Route(path: '/{file_id}/thumbnail/{x}/{y}', name: 'sakonninfile_thumbnail', methods: ['GET'])]
     public function thumbnailAction(Request $request, $access, $x, $y,
-        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFile $sfile): Response
     {
         $this->denyAccessUnlessGranted('show', $sfile);
 
@@ -223,9 +223,8 @@ class SakonninFileController extends AbstractController
      */
     #[Route(path: '/{file_id}/edit', name: 'sakonninfile_edit', methods: ['GET', 'POST'])]
     public function editAction(Request $request, $access,
-        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFile $sfile): Response
     {
-        $sfile = $this->_getFile($file_id);
         $this->denyAccessUnlessGranted('edit', $sfile);
         $deleteForm = $this->createDeleteForm($sfile);
         $action = $this->generateUrl('sakonninfile_edit', array(
@@ -273,9 +272,8 @@ class SakonninFileController extends AbstractController
      */
     #[Route(path: '/{file_id}/delete', name: 'sakonninfile_delete', methods: ['POST', 'DELETE'])]
     public function deleteAction(Request $request, $access,
-        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFileType $sfile): Response
+        #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFile $sfile): Response
     {
-        $sfile = $this->_getFile($file_id);
         $form = $this->createDeleteForm($sfile);
         $form->handleRequest($request);
         $this->denyAccessUnlessGranted('delete', $sfile);
@@ -309,12 +307,5 @@ class SakonninFileController extends AbstractController
     private function getFilePath()
     {
         return $this->parameterBag->get('sakonnin.file_storage');
-    }
-
-    private function _getFile($file_id)
-    {
-        if (!$sfile = $this->sakonninFiles->getFiles(['fileid' => $file_id]))
-            throw $this->createNotFoundException('File not found');
-        return $sfile;
     }
 }
