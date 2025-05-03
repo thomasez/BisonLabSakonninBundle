@@ -207,7 +207,8 @@ class SakonninFileController extends AbstractController
         $this->denyAccessUnlessGranted('show', $sfile);
 
         if (!$sfile->getThumbnailable())
-            $this->returnError($request, 'Not an image');
+            // $this->returnError($request, 'Not an image');
+            return new Response('Not an image', Response::HTTP_NOT_FOUND);
 
         // Gotta get the thumbnail then.
         if ($thumbfile = $this->sakonninFiles->getThumbnailFilename($sfile, $x, $y)) {
@@ -215,7 +216,8 @@ class SakonninFileController extends AbstractController
             $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
             return $response;
         }
-        $this->returnError($request, 'Not an image');
+        // $this->returnError($request, 'Not an image');
+        return new Response('Not an image', Response::HTTP_NOT_FOUND);
     }
 
     /**
