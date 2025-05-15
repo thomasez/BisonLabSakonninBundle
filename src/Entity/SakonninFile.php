@@ -124,6 +124,12 @@ class SakonninFile
         $this->contexts = new ArrayCollection();
     }
 
+    public function __clone()
+    {
+        $this->setFileId(uniqid());
+        $this->contexts = new ArrayCollection();
+    }
+
     /**
      * Get id
      *

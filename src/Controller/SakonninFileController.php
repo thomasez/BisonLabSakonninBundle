@@ -20,6 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 use BisonLab\SakonninBundle\Entity\SakonninFile;
+use BisonLab\SakonninBundle\Entity\SakonninFileContext;
 use BisonLab\SakonninBundle\Service\Files as SakonninFiles;
 
 /**
@@ -91,7 +92,6 @@ class SakonninFileController extends AbstractController
                     foreach ($files as $ulfile) {
                         $clfile = clone($sfile);
                         $clfile->setFile($ulfile);
-                        $clfile->setFileId(uniqid());
                         $this->sakonninFiles->storeFile($clfile, $request_data['file_context'] ?? array());
                     }
                 } else {
