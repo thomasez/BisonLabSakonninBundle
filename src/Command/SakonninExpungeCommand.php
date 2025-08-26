@@ -79,10 +79,9 @@ EOT
         $mt_iterable = $this->mt_repo->createQueryBuilder('mt')
             ->where('mt.parent is not null')
             ->andWhere('mt.expunge_days > 0')
-            ->getQuery()->iterate();
+            ->getQuery();
 
-        while (($res = $mt_iterable->next()) !== false) {
-            $mt = $res[0];
+        foreach ($mt_iterable->toIterable() as $mt) {
             $expunge_method = $mt->getExpungeMethod();
 
             $edays = $mt->getExpungeDays();
@@ -100,10 +99,7 @@ EOT
                 ->setParameter('states', ['ARCHIVED'])
                 ->getQuery();
 
-            $m_iterable = $m_query->iterate();
-
-            while (($mess = $m_iterable->next()) !== false) {
-                $message = $mess[0];
+            foreach ($m_query->toIterable() as $message) {
                 // TODO: Explain to myself why this.. newest from newest..
                 $newest = $message->getNewestInThread();
                 $i = $newest->getNewestInThread()->getCreatedAt()->diff(new \DateTime());
@@ -132,10 +128,7 @@ EOT
             ->setParameter('states', ['ARCHIVED'])
             ->getQuery();
 
-        $m_iterable = $m_query->iterate();
-
-        while (($mess = $m_iterable->next()) !== false) {
-            $message = $mess[0];
+        foreach ($m_query->toIterable() as $message) {
             $expire_method = $message->getMessageType()->getExpireMethod();
 
             /*
