@@ -654,10 +654,10 @@ class MessageType
     /**
      * Set sakonnin_template
      *
-     * @param \BisonLab\SakonninBundle\Entity\SakonninTemplate $messageType
+     * @param SakonninTemplate $messageType
      * @return Message
      */
-    public function setSakonninTemplate(\BisonLab\SakonninBundle\Entity\SakonninTemplate $sakonninTemplate = null)
+    public function setSakonninTemplate(?SakonninTemplate $sakonninTemplate)
     {
         $this->sakonnin_template = $sakonninTemplate;
 

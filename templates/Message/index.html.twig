@@ -5,6 +5,7 @@
     <table id="message_list" class="table table-striped table-bordered table-sm">
         <thead>
             <tr>
+                <th class="selectcol"></th>
                 <th>Subject</th>
                 <th>From</th>
                 <th>To</th>
@@ -13,7 +14,6 @@
                 <th>Message Type</th>
                 <th>Createdat</th>
                 <th class="no-sort">Actions</th>
-                <th class="no-sort selectcol"></th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +24,7 @@
         {% for entity in entities %}
           {% if is_granted('show', entity) and not entity.inreplyto %}
             <tr>
+                <td class="message_list_select"><div class="d-none">{{ entity.messageid }}</div></td>
                 <td>{{ entity.subject }}
                 {% if entity.replies %}
                 {% for reply in entity.replies %}
@@ -67,7 +68,6 @@
                     {% endif %}
                 </ul>
                 </td>
-                <td class="message_list_select"> {{ entity.messageid }} </td>
             </tr>
           {% endif %}
         {% endfor %}
@@ -92,6 +92,9 @@
 <script>
 $(document).ready(function() {
 
+    /*
+     * When using datatables 2.2 change this.
+     */
     var selectable_table = $('#message_list').DataTable( {
         "pageLength": 200,
         "order": [[ 6, "desc" ]],
