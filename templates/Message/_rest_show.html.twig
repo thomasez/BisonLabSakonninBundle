@@ -43,7 +43,7 @@
 {% endif %}
         <tr>
             <th valign="top">Time:</th>
-            <td valign="top">{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i') }}{% endif %}</td>
+            <td valign="top">{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
           <tr>
             <th valign="top">Type:</th>
@@ -105,7 +105,7 @@
         {% endif %}
     {% endif %}
     {% if checked %}
-      <span class="fas fa-check" title="Checked"></span> <em>{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}</em>
+      <span class="fas fa-check" title="Checked"></span> <em>{{ last_reply.createdAt | date('Y-m-d H:i:s') }} - {{ last_reply.createdBy }}</em>
     {% else %}
       <span class="fas fa-unchecked" title="Unchecked"></span>
     {% endif %}
