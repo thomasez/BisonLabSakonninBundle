@@ -476,8 +476,9 @@ class MessageController extends AbstractController
         if (!is_array($msglist))
              return $this->redirect($request->headers->get('referer'));
         $entityManager = $this->getDoctrineManager();
+        $messageRepo = $entityManager->getRepository(Message::class);
         foreach ($msglist as $msgid) {
-            if (!$message = $this->_getMessage($msgid))
+            if (!$message = $messageRepo->findOneBy(['message_id' => $msgid]))
                 continue;
             if ($submit == "Delete") {
                 if (!$this->isGranted('delete', $message))
