@@ -29,6 +29,11 @@ class Messages
     use \BisonLab\SakonninBundle\Lib\CommonStuff;
 
     private $entityManager;
+    /**
+     * If something fails during postmessage, the return is null.
+     * But we'd like to know why.
+     */
+    private $post_message_errors = [];
 
     public function __construct(
         private MailerInterface $mailer,
@@ -96,8 +101,10 @@ class Messages
                 // Need to avoid messageid like 6743973e67352 being used as id.
                 if ($in_reply_to = $this->entityManager->getRepository(Message::class)->findOneByIdOrMessageId($reply_to))
                     $message->setInReplyTo($in_reply_to);
-                else
+                else {
+                    $this->post_message_errors[] = "Could not find the message this is a reply to";
                     return null;
+                }
             }
 
             // Get a default one?
@@ -520,4 +527,10 @@ class Messages
             ->getForm()
         ;
     }
+
+    public function getPostMessageErrors(): array
+    {
+        return $this->post_message_errors;
+    }
+
 }

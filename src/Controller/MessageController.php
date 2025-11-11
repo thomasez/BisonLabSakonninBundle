@@ -386,12 +386,13 @@ class MessageController extends AbstractController
                 // No messaagetype? naaah.
                 throw $this->createAccessDeniedException('No access, no message type found for message.');
             }
-            $message = $this->sakonninMessages->postMessage($data, isset($parsed['message_context']) ? $parsed['message_context'] : array());
+            $message = $this->sakonninMessages->postMessage($data, $parsed['message_context'] ?? []);
             if ($message) {
                 return $this->returnRestData($request, $message->__toArray(), null, 204);
             }
             // This is so the wrong error to return.
-            return $this->returnErrorResponse("Validation Error", 400);
+            return $this->returnErrorResponse("Validation Error", 400,
+                $this->sakonninMessages->getPostMessageErrors());
         }
 
         $data = $request->request->all();
