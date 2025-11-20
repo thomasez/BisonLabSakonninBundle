@@ -48,4 +48,17 @@ class MessageContextRepository extends ContextBaseRepository
             return !empty($message_contexts);
         }
     }
+
+    public function findByExternalIds($messageIds, $system, $objectName)
+    {
+        return $this->createQueryBuilder('mc')
+            ->where('mc.message IN (:ids)')
+            ->andWhere('mc.object_name = :objectName')
+            ->andWhere('mc.system = :system')
+            ->setParameter('ids', $messageIds)
+            ->setParameter('objectName', $objectName)
+            ->setParameter('system', $system)
+            ->getQuery()->getResult()
+        ;
+    }
 }

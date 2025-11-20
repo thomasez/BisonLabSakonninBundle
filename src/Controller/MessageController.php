@@ -2,6 +2,7 @@
 
 namespace BisonLab\SakonninBundle\Controller;
 
+use BisonLab\SakonninBundle\Repository\MessageContextRepository;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -502,6 +503,41 @@ class MessageController extends AbstractController
                 Response::HTTP_OK);
         else
             return $this->redirect($request->headers->get('referer'));
+    }
+
+    /**
+     * Map message ids with message context external id
+     */
+    #[Route('/message_context_map', name: 'message_context_map', methods: ['POST'])]
+    public function getMessageContextMap(Request $request, MessageContextRepository $messageContextRepository): JsonResponse
+    {
+        $token = $request->headers->get('X-CSRF-TOKEN');
+        if (!$this->isCsrfTokenValid('message_context_map', $token)) {
+            return new JsonResponse(['error' => 'bad_token'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $system = $request->query->get('system');
+        $objectName = $request->query->get('object_name');
+
+        if (null === $system || null === $objectName) {
+            return new JsonResponse(['error' => 'bad_argument'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $payload = json_decode($request->getContent(), true) ?? [];
+        $messageIds = array_values(array_unique(array_map('intval', $payload['messageIds'] ?? [])));
+        if (!$messageIds) {
+            return new JsonResponse(['warning' => 'no_content'], Response::HTTP_NO_CONTENT);
+        }
+
+        $rows = $messageContextRepository->findByExternalIds($messageIds, $system, $objectName);
+        $map = [];
+
+        foreach ($rows as $row) {
+            $message = $row->getMessage()->getId();
+            $map[(string)$message] = $row->getExternalId();
+        }
+
+        return new JsonResponse($map);
     }
 
     /**

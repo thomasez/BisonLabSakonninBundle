@@ -130,7 +130,7 @@ trait CommonFunctions
         $message->setToType('INTERNAL');
         $message->setBody($body);
 
-        $from = $this->sakonninMessages->getLoggedInUser();
+        $from = $options['from'] ?? $this->sakonninMessages->getLoggedInUser();
         $message->setFrom($from);
         $message->setFromType('INTERNAL');
 
