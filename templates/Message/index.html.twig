@@ -2,7 +2,7 @@
 
 {% block body -%}
     <h1>Messages</h1>
-    <table id="message_list" class="table table-striped table-bordered table-sm">
+    <table id="message_list" class="table table-striped table-bordered table-sm" data-order='[[ 7, "desc" ]]'>
         <thead>
             <tr>
                 <th class="selectcol"></th>
@@ -25,7 +25,12 @@
           {% if is_granted('show', entity) and not entity.inreplyto %}
             <tr>
                 <td class="message_list_select"><div class="d-none">{{ entity.messageid }}</div></td>
-                <td>{{ entity.subject }}
+{# Create a list of messages and replies so we can use the latest created message/reply as the sort order value #}
+{% set messages_created = [entity.createdAt | date('U')] %}
+{% for reply in entity.replies %}
+{% set messages_created = messages_created|merge([reply.createdAt | date('U')]) %}
+{% endfor %}
+                <td data-order="{{ messages_created|last }}">{{ entity.subject }}
                 {% if entity.replies %}
                 {% for reply in entity.replies %}
                   <br />reply:<a href="{{ path('message_show', { 'message_id': reply.messageid }) }}">{{ reply.subject }}</a>
@@ -37,7 +42,15 @@
                 <td>{{ entity.state }}</td>
                 <td><a href="{{ path('message_show', { 'message_id': entity.messageid }) }}">{{ entity.messageid }}</a></td>
                 <td>{{ entity.messagetype.parent }} - {{ entity.messagetype }} ({{ entity.messagetype.description }})</td>
-                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                {% if entity.createdAt %}
+                    <td data-order="{{ entity.createdAt | date('U')}}">
+                    {{ entity.createdAt|date('Y-m-d H:i:s') }}
+                    </td>
+                {% else %}
+                    <td>
+                        &nbsp;
+                    </td>
+                {% endif %}
                 <td>
                 <ul>
                     <li>
