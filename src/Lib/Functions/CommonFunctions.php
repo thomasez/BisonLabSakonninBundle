@@ -6,6 +6,7 @@ use BisonLab\SakonninBundle\Entity\Message;
 use BisonLab\SakonninBundle\Entity\MessageType;
 use BisonLab\SakonninBundle\Entity\MessageContext;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /*
  * Used services:
@@ -57,7 +58,7 @@ trait CommonFunctions
         $body = '';
         if (isset($options['provide_link']) && $options['provide_link']) {
             $url = $this->router->generate('message_show',
-                array('message_id' => $message->getMessageId()), true);
+                array('message_id' => $message->getMessageId()), UrlGeneratorInterface::ABSOLUTE_URL);
             $body .= "Link to this message: " . $url  . "\n\n";
         }
 
