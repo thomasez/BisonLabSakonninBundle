@@ -23,7 +23,7 @@
         "bisonlab/context-bundle": "dev-main",
         "symfony/framework-bundle": "^7.0|^8.0",
         "vich/uploader-bundle": "dev-master",
-        "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
+        "norzechowicz/aceeditor-bundle": "dev-json-editor",
         "stof/doctrine-extensions-bundle": "^1.14",
         "twig/markdown-extra": "^3.3"
     },
