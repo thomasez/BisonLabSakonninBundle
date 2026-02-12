@@ -57,9 +57,23 @@ class Messages
             $data = [];
         } else {
             $message = new Message($data);
+
+            $in_reply_to = null;
+            if ($reply_to = $data['in_reply_to'] ?? null) {
+                // Need to avoid messageid like 6743973e67352 being used as id.
+                if ($in_reply_to = $this->entityManager->getRepository(Message::class)->findOneByIdOrMessageId($reply_to))
+                    $message->setInReplyTo($in_reply_to);
+                else {
+                    $this->post_message_errors[] = "Could not find the message this is a reply to";
+                    return null;
+                }
+            }
+
             if (isset($data['message_type'])
                     && $message_type = $this->entityManager->getRepository(MessageType::class)->findOneByName($data['message_type'])) {
-                $message->setMessageType($message_type);            
+                $message->setMessageType($message_type);
+            } elseif ($in_reply_to) {
+                $message->setMessageType($in_reply_to->getMessageType());
             } else {
                 throw new \InvalidArgumentException("No message type found or set.");
             }
@@ -93,17 +107,6 @@ class Messages
                             $message->addContext($message_context);
                             $this->entityManager->persist($message_context);
                     }
-                }
-            }
-
-            if ($reply_to = $data['in_reply_to'] ?? null) {
-                $in_reply_to = null;
-                // Need to avoid messageid like 6743973e67352 being used as id.
-                if ($in_reply_to = $this->entityManager->getRepository(Message::class)->findOneByIdOrMessageId($reply_to))
-                    $message->setInReplyTo($in_reply_to);
-                else {
-                    $this->post_message_errors[] = "Could not find the message this is a reply to";
-                    return null;
                 }
             }
 
