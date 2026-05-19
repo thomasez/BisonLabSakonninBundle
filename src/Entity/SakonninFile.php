@@ -99,8 +99,9 @@ class SakonninFile
     /**
      * @var array
      * Tags, the simplest way (No, not simple_array).
+     * Now, jason.
      */
-    #[ORM\Column(name: 'tags', type: 'array', nullable: true)]
+    #[ORM\Column(name: 'tags', type: 'json', nullable: true)]
     private $tags = [];
 
     #[ORM\OneToMany(targetEntity: 'SakonninFileContext', mappedBy: 'owner', cascade: ['persist', 'remove'], orphanRemoval: true)]
