@@ -134,7 +134,7 @@ class SakonninFileController extends AbstractController
     /**
      * Finds and displays a file.
      */
-    #[Route(path: '/{file_id}', name: 'sakonninfile_show', methods: ['GET'], requirements: ['file_id' => '\w{13}'])]
+    #[Route(path: '/{file_id}', name: 'sakonninfile_show', methods: ['GET'], requirements: ['file_id' => '\w{13,22}'])]
     public function showAction(Request $request, $access,
         #[MapEntity(expr: 'repository.findOneByIdOrFileId(file_id)')] SakonninFile $sfile): Response
     {

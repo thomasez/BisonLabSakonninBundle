@@ -145,7 +145,7 @@ class Message
 
     public function __construct($options = array())
     {
-        $this->setMessageId(uniqid());
+        $this->setMessageId(uniqid('', true));
         if (isset($options['from_type']) ) {
             $this->setFromType($options['from_type']);
         }
@@ -205,7 +205,8 @@ class Message
      */
     public function setMessageId($messageId)
     {
-        $this->message_id = (string)$messageId;
+        $msgid = str_replace(".", "", $messageId);
+        $this->message_id = $msgid;
 
         return $this;
     }

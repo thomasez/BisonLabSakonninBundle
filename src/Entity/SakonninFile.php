@@ -121,13 +121,13 @@ class SakonninFile
         $this->description = $options['description'] ?? null;
         if (isset($options['file_type']))
             $this->setFileType($options['file_type']);
-        $this->setFileId(uniqid());
+        $this->setFileId(uniqid('', true));
         $this->contexts = new ArrayCollection();
     }
 
     public function __clone()
     {
-        $this->setFileId(uniqid());
+        $this->setFileId(uniqid('', true));
         $this->contexts = new ArrayCollection();
     }
 
@@ -236,7 +236,8 @@ class SakonninFile
      */
     public function setFileId(?string $fileId): void
     {
-        $this->fileId = $fileId;
+        $fid = str_replace(".", "", $fileId);
+        $this->fileId = $fid;
     }
 
     /**

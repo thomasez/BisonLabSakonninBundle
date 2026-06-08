@@ -151,7 +151,7 @@ class MessageController extends AbstractController
     /**
      * Finds and displays a Message.
      */
-    #[Route(path: '/{message_id}', name: 'message_show', methods: ['GET'], requirements: ['message_id' => '\w{13}'])]
+    #[Route(path: '/{message_id}', name: 'message_show', methods: ['GET'], requirements: ['message_id' => '\w{13,22}'])]
     public function showAction(Request $request, $access,
         #[MapEntity(expr: 'repository.findOneByIdOrMessageId(message_id)')] Message $message): Response
     {
@@ -440,7 +440,7 @@ class MessageController extends AbstractController
     /**
      * Deletes a message.
      */
-    #[Route(path: '/{message_id}', name: 'message_delete', methods: ['DELETE'], requirements: ['message_id' => '\w{13}'])]
+    #[Route(path: '/{message_id}', name: 'message_delete', methods: ['DELETE'], requirements: ['message_id' => '\w{13,22}'])]
     public function deleteAction(Request $request, $access,
         #[MapEntity(expr: 'repository.findOneByIdOrMessageId(message_id)')] Message $message): Response
     {
