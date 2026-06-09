@@ -498,7 +498,7 @@ class MessageType
      * @param \BisonLab\SakonninBundle\Entity\MessageType $parent
      * @return MessageType
      */
-    public function setParent(\BisonLab\SakonninBundle\Entity\MessageType $parent = null)
+    public function setParent(?MessageType $parent = null)
     {
         $this->parent = $parent;
 

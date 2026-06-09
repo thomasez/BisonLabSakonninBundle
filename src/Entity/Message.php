@@ -418,7 +418,7 @@ class Message
      * @param \BisonLab\SakonninBundle\Entity\Message $inReplyTo
      * @return Message
      */
-    public function setInReplyTo(\BisonLab\SakonninBundle\Entity\Message $inReplyTo = null)
+    public function setInReplyTo(?Message $inReplyTo = null)
     {
         $this->in_reply_to = $inReplyTo;
 
@@ -474,7 +474,7 @@ class Message
      * @param \BisonLab\SakonninBundle\Entity\MessageType $messageType
      * @return Message
      */
-    public function setMessageType(\BisonLab\SakonninBundle\Entity\MessageType $messageType = null)
+    public function setMessageType(?MessageType $messageType = null)
     {
         $this->message_type = $messageType;
 

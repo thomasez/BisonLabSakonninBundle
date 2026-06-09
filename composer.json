@@ -19,15 +19,15 @@
     ],
     "require": {
         "ext-imagick": "*",
+        "symfony/framework-bundle": "^7.0|^8.0",
         "bisonlab/common-bundle": "dev-master",
         "bisonlab/context-bundle": "dev-main",
-        "symfony/framework-bundle": "^7.0|^8.0",
         "vich/uploader-bundle": "dev-master",
         "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
-        "stof/doctrine-extensions-bundle": "^1.14",
-        "twig/markdown-extra": "^3.3"
+        "stof/doctrine-extensions-bundle": "^1.14"
     },
     "suggest": {
+        "twig/markdown-extra": "^3.3",
         "m4tthumphrey/php-gitlab-api": "^12.0"
     },
     "autoload": {
