@@ -53,6 +53,22 @@
                 {{ entity.messagetype }} ({{ entity.messagetype.description }})
             </td>
           </tr>
+{% if entity.contexts | length > 0 %}
+          <tr>
+              <th>Sources</th>
+              <td>
+                  {% for context in entity.contexts %}
+                      {% if context.url is not empty %}
+                      <a href="{{ context.url }}">{{ context.label }}</a>
+                      {% else %}
+                      {{ context.label }}
+                      {% endif %}
+                      :  {{ context.externalid }}
+                      <br />
+                  {% endfor %}
+              </td>
+          </tr>
+{% endif %}
 {% if entity.replies | length > 0 %}
           <tr>
             <th valign="top">Replies:</th>
