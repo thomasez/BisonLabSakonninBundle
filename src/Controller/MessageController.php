@@ -166,7 +166,7 @@ class MessageController extends AbstractController
             $entityManager->flush();
         }
         if ($this->isRest($access)) {
-            return $this->returnRestData($request, $messages, array('html' =>'@BisonLabSakonnin/Message/_show.html.twig'));
+            return $this->returnRestData($request, $message, array('html' =>'@BisonLabSakonnin/Message/_ajax_show.html.twig'));
         }
         return $this->render('@BisonLabSakonnin/Message/show.html.twig',
             array('entity' => $message));
