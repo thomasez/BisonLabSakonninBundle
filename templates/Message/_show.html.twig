@@ -58,7 +58,7 @@
             <th valign="top">Related links:</th>
             <td valign="top">
                 {% for context in entity.contexts %}
-                    {{ context.label }}
+                    <strong>{{ context.label }}:</strong>
                     {% if context.url is not empty %}
                         <a href="{{ context.url }}">{{ context.externalid }}</a>
                     {% else %}
