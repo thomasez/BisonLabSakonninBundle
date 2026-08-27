@@ -314,6 +314,7 @@ class Files
             $thumb = new \Imagick();
             $thumb->setSize($x, $y);
             $thumb->readImage($filename);
+            $thumb->autoOrient();
             if ($sfile->getMimeType() == "image/heic")
                 $thumb->setFormat("jpg");
             $thumb->cropThumbnailImage($x, $y);
