@@ -44,7 +44,7 @@ class SecurityModelVoter extends Voter
             return false;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         // darn method_exists changed. to something more corrrect tho.
         if (!$subject)
