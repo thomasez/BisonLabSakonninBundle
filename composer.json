@@ -23,7 +23,7 @@
         "bisonlab/common-bundle": "dev-master",
         "bisonlab/context-bundle": "dev-main",
         "vich/uploader-bundle": "dev-master",
-        "norzechowicz/aceeditor-bundle": "dev-dev-thomasez",
+        "norberttech/aceeditor-bundle": "5.x-dev",
         "stof/doctrine-extensions-bundle": "^1.14"
     },
     "suggest": {
