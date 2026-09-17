@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Norzechowicz\AceEditorBundle\Form\Extension\AceEditor\Type\AceEditorType;
+use AceEditorBundle\Form\Extension\AceEditor\Type\AceEditorType;
 
 class SakonninTemplateType extends AbstractType
 {
