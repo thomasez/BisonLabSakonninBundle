@@ -1,0 +1,5 @@
+bison_lab_sakonnin:
+    resource:
+        path: ../src/Controller/
+        namespace: BisonLab\SakonninBundle\Controller
+    type:  attribute

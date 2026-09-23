@@ -3,7 +3,7 @@
 namespace BisonLab\SakonninBundle\Controller;
 
 use BisonLab\SakonninBundle\Repository\MessageContextRepository;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
