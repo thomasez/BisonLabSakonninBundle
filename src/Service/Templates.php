@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Service;
 
-use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

@@ -2,7 +2,6 @@
 
 namespace BisonLab\SakonninBundle\Service;
 
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Mailer\MailerInterface;
