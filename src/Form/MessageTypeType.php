@@ -49,7 +49,7 @@ class MessageTypeType extends AbstractType
                     'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('mt')
                      ->where('mt.parent is null')
-                     ->orderBy('mt.name', 'ASC');
+                     ->orderBy('mt.name', \SortDirection::Ascending);
                     },
                 ))
             ->add('sakonnin_template', EntityType::class,

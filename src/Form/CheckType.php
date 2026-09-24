@@ -40,7 +40,7 @@ class CheckType extends AbstractType
                     'query_builder' => function(EntityRepository $er) {
                      return $er->createQueryBuilder('m')
                          ->where('m.parent is not null')
-                         ->orderBy('m.parent, m.name', 'ASC');
+                         ->orderBy('m.parent, m.name', \SortDirection::Ascending);
                         },
                 ));
         } else {

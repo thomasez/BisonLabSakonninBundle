@@ -248,7 +248,7 @@ class Files
         if (isset($criterias['order'])) {
             $query->orderBy("f.createdAt", $criterias['order']);
         } else {
-            $query->orderBy("f.createdAt", "ASC");
+            $query->orderBy("f.createdAt", \SortDirection::Ascending);
         }
 
         if (isset($criterias['limit'])) {

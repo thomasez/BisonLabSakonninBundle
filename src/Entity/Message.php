@@ -49,7 +49,7 @@ class Message
     private $in_reply_to;
 
     #[ORM\OneToMany(targetEntity: 'Message', mappedBy: 'in_reply_to', fetch: 'EXTRA_LAZY', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[ORM\OrderBy(['id' => 'ASC'])]
+    #[ORM\OrderBy(['id' => \SortDirection::Ascending])]
     private $replies;
 
     /**

@@ -464,7 +464,7 @@ class Messages
         if (isset($criterias['order'])) {
             $query->orderBy("m.createdAt", $criterias['order']);
         } else {
-            $query->orderBy("m.createdAt", "ASC");
+            $query->orderBy("m.createdAt", \SortDirection::Ascending);
         }
 
         if (isset($criterias['limit'])) {

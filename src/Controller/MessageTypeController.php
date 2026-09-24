@@ -47,7 +47,7 @@ class MessageTypeController extends AbstractController
                   ->select('mt')
                   ->from('BisonLab\SakonninBundle\Entity\MessageType', 'mt')
                   ->where('mt.parent is null')
-                  ->orderBy('mt.name', 'ASC')
+                  ->orderBy('mt.name', \SortDirection::Ascending)
                   ->getQuery()
                   ->getResult();
 
