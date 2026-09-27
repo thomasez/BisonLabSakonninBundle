@@ -51,10 +51,10 @@ class MessageController extends AbstractController
         
         // Gotta add criterias then.
         $criterias = [];
-        if ($message_types = $request->get('message_types')) {
+        if ($message_types = $request->query->get('message_types')) {
             $criterias['message_types'] = $message_types;
         }
-        if ($states = $request->get('states')) {
+        if ($states = $request->query->get('states')) {
             $criterias['states'] = $states;
         }
 
@@ -62,7 +62,7 @@ class MessageController extends AbstractController
         if (!empty($criterias))
             $messages = $this->sakonninMessages->getMessages($criterias);
         
-        if ('DESC' == $request->get('sort')) {
+        if ('DESC' == $request->query->get('sort')) {
             $messages = array_reverse($messages);
         }
 
@@ -182,13 +182,13 @@ class MessageController extends AbstractController
         $this->denyAccessUnlessGranted('edit', $message);
         $action = $this->generateUrl('message_edit', array(
             'message_id' => $message->getMessageId(),
-            'reload_after_post' => $request->get('reload_after_post'),
-            'no_subject' => $request->get('no_subject'),
-            'with_expire' => $request->get('with_expire'),
-            'full_edit' => $request->get('full_edit'),
+            'reload_after_post' => $request->query->get('reload_after_post'),
+            'no_subject' => $request->query->get('no_subject'),
+            'with_expire' => $request->query->get('with_expire'),
+            'full_edit' => $request->query->get('full_edit'),
             'access' => $access
             ));
-        if ($request->get('full_edit')) {
+        if ($request->query->get('full_edit')) {
             $editForm = $this
                ->createForm('BisonLab\SakonninBundle\Form\MessageType', $message, [
                     'action' => $action,
@@ -197,8 +197,8 @@ class MessageController extends AbstractController
             $editForm = $this
                ->createForm('BisonLab\SakonninBundle\Form\EditMessageType', $message, [
                     'action' => $action,
-                    'with_expire' => $request->get('with_expire'),
-                    'no_subject' => $request->get('no_subject'),
+                    'with_expire' => $request->query->get('with_expire'),
+                    'no_subject' => $request->query->get('no_subject'),
                     ]);
         }
         $editForm->handleRequest($request);
@@ -226,7 +226,7 @@ class MessageController extends AbstractController
                     ->render('@BisonLabSakonnin/Message/_edit.html.twig',
                 array(
                     'message' => $message,
-                    'reload_after_post' => $request->get('reload_after_post'),
+                    'reload_after_post' => $request->query->get('reload_after_post'),
                     'action' => $action,
                     'edit_form' => $editForm->createView(),
             ));
@@ -235,7 +235,7 @@ class MessageController extends AbstractController
         return $this->render('@BisonLabSakonnin/Message/edit.html.twig',
             array(
                 'message' => $message,
-                'reload_after_post' => $request->get('reload_after_post'),
+                'reload_after_post' => $request->query->get('reload_after_post'),
                 'action' => $action,
                 'edit_form' => $editForm->createView(),
                 'delete_form' => $deleteForm->createView(),
@@ -270,7 +270,7 @@ class MessageController extends AbstractController
     {
         // Search/Index - basically same same. For now at least.
         $this->denyAccessUnlessGranted('index', new Message());
-        $criterias = $request->get('criterias') ?? [];
+        $criterias = $request->query->get('criterias') ?? [];
         $criterias['context'] = [
             'system'      => $system,
             'object_name' => $object_name,
@@ -562,7 +562,7 @@ class MessageController extends AbstractController
     public function newAction(Request $request, $access)
     {
         $message = new Message();
-        if ($message_type = $request->get('message_type')) {
+        if ($message_type = $request->query->get('message_type')) {
             $em = $this->getDoctrineManager();
             if (is_numeric($message_type)) {
                 $message->setMessageType(
@@ -583,7 +583,7 @@ class MessageController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                if ($context_data = $request->get('message_context')) {
+                if ($context_data = $request->request->get('message_context')) {
                     $message_context = new MessageContext($context_data);
                     $message->addContext($message_context);
                 }
@@ -600,7 +600,7 @@ class MessageController extends AbstractController
             }
         }
         $action = $this->generateUrl('message_new', array(
-            'reload_after_post' => $request->get('reload_after_post'),
+            'reload_after_post' => $request->query->get('reload_after_post'),
             'access' => $access
             ));
         if ($this->isRest($access)) {
@@ -608,19 +608,19 @@ class MessageController extends AbstractController
                     ->render('@BisonLabSakonnin/Message/_new.html.twig',
                 array(
                     'message' => $message,
-                    'reload_after_post' => $request->get('reload_after_post') ?? true,
+                    'reload_after_post' => $request->query->get('reload_after_post') ?? true,
                     'action' => $action,
-                    'elements' => $request->get('elements') ?? null,
-                    'context' => $request->get('context') ?? null,
+                    'elements' => $request->query->get('elements') ?? null,
+                    'context' => $request->query->get('context') ?? null,
                     'form' => $form->createView(),
             ));
         }
         return $this->render('@BisonLabSakonnin/Message/new.html.twig',
             array(
                 'message' => $message,
-                'reload_after_post' => $request->get('reload_after_post') ?? true,
-                'elements' => $request->get('elements') ?? null,
-                'context' => $request->get('context') ?? null,
+                'reload_after_post' => $request->query->get('reload_after_post') ?? true,
+                'elements' => $request->query->get('elements') ?? null,
+                'context' => $request->query->get('context') ?? null,
                 'action' => $action,
                 'form' => $form->createView(),
         ));
@@ -635,11 +635,11 @@ class MessageController extends AbstractController
     {
         $this->denyAccessUnlessGranted('edit', $message);
 
-        if (!$system = $request->get('system'))
+        if (!$system = $request->request->get('system'))
             throw new \InvalidArgumentException("No system given");
-        if (!$object_name = $request->get('object_name'))
+        if (!$object_name = $request->request->get('object_name'))
             throw new \InvalidArgumentException("No object name given");
-        if (!$external_id = $request->get('external_id'))
+        if (!$external_id = $request->request->get('external_id'))
             throw new \InvalidArgumentException("No external id given");
 
         $context = new MessageContext();
