@@ -66,7 +66,8 @@ EOT
     {
         $io = new SymfonyStyle($input, $output);
 
-        // This is to make sure we don't end up with massige memory useage. 
+        // This is to make sure we don't end up with massive memory useage. 
+        // (Should not really happen, but..)
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->mt_repo = $this->entityManager
                 ->getRepository(MessageType::class);
@@ -99,19 +100,26 @@ EOT
                 ->setParameter('states', ['ARCHIVED'])
                 ->getQuery();
 
+            $amt = 0;
             foreach ($m_query->toIterable() as $message) {
                 // TODO: Explain to myself why this.. newest from newest..
                 $newest = $message->getNewestInThread();
                 $i = $newest->getNewestInThread()->getCreatedAt()->diff(new \DateTime());
                 // drop if newer than the expunge.
                 if ($edays >= (int)$i->format('%a') ) continue;
-                // I am kinda hoping cascade remove and orphanremoval will do
+                // I am kinda hoping cascade remove  will do
                 // the delete whole thread deed.
                 $output->writeln("Will Expunge " . $message->getSubject());
                 if ($this->doit == "yes" && $expunge_method == "DELETE") {
                     $this->entityManager->remove($message);
                 } elseif ($expunge_method == "ARCHIVE") {
                     $message->setState("ARCHIVED");
+                }
+                $amt++;
+                if ($amt > 100 && $this->doit == "yes") {
+                    $this->entityManager->flush();
+                    $this->entityManager->clear();
+                    $amt = 0;
                 }
             }
 
