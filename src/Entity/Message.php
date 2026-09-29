@@ -606,7 +606,7 @@ class Message
             'subject' => $this->getSubject(),
             'from' => $this->getFrom(),
             'to' => $this->getTo(),
-            'createdat' => serialize($this->getCreatedAt()),
+            'createdat' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'in_reply_to' => $this->getInReplyTo() ? $this->getInReplyTo()->getMessageId() : null,
             'message_type' => (string)$this->getMessageType(),
             'body' => $this->getBody(),
