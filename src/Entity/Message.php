@@ -125,7 +125,7 @@ class Message
     #[ORM\Column(name: 'expire_at', type: 'datetime', nullable: true)]
     private $expire_at;
 
-    #[ORM\OneToMany(targetEntity: 'MessageContext', mappedBy: 'message', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: 'MessageContext', mappedBy: 'message', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $contexts;
 
     /*
