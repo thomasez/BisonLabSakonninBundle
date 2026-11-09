@@ -133,8 +133,6 @@ class MessageTypeController extends AbstractController
     public function showAction(
         #[MapEntity(expr: 'repository.findOneByIdOrName(id)')] MessageType $messagetype): Response
     {
-        $em = $this->getDoctrineManager();
-
         return $this->render(
             '@BisonLabSakonnin/MessageType/show.html.twig', array(
             'entity' => $messagetype,
